@@ -25,10 +25,10 @@
 
 // logger = logging.getLogger(__name__)
 // td1ms = timedelta(milliseconds=1)
+use device_query::{DeviceQuery, DeviceState};
 use log::info;
 use std::thread::sleep;
 use std::time::Duration;
-use chrono::Utc;
 
 #[derive(Clone)]
 pub struct Settings {
@@ -58,21 +58,19 @@ impl AFKWatcher {
         }
     }
     pub fn run(&self) {
-        info!("aw-watcher-afk started");
-        info!("bucket name: {}", self.bucketname);
-        info!("timeout {}", self.settings.timeout);
-        info!("poll time {}", self.settings.poll_time);
-
+        info!("AFK watcher started");
         self.watch();
     }
     fn watch(&self) {
         // let mut afk = false;
+        let device_state = DeviceState::new();
         loop {
             sleep(Duration::from_secs(self.settings.poll_time));
 
-            let now = Utc::now().timestamp();
-            info!("now: {}", now);
-            // let seconds_since_input = seconds_since_last_input();
+            let keys = device_state.get_keys();
+            info!("Detected key {:?}", keys.len() > 0);
+            let mouse = device_state.get_mouse();
+            info!("Current mouse position {:?}", mouse);
         }
     }
 }
