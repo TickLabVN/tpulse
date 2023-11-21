@@ -23,20 +23,54 @@
 // else:
 //     raise Exception(f"Unsupported platform: {system}")
 
-
 // logger = logging.getLogger(__name__)
 // td1ms = timedelta(milliseconds=1)
+use log::info;
+use std::thread::sleep;
+use std::time::Duration;
 
+#[derive(Clone)]
+pub struct Settings {
+    timeout: u64,
+    poll_time: u64,
+}
+impl Settings {
+    pub fn new(timeout: u64, poll_time: u64) -> Self {
+        assert!(
+            timeout >= poll_time,
+            "Timeout should be greater than or equal to poll time"
+        );
 
-// class Settings:
-//     def __init__(self, config_section, timeout=None, poll_time=None):
-//         # Time without input before we're considering the user as AFK
-//         self.timeout = timeout or config_section["timeout"]
-//         # How often we should poll for input activity
-//         self.poll_time = poll_time or config_section["poll_time"]
+        Settings { timeout, poll_time }
+    }
+}
 
-//         assert self.timeout >= self.poll_time
+pub struct AFKWatcher {
+    settings: Settings,
+    bucketname: String,
+}
+impl AFKWatcher {
+    pub fn new(settings: &Settings) -> Self {
+        AFKWatcher {
+            settings: settings.clone(),
+            bucketname: "AFKWatcher".to_string(), // TODO: Make this dynamic
+        }
+    }
+    pub fn run(&self) {
+        info!("aw-watcher-afk started");
+        info!("bucket name: {}", self.bucketname);
+        info!("timeout {}", self.settings.timeout);
+        info!("poll time {}", self.settings.poll_time);
 
+        self.watch();
+    }
+    fn watch(&self) {
+        loop {
+            info!("watching");
+            sleep(Duration::from_secs(self.settings.poll_time));
+        }
+    }
+}
 
 // class AFKWatcher:
 //     def __init__(self, args, testing=False):
@@ -122,31 +156,9 @@
 //                 logger.info("aw-watcher-afk stopped by keyboard interrupt")
 //                 break
 
-
 //     # Start watcher
 //     watcher = AFKWatcher(args, testing=args.testing)
 //     watcher.run()
 
-
 // if __name__ == "__main__":
 //     main()
-
-
-use log::{info, trace, warn};
-
-pub fn shave_the_yak(yak: &mut Yak) {
-    trace!("Commencing yak shaving");
-
-    loop {
-        match find_a_razor() {
-            Ok(razor) => {
-                info!("Razor located: {razor}");
-                yak.shave(razor);
-                break;
-            }
-            Err(err) => {
-                warn!("Unable to locate a razor: {err}, retrying");
-            }
-        }
-    }
-}
