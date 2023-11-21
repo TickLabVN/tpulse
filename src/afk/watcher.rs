@@ -28,6 +28,7 @@
 use log::info;
 use std::thread::sleep;
 use std::time::Duration;
+use chrono::Utc;
 
 #[derive(Clone)]
 pub struct Settings {
@@ -65,9 +66,13 @@ impl AFKWatcher {
         self.watch();
     }
     fn watch(&self) {
+        // let mut afk = false;
         loop {
-            info!("watching");
             sleep(Duration::from_secs(self.settings.poll_time));
+
+            let now = Utc::now().timestamp();
+            info!("now: {}", now);
+            // let seconds_since_input = seconds_since_last_input();
         }
     }
 }
@@ -109,13 +114,6 @@ impl AFKWatcher {
 //         afk = False
 //         while True:
 //             try:
-//                 if system in ["Darwin", "Linux"] and os.getppid() == 1:
-//                     # TODO: This won't work with PyInstaller which starts a bootloader process which will become the parent.
-//                     #       There is a solution however.
-//                     #       See: https://github.com/ActivityWatch/aw-qt/issues/19#issuecomment-316741125
-//                     logger.info("afkwatcher stopped because parent process died")
-//                     break
-
 //                 now = datetime.now(timezone.utc)
 //                 seconds_since_input = seconds_since_last_input()
 //                 last_input = now - timedelta(seconds=seconds_since_input)
