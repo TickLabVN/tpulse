@@ -28,10 +28,10 @@ enum AFKState {
 }
 
 impl AFKWatcher {
-    pub fn new(settings: &Settings) -> Self {
+    pub fn new(settings: &Settings, bucket_name: &str) -> Self {
         AFKWatcher {
             settings: settings.clone(),
-            bucketname: "AFKWatcher".to_string(), // TODO: Make this dynamic
+            bucketname: bucket_name.to_owned(),
         }
     }
     pub fn run(&self) {
@@ -83,10 +83,9 @@ impl AFKWatcher {
             AFKState::OFFLINE => {
                 let afk_from = now - chrono::Duration::milliseconds(self.settings.timeout as i64);
                 info!(
-                    "{}: Noticed AFK from {} to {}",
+                    "{}: Noticed AFK from {}",
                     self.bucketname,
-                    afk_from.to_string(),
-                    now.to_string()
+                    afk_from.to_string()
                 );
             }
         }
