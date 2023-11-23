@@ -1,1 +1,1 @@
-pub mod afk;
+pub mod watcher;

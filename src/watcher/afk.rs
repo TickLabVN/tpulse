@@ -5,20 +5,20 @@ use std::thread::sleep;
 use std::time::Duration;
 
 #[derive(Clone)]
-pub struct Settings {
+pub struct AFKSettings {
     /// In milisecs
     timeout: u64,
     /// In milisecs
     poll_time: u64,
 }
-impl Settings {
+impl AFKSettings {
     pub fn new(timeout: u64, poll_time: u64) -> Self {
-        Settings { timeout, poll_time }
+        AFKSettings { timeout, poll_time }
     }
 }
 
 pub struct AFKWatcher {
-    settings: Settings,
+    settings: AFKSettings,
     bucketname: String,
 }
 
@@ -28,7 +28,7 @@ enum AFKState {
 }
 
 impl AFKWatcher {
-    pub fn new(settings: &Settings, bucket_name: &str) -> Self {
+    pub fn new(settings: &AFKSettings, bucket_name: &str) -> Self {
         AFKWatcher {
             settings: settings.clone(),
             bucketname: bucket_name.to_owned(),
