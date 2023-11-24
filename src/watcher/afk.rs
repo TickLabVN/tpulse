@@ -19,7 +19,6 @@ impl AFKSettings {
 
 pub struct AFKWatcher {
     settings: AFKSettings,
-    bucketname: String,
 }
 
 enum AFKState {
@@ -28,10 +27,9 @@ enum AFKState {
 }
 
 impl AFKWatcher {
-    pub fn new(settings: &AFKSettings, bucket_name: &str) -> Self {
+    pub fn new(settings: &AFKSettings) -> Self {
         AFKWatcher {
             settings: settings.clone(),
-            bucketname: bucket_name.to_owned(),
         }
     }
     pub fn run(&self) {
@@ -47,7 +45,7 @@ impl AFKWatcher {
             let mut detect_interact = false;
 
             let current_mouse_pos = device_state.get_mouse().coords;
-            if current_mouse_pos.0 != mouse_pos.0 && current_mouse_pos.1 != mouse_pos.1 {
+            if current_mouse_pos.0 != mouse_pos.0 || current_mouse_pos.1 != mouse_pos.1 {
                 mouse_pos = current_mouse_pos;
                 info!("Detect mouse position change {:?}", mouse_pos);
                 detect_interact = true;
@@ -76,17 +74,37 @@ impl AFKWatcher {
     }
     fn send_metric(&self, state: AFKState) {
         let now = Utc::now();
-        match state {
+        let base_url = dotenv::var("SERVER_URL").unwrap();
+        let url = base_url + "/api/members/1234567891234567891234567/worklogs/afk";
+
+        let res = match state {
             AFKState::ONLINE => {
-                info!("{}: Reconnected at {}", self.bucketname, now.to_string());
+                let body = format!("{{\"type\":\"{}\",\"time\":{}}}", "ONLINE", now.timestamp());
+                ureq::post(&url)
+                    .set("Content-Type", "application/json")
+                    .send_string(&body)
             }
             AFKState::OFFLINE => {
                 let afk_from = now - chrono::Duration::milliseconds(self.settings.timeout as i64);
-                info!(
-                    "{}: Noticed AFK from {}",
-                    self.bucketname,
-                    afk_from.to_string()
+                let body = format!(
+                    "{{\"type\":\"{}\",\"time\":{}}}",
+                    "OFFLINE",
+                    afk_from.timestamp()
                 );
+
+                ureq::post(&url)
+                    .set("Content-Type", "application/json")
+                    .send_string(&body)
+            }
+        };
+
+        match res {
+            Ok(_) => {
+                info!("{}", "Metric sent");
+            }
+            Err(e) => {
+                info!("Error sending metric: {}", e);
+                return;
             }
         }
     }
