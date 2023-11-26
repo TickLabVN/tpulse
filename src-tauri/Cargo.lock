@@ -3130,6 +3130,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "ureq",
+ "x11",
 ]
 
 [[package]]
