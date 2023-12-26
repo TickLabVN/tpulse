@@ -3,7 +3,7 @@
 
 use dotenv::dotenv;
 use std::thread;
-use tpulse::watcher::{AFKSettings, AFKWatcher, CurrentWindow};
+use tpulse::watcher::{AFKSettings, AFKWatcher};
 
 fn main() {
     dotenv().ok();
@@ -12,13 +12,11 @@ fn main() {
     let afk_settings = AFKSettings::new(5000, 500);
     let afk_watcher = AFKWatcher::new(&afk_settings);
 
-    let afk_watch = thread::spawn(move || {
-        let _ = CurrentWindow::new();
-        afk_watcher.run()
-    });
-    afk_watch.join().unwrap();
+    let afk_watch = thread::spawn(move || afk_watcher.run());
 
     tauri::Builder::default()
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+
+    afk_watch.join().unwrap();
 }
