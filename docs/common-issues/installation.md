@@ -1,5 +1,5 @@
 # How to run `tpulse`
-1. Setting up system dependencies on Linux: https://tauri.app/v1/guides/getting-started/prerequisites, example:  
+1. Setting up system dependencies: https://tauri.app/v1/guides/getting-started/prerequisites, example:  
 - On Linux (for Debian distribution):  
 
     ```sh
