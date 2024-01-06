@@ -1,6 +1,6 @@
-# How to run `tpulse`:
+# How to run `tpulse`
 1. Setting up system dependencies on Linux: https://tauri.app/v1/guides/getting-started/prerequisites, example:  
-- On Linux:  
+- On Linux (for Debian distribution):  
 
     ```sh
     sudo apt update
@@ -31,5 +31,5 @@
     ```sh
     unset GTK_PATH
     ```
-4. This is result:
+4. This is result:  
     ![](./tpulse.png)
