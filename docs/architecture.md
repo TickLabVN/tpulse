@@ -6,6 +6,7 @@ graph TB
   UI((GUI Application))
   AFKWatcher(AFK Watcher)
   WindowWatcher(Window Watcher)
+  BrowserWatcher(Browser Watcher)
   Categorizer(Categorizer)
   CalendarSynchronizer(Calendar Synchronizer)
   GGCalendar[[Google Calendar]]
@@ -15,6 +16,7 @@ graph TB
 
   AFKWatcher --push metrics--> EventEmitter
   WindowWatcher --push metrics--> EventEmitter
+  BrowserWatcher --push metrics--> EventEmitter
 
   EventEmitter --received metrics--> Categorizer
   EventEmitter --save raw\n metrics--> DB
