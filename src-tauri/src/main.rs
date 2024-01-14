@@ -1,22 +1,19 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use dotenv::dotenv;
 use std::thread;
-use tpulse::watcher::{AFKSettings, AFKWatcher};
+use tpulse::watcher::watch_afk;
 
 fn main() {
-    dotenv().ok();
     env_logger::init();
 
-    let afk_settings = AFKSettings::new(5000, 500);
-    let afk_watcher = AFKWatcher::new(&afk_settings);
-
-    let afk_watch = thread::spawn(move || afk_watcher.run());
+    let afk_watch = thread::spawn(move || watch_afk(5000, 50000));
+    let window_watch = thread::spawn(move || tpulse::watcher::watch_window(1000));
 
     tauri::Builder::default()
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("Error while running tauri application");
 
     afk_watch.join().unwrap();
+    window_watch.join().unwrap();
 }
