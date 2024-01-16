@@ -10,7 +10,8 @@
     "format": "prettier '**/*.{ts,tsx}' --write",
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean:git": "git branch --merged >/tmp/merged-branches && nano /tmp/merged-branches && xargs git branch -D </tmp/merged-branches && git fetch --prune --all"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",
