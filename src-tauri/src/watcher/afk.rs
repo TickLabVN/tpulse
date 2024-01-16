@@ -1,7 +1,9 @@
 use device_query::{DeviceQuery, DeviceState};
 use log::info;
 use std::thread::sleep;
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
+
+use crate::db::insert_afk_log;
 
 /// Watches for user's AFK (Away From Keyboard) state.
 ///
@@ -19,7 +21,6 @@ use std::time::Duration;
 /// // Watch for AFK state with a poll time of 1000ms and a timeout of 5000ms
 /// watch_afk(1000, 5000);
 /// ```
-///
 pub fn watch_afk(poll_time: u64, timeout: u64) {
     info!("AFK watcher started");
 
@@ -51,12 +52,26 @@ pub fn watch_afk(poll_time: u64, timeout: u64) {
             if afk {
                 afk = false;
                 // send metric online
+                let unix_ts = SystemTime::now()
+                    .duration_since(SystemTime::UNIX_EPOCH)
+                    .unwrap();
+                insert_afk_log(&crate::dtos::AFKEvent {
+                    time: unix_ts.as_secs() as u64,
+                    status: crate::dtos::AFKStatus::ONLINE as u8,
+                });
             }
         } else {
             total_timeout += poll_time;
             if total_timeout >= timeout && !afk {
                 afk = true;
                 // send metric offline
+                let unix_ts = SystemTime::now()
+                    .duration_since(SystemTime::UNIX_EPOCH)
+                    .unwrap();
+                insert_afk_log(&crate::dtos::AFKEvent {
+                    time: unix_ts.as_secs() as u64,
+                    status: crate::dtos::AFKStatus::OFFLINE as u8,
+                });
             }
         }
     }

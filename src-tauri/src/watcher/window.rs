@@ -1,6 +1,8 @@
 use log::{info, error};
 use std::{thread::sleep, time::Duration};
 
+use crate::db::insert_window_log;
+
 use super::window_query::get_current_window_information;
 
 pub fn watch_window(poll_time: u64) {
@@ -10,7 +12,8 @@ pub fn watch_window(poll_time: u64) {
         let window_info = get_current_window_information();
         match window_info {
             std::result::Result::Ok(window_info) => {
-                info!("{}", serde_json::to_string_pretty(&window_info).unwrap());
+                info!("{:?}", window_info);
+                insert_window_log(&window_info);
             }
             Err(e) => {
                 error!("Window information error: {}", e);

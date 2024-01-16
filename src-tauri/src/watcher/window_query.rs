@@ -1,4 +1,5 @@
-use serde::Serialize;
+use std::time::SystemTime;
+use crate::dtos::WindowInformation;
 
 #[cfg(target_os = "linux")]
 use {
@@ -8,15 +9,9 @@ use {
     std::process::Command,
 };
 
-#[derive(Debug, Serialize)]
-pub struct WindowInformation {
-    title: Option<String>,
-    class: Option<Vec<String>>,
-    exec_path: Option<String>,
-}
-
 #[cfg(target_os = "linux")]
 pub fn get_current_window_information() -> Result<WindowInformation> {
+
     let window_raw_id = get_window_id().unwrap();
     let window_info = get_window_information_by_id(window_raw_id)?;
     Ok(window_info)
@@ -67,7 +62,11 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowInformation> {
     }
 
     let stdout = String::from_utf8_lossy(&window_raw_infor.stdout);
+    let unix_ts = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap();
     let mut window_info = WindowInformation {
+        time: unix_ts.as_secs(),
         title: None,
         class: None,
         exec_path: None,
@@ -123,6 +122,7 @@ use {
 #[cfg(target_os = "windows")]
 pub fn get_current_window_information() -> Result<WindowInformation> {
     let mut window_info = WindowInformation {
+        time: 0,
         title: None,
         class: None,
         exec_path: None,
@@ -135,7 +135,12 @@ pub fn get_current_window_information() -> Result<WindowInformation> {
 
         let phlde: HANDLE = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid).unwrap();
         let (path, name) = get_process_path_and_name(phlde);
-       
+
+        let unix_ts = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap();
+
+        window_info.time = unix_ts.as_millis();
         window_info.title = Some(window_title);
         window_info.exec_path = Some(path);
         window_info.class = Some(vec![name]);
