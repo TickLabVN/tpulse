@@ -1,4 +1,4 @@
-use log::{info, error};
+use log::{error, info};
 use std::{thread::sleep, time::Duration};
 
 use crate::db::insert_window_log;

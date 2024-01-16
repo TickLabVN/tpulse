@@ -1,5 +1,5 @@
-use std::time::SystemTime;
 use crate::dtos::WindowInformation;
+use std::time::SystemTime;
 
 #[cfg(target_os = "linux")]
 use {
@@ -11,7 +11,6 @@ use {
 
 #[cfg(target_os = "linux")]
 pub fn get_current_window_information() -> Result<WindowInformation> {
-
     let window_raw_id = get_window_id().unwrap();
     let window_info = get_window_information_by_id(window_raw_id)?;
     Ok(window_info)

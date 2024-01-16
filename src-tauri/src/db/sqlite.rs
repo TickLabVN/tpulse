@@ -27,7 +27,6 @@ fn get_data_directory() -> String {
     }
 }
 
-
 // Initialize the database
 lazy_static! {
     static ref DB_PATH: String = {

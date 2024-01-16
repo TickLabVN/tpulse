@@ -1,12 +1,12 @@
 pub enum AFKStatus {
     ONLINE = 1,
-    OFFLINE = 0
+    OFFLINE = 0,
 }
 
 #[derive(Debug)]
 pub struct AFKEvent {
     pub status: u8,
-    pub time: u64
+    pub time: u64,
 }
 
 #[derive(Debug)]
