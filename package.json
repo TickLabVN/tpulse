@@ -4,9 +4,12 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+    "prepare": "is-ci || husky install",
+    "lint": "eslint '**/*.{ts,tsx}'",
+    "lint:fix": "eslint '**/*.{ts,tsx}' --fix",
+    "format": "prettier '**/*.{ts,tsx}' --write",
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,6 +18,8 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
     "@tauri-apps/cli": "^1.5.9",
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.45",
@@ -26,7 +31,12 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "husky": "^8.0.3",
+    "is-ci": "^3.0.1",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.2",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "vite": "^5.0.10",
+    "vite-plugin-eslint": "^1.8.1"
   }
 }
