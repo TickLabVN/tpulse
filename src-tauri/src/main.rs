@@ -17,8 +17,7 @@ use std::io::{self, Read, BufRead};
 
 
 fn main() {
-    dotenv().ok();
-    env_logger::init();
+    initialize_db();
 
     let afk_settings = AFKSettings::new(5000, 500);
     let afk_watcher = AFKWatcher::new(&afk_settings);
@@ -48,12 +47,25 @@ fn main() {
         }
         fs::remove_file(&pipe_path).expect("could not remove pipe during shutdown");
     });
-    tauri::Builder::default()
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+    let afk_watch = thread::spawn(move || watch_afk(5000, 50000));
+    let window_watch = thread::spawn(move || tpulse::watcher::watch_window(1000));
 
-    // afk_watch.join().unwrap();
+    tauri::Builder::default()
+        // We cannot see log when running in bundled app.
+        // This is a workaround to print log to stdout in production.
+        // Can use other log targets
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([LogTarget::Stdout])
+                .build(),
+        )
+        // This plugin support us access sqlite database directly from Frontend-side
+        .plugin(tauri_plugin_sql::Builder::default().build())
+        .run(tauri::generate_context!())
+        .expect("Error while running tauri application");
     open_server_pipe.join().unwrap();
+    afk_watch.join().unwrap();
+    window_watch.join().unwrap();
 }
 fn make_loop_flag() -> Arc<AtomicBool> {
     let running = Arc::new(AtomicBool::new(true));
