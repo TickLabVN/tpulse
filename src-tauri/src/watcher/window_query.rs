@@ -1,4 +1,4 @@
-use crate::dtos::WindowInformation;
+use crate::events::WindowInformation;
 use std::time::SystemTime;
 
 #[cfg(target_os = "linux")]

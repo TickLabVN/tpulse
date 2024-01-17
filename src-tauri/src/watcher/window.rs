@@ -1,7 +1,7 @@
 use log::{error, info};
 use std::{thread::sleep, time::Duration};
 
-use crate::db::insert_window_log;
+use crate::sqlite::insert_window_log;
 
 use super::window_query::get_current_window_information;
 

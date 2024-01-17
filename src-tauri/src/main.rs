@@ -3,9 +3,11 @@
 
 use std::thread;
 use tauri_plugin_log::LogTarget;
-use tpulse::watcher::watch_afk;
+use tpulse::{initializer::initialize_db, watcher::watch_afk};
 
 fn main() {
+    initialize_db();
+
     let afk_watch = thread::spawn(move || watch_afk(5000, 50000));
     let window_watch = thread::spawn(move || tpulse::watcher::watch_window(1000));
 

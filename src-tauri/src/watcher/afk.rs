@@ -3,7 +3,7 @@ use log::info;
 use std::thread::sleep;
 use std::time::{Duration, SystemTime};
 
-use crate::db::insert_afk_log;
+use crate::sqlite::insert_afk_log;
 
 /// Watches for user's AFK (Away From Keyboard) state.
 ///
@@ -55,9 +55,9 @@ pub fn watch_afk(poll_time: u64, timeout: u64) {
                 let unix_ts = SystemTime::now()
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
-                insert_afk_log(&crate::dtos::AFKEvent {
+                insert_afk_log(&crate::events::AFKEvent {
                     time: unix_ts.as_secs() as u64,
-                    status: crate::dtos::AFKStatus::ONLINE as u8,
+                    status: crate::events::AFKStatus::ONLINE as u8,
                 });
             }
         } else {
@@ -68,9 +68,9 @@ pub fn watch_afk(poll_time: u64, timeout: u64) {
                 let unix_ts = SystemTime::now()
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
-                insert_afk_log(&crate::dtos::AFKEvent {
+                insert_afk_log(&crate::events::AFKEvent {
                     time: unix_ts.as_secs() as u64,
-                    status: crate::dtos::AFKStatus::OFFLINE as u8,
+                    status: crate::events::AFKStatus::OFFLINE as u8,
                 });
             }
         }
