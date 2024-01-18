@@ -16,3 +16,8 @@ pub struct WindowInformation {
     pub class: Option<Vec<String>>,
     pub exec_path: Option<String>,
 }
+
+pub enum UserMetric {
+    AFK(AFKEvent),
+    Window(WindowInformation),
+}
