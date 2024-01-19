@@ -23,22 +23,22 @@ fn main() {
     let window_watcher = thread::spawn(move || watch_window(1000, window_tx));
     let event_handler = thread::spawn(move || handle_events(rx));
 
-    // tauri::Builder::default()
-    //     // We cannot see log when running in bundled app.
-    //     // This is a workaround to print log to stdout in production.
-    //     // Can use other log targets
-    //     .plugin(
-    //         tauri_plugin_log::Builder::default()
-    //             .targets([LogTarget::Stdout])
-    //             .build(),
-    //     )
-    //     // This plugin support us access sqlite database directly from Frontend-side
-    //     .plugin(tauri_plugin_sql::Builder::default().build())
-    //     .run(tauri::generate_context!())
-    //     .expect("Error while running tauri application");
+    tauri::Builder::default()
+        // We cannot see log when running in bundled app.
+        // This is a workaround to print log to stdout in production.
+        // Can use other log targets
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([LogTarget::Stdout])
+                .build(),
+        )
+        // This plugin support us access sqlite database directly from Frontend-side
+        .plugin(tauri_plugin_sql::Builder::default().build())
+        .run(tauri::generate_context!())
+        .expect("Error while running tauri application");
 
-    // afk_watcher.join().unwrap();
-    // window_watcher.join().unwrap();
-    // event_handler.join().unwrap();
+    afk_watcher.join().unwrap();
+    window_watcher.join().unwrap();
+    event_handler.join().unwrap();
     open_pipe_server.join().unwrap();
 }

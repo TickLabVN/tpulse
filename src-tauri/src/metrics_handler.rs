@@ -6,7 +6,7 @@ use {
 };
 #[cfg(target_os = "linux")]
 pub fn handle_metrics() {
-    let pipe_name = "/tmp/tpulse-test13";
+    let pipe_name = "/tmp/tpulse";
     match create_named_pipe(&pipe_name) {
         Ok(_) => println!("Creating named pipe successfully"),
         Err(err) => eprintln!("Error: {}", err),
@@ -57,95 +57,92 @@ fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
 
 #[cfg(target_os = "windows")]
 use {
-    std::ffi::CString,
-    std::io::Error,
-    winapi::um::fileapi::{FILE_FLAG_OVERLAPPED, OPEN_EXISTING},
-    winapi::um::namedpipeapi::{ConnectNamedPipe, CreateNamedPipe, DisconnectNamedPipe},
-    winapi::um::winbase::{PIPE_ACCESS_DUPLEX, PIPE_READMODE_MESSAGE, PIPE_TYPE_MESSAGE},
-    winapi::um::winnt::{FILE_SHARE_READ, FILE_SHARE_WRITE, GENERIC_READ, GENERIC_WRITE},
+    std::ffi::OsStr,
+    std::io::{Error, ErrorKind},
+    std::os::windows::ffi::OsStrExt,
+    std::ptr,
+    winapi::ctypes::c_void,
+    winapi::um::fileapi::ReadFile,
+    winapi::um::namedpipeapi::{ConnectNamedPipe, CreateNamedPipeW},
+    winapi::um::winbase::{
+        PIPE_ACCESS_INBOUND, PIPE_READMODE_MESSAGE, PIPE_TYPE_MESSAGE, PIPE_WAIT,
+    },
+    winapi::um::winnt::FILE_SHARE_READ,
 };
 
 #[cfg(target_os = "windows")]
 pub fn handle_metrics() {
-    let mut pipe_name = "\\\\.\\pipe\\tpulse";
+    let pipe_name = "\\\\.\\pipe\\tpulse";
     match create_named_pipe(&pipe_name) {
-        Ok(_) => println!("Creating named pipe successfully"),
-        Err(err) => eprintln!("Error: {}", err),
-    };
-    loop {
-        match read_from_pipe(&pipe_name) {
-            Ok(data) => println!("Data read from the pipe: {}", data),
-            Err(err) => eprintln!("Error: {}", err),
+        Ok(pipe_handle) => {
+            println!("Waiting for client to connect...");
+            let connected =
+                unsafe { ConnectNamedPipe(pipe_handle as *mut c_void, ptr::null_mut()) };
+            if connected == 0 {
+                eprint!("Couldn't connect to named pipe")
+            }
+            match read_from_pipe(pipe_handle) {
+                Ok(data) => eprint!("Data from client: {}", data),
+                Err(err) => eprint!("Failed to get data from client: {}", err),
+            }
+        }
+        Err(err) => {
+            eprintln!("Error creating named pipe: {}", err);
         }
     }
 }
 
 #[cfg(target_os = "windows")]
-fn create_named_pipe(pipe_name: &str) {
-    let pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
+fn create_named_pipe(pipe_name: &str) -> Result<i32, Error> {
+    let pipename = OsStr::new(pipe_name)
+        .encode_wide()
+        .chain(Some(0).into_iter())
+        .collect::<Vec<_>>();
     let pipe_handle = unsafe {
-        CreateNamedPipe(
-            pipe_name.as_ptr(),
-            PIPE_ACCESS_DUPLEX,
-            PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
+        CreateNamedPipeW(
+            pipename.as_ptr(),
+            PIPE_ACCESS_INBOUND | FILE_SHARE_READ,
+            PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
             1,
-            0,
-            0,
+            1024,
+            1024,
             0,
             ptr::null_mut(),
         )
     };
 
     if pipe_handle == winapi::um::handleapi::INVALID_HANDLE_VALUE {
-        panic!("Failed to create named pipe");
+        return Err(Error::last_os_error());
     }
-    pipe_handle();
+    Ok(pipe_handle as i32)
 }
 
 #[cfg(target_os = "windows")]
-fn read_from_pipe(pipe_name: &str) -> io::Result<String> {
-    let pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
+fn read_from_pipe(pipe_handle: i32) -> Result<String, Error> {
+    const BUFFER_SIZE: usize = 1024;
+    let mut buffer = Vec::with_capacity(BUFFER_SIZE);
+    buffer.resize(BUFFER_SIZE, 0);
 
-    let pipe_handle = unsafe {
-        CreateFileW(
-            pipe_name.as_ptr(),
-            GENERIC_READ,
-            FILE_SHARE_READ | FILE_SHARE_WRITE,
+    let mut bytes_read: u32 = 0;
+
+    unsafe {
+        let result = ReadFile(
+            pipe_handle as *mut c_void,
+            buffer.as_mut_ptr() as *mut _,
+            BUFFER_SIZE as u32,
+            &mut bytes_read,
             ptr::null_mut(),
-            OPEN_EXISTING,
-            FILE_FLAG_OVERLAPPED,
-            ptr::null_mut(),
-        )
-    };
+        );
 
-    if pipe_handle == INVALID_HANDLE_VALUE {
-        return Err(io::Error::last_os_error());
-    }
-    let connected = unsafe { ConnectNamedPipe(pipe_handle, ptr::null_mut()) };
-    if connected == 0 {
-        return Err(io::Error::last_os_error());
-    }
-
-    let mut buffer = String::new();
-    let mut byte: u8 = 0;
-    loop {
-        let result = unsafe {
-            ReadFile(
-                pipe_handle,
-                &mut byte as *mut u8 as *mut _,
-                1,
-                ptr::null_mut(),
-                ptr::null_mut(),
-            )
-        };
         if result == 0 {
-            break;
+            return Err(Error::last_os_error());
         }
-        buffer.push(byte);
+
+        buffer.set_len(bytes_read as usize);
     }
     let result = String::from_utf8(buffer);
     match result {
         Ok(s) => Ok(s),
-        Err(e) => Err(io::Error::new(io::ErrorKind::InvalidData, e)),
+        Err(e) => Err(Error::new(ErrorKind::InvalidData, e)),
     }
 }
