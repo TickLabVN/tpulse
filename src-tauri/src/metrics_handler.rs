@@ -6,7 +6,7 @@ use {
 };
 #[cfg(any(target_os = "linux", target = "macos"))]
 pub fn handle_metrics() {
-    let pipe_name = "/tmp/tpulse";
+    let pipe_name = "/tmp/tpulsetantan";
     match create_named_pipe(&pipe_name) {
         Ok(_) => println!("Creating named pipe successfully"),
         Err(err) => eprintln!("Error: {}", err),
