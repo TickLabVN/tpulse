@@ -29,7 +29,6 @@ tauri-plugin-sql = { git = "https://github.com/tauri-apps/plugins-workspace", br
     "sqlite",
 ] }
 lazy_static = "1.4.0"
-ipipe = "0.11.7"
 libc = "0.2.152"
 
 [target.'cfg(windows)'.dependencies]

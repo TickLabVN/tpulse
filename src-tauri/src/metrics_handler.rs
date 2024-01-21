@@ -1,12 +1,12 @@
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target = "macos"))]
 use {
     libc::{mkfifo, open, read, O_RDONLY},
     std::ffi::CString,
     std::io::Error,
 };
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target = "macos"))]
 pub fn handle_metrics() {
-    let pipe_name = "/tmp/tpulse";
+    let pipe_name = "/tmp/tpulseaaa";
     match create_named_pipe(&pipe_name) {
         Ok(_) => println!("Creating named pipe successfully"),
         Err(err) => eprintln!("Error: {}", err),
@@ -18,7 +18,7 @@ pub fn handle_metrics() {
         }
     }
 }
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target = "macos"))]
 fn create_named_pipe(pipe_name: &str) -> Result<(), &'static str> {
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
     let result = unsafe { mkfifo(c_pipe_name.as_ptr(), 0o666) };
@@ -29,7 +29,7 @@ fn create_named_pipe(pipe_name: &str) -> Result<(), &'static str> {
         Err("Failed to create named pipe")
     }
 }
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target = "macos"))]
 fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
 
@@ -63,7 +63,7 @@ use {
     std::ptr,
     winapi::ctypes::c_void,
     winapi::um::fileapi::ReadFile,
-    winapi::um::namedpipeapi::{ConnectNamedPipe, CreateNamedPipeW},
+    winapi::um::namedpipeapi::{ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe},
     winapi::um::winbase::{
         PIPE_ACCESS_INBOUND, PIPE_READMODE_MESSAGE, PIPE_TYPE_MESSAGE, PIPE_WAIT,
     },
@@ -76,14 +76,19 @@ pub fn handle_metrics() {
     match create_named_pipe(&pipe_name) {
         Ok(pipe_handle) => {
             println!("Waiting for client to connect...");
-            let connected =
-                unsafe { ConnectNamedPipe(pipe_handle as *mut c_void, ptr::null_mut()) };
-            if connected == 0 {
-                eprint!("Couldn't connect to named pipe")
-            }
-            match read_from_pipe(pipe_handle) {
-                Ok(data) => eprint!("Data from client: {}", data),
-                Err(err) => eprint!("Failed to get data from client: {}", err),
+            loop {
+                let connected =
+                    unsafe { ConnectNamedPipe(pipe_handle as *mut c_void, ptr::null_mut()) };
+                if connected == 0 {
+                    eprint!("Couldn't connect to named pipe")
+                }
+                match read_from_pipe(pipe_handle) {
+                    Ok(data) => eprint!("Data from client: {}", data),
+                    Err(err) => eprint!("Failed to get data from client: {}", err),
+                }
+                unsafe {
+                    DisconnectNamedPipe(pipe_handle);
+                }
             }
         }
         Err(err) => {
