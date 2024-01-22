@@ -1,0 +1,449 @@
+Name,Category Key,Category Name,Source,App Name,URL,Keyword,Block in Break,Block in Focus,Block in Meeting,Always Block,Do Not Track Any URLs,Track Full URL Enabled,Track Titles Enabled
+docs.google.com,documenting,Documenting,website,.*,docs.google.com,,,,,,false,true,true
+github.com,code,Code,website,.*,github.com,,,,,,false,true,true
+airtable.com,task_management,Task Management,website,.*,airtable.com,,,,,,false,true,true
+atlassian.net,task_management,Task Management,website,.*,atlassian.net,,,,,,false,true,true
+atlassian.com,task_management,Task Management,website,.*,atlassian.com,,,,,,false,true,true
+trello.com,task_management,Task Management,website,.*,trello.com,,,,,,false,true,true
+mail.google.com,email,Email,website,.*,mail.google.com,,,,,,false,true,true
+mail.superhuman.com,email,Email,website,.*,mail.superhuman.com,,,,,,false,true,true
+app.slack.com,messaging,Messaging,website,.*,app.slack.com,,,,,,false,true,true
+medium.com,reading,Reading,website,.*,medium.com,,,,,,false,true,true
+stackoverflow.com,code,Code,website,.*,stackoverflow.com,,,,,,false,true,true
+dev.to,reading,Reading,website,.*,dev.to,,,,,,false,true,true
+meet.google.com,video_conferencing,Video Conferencing,website,.*,meet.google.com,,,,,,false,true,true
+dashboard.heroku.com,code,Code,website,.*,dashboard.heroku.com,,,,,,false,true,true
+twitter.com,social_media,Social Media,website,.*,twitter.com,,,,,,false,true,true
+staging.rize.io,productivity,Productivity,website,.*,staging.rize.io,,,,,,false,true,true
+rize.io,productivity,Productivity,website,.*,rize.io,,,,,,false,true,true
+linear.app,task_management,Task Management,website,.*,linear.app,,,,,,false,true,true
+app.usertesting.com,user_research,User Research,website,.*,app.usertesting.com,,,,,,false,true,true
+invisionapp.com,design,Design,website,.*,invisionapp.com,,,,,,false,true,true
+linkedin.com,social_media,Social Media,website,.*,linkedin.com,,,,,,false,true,true
+netflix.com,entertainment,Entertainment,website,.*,netflix.com,,,,,,false,true,true
+amazon.com,personal,Personal,website,.*,amazon.com,,,,,,false,true,true
+youtube.com,entertainment,Entertainment,website,.*,youtube.com,,,,,,false,true,true
+youtube.com - tutorial,learning,Learning,website,.*,youtube.com,tutorial,,,,,false,true,true
+espn.com,entertainment,Entertainment,website,.*,espn.com,,,,,,false,true,true
+portal.azure.com,code,Code,website,.*,portal.azure.com,,,,,,false,true,true
+google.com,search,Search,website,.*,google.com,,,,,,false,true,true
+console.google.com,code,Code,website,.*,console.google.com,,,,,,false,true,true
+docs.microsoft.com,documenting,Documenting,website,.*,docs.microsoft.com,,,,,,false,true,true
+sentry.io,code,Code,website,.*,sentry.io,,,,,,false,true,true
+facebook.com,code,Code,website,.*,facebook.com,,,,,,false,true,true
+localhost,code,Code,website,.*,localhost,,,,,,false,true,true
+outlook.office.com,email,Email,website,.*,outlook.office.com,,,,,,false,true,true
+draftkings.com,entertainment,Entertainment,website,.*,draftkings.com,,,,,,false,true,true
+sachi.la,personal,Personal,website,.*,sachi.la,,,,,,false,true,true
+airbnb.com,personal,Personal,website,.*,airbnb.com,,,,,,false,true,true
+drive.google.com,documenting,Documenting,website,.*,drive.google.com,,,,,,false,true,true
+box.com,documenting,Documenting,website,.*,box.com,,,,,,false,true,true
+dev.azure.com,code,Code,website,.*,dev.azure.com,,,,,,false,true,true
+twilio.com,code,Code,website,.*,twilio.com,,,,,,false,true,true
+news.ycombinator.com,personal,Personal,website,.*,news.ycombinator.com,,,,,,false,true,true
+rescuetime.com,personal,Personal,website,.*,rescuetime.com,,,,,,false,true,true
+newrelic.com,code,Code,website,.*,newrelic.com,,,,,,false,true,true
+reddit.com,social_media,Social Media,website,.*,reddit.com,,,,,,false,true,true
+outlook.office365.com,email,Email,website,.*,outlook.office365.com,,,,,,false,true,true
+priceline.com,personal,Personal,website,.*,priceline.com,,,,,,false,true,true
+gitlab.com,code,Code,website,.*,gitlab.com,,,,,,false,true,true
+webflow.com,marketing,Marketing,website,.*,webflow.com,,,,,,false,true,true
+en.wikipedia.org,personal,Personal,website,.*,en.wikipedia.org,,,,,,false,true,true
+wikipedia.org,personal,Personal,website,.*,wikipedia.org,,,,,,false,true,true
+calendar.google.com,scheduling,Scheduling,website,.*,calendar.google.com,,,,,,false,true,true
+mailchimp.com,marketing,Marketing,website,.*,mailchimp.com,,,,,,false,true,true
+dashboard.stripe.com,code,Code,website,.*,dashboard.stripe.com,,,,,,false,true,true
+disneyplus.com,entertainment,Entertainment,website,.*,disneyplus.com,,,,,,false,true,true
+getplan.co,task_management,Task Management,website,.*,getplan.co,,,,,,false,true,true
+vimeo.com,entertainment,Entertainment,website,.*,vimeo.com,,,,,,false,true,true
+newrepublic.com,news,News,website,.*,newrepublic.com,,,,,,false,true,true
+nytimes.com,news,News,website,.*,nytimes.com,,,,,,false,true,true
+blog.rize.io,productivity,Productivity,website,.*,blog.rize.io,,,,,,false,true,true
+unsplash.com,design,Design,website,.*,unsplash.com,,,,,,false,true,true
+filestack.com,code,Code,website,.*,filestack.com,,,,,,false,true,true
+producthunt.com,personal,Personal,website,.*,producthunt.com,,,,,,false,true,true
+techcrunch.com,news,News,website,.*,techcrunch.com,,,,,,false,true,true
+mail.yahoo.com,email,Email,website,.*,mail.yahoo.com,,,,,,false,true,true
+hackernoon.com,reading,Reading,website,.*,hackernoon.com,,,,,,false,true,true
+vercel.com,code,Code,website,.*,vercel.com,,,,,,false,true,true
+thespoon.tech,news,News,website,.*,thespoon.tech,,,,,,false,true,true
+delta.com,personal,Personal,website,.*,delta.com,,,,,,false,true,true
+electron.build,code,Code,website,.*,electron.build,,,,,,false,true,true
+npmjs.com,code,Code,website,.*,npmjs.com,,,,,,false,true,true
+docs.npmjs.com,code,Code,website,.*,docs.npmjs.com,,,,,,false,true,true
+docs.docker.com,code,Code,website,.*,docs.docker.com,,,,,,false,true,true
+docker.com,code,Code,website,.*,docker.com,,,,,,false,true,true
+espnplus.com,entertainment,Entertainment,website,.*,espnplus.com,,,,,,false,true,true
+qz.com,news,News,website,.*,qz.com,,,,,,false,true,true
+azure.microsoft.com,code,Code,website,.*,azure.microsoft.com,,,,,,false,true,true
+nextjs.org,code,Code,website,.*,nextjs.org,,,,,,false,true,true
+account.postmarkapp.com,code,Code,website,.*,account.postmarkapp.com,,,,,,false,true,true
+forbes.com,news,News,website,.*,forbes.com,,,,,,false,true,true
+bloomberg.com,news,News,website,.*,bloomberg.com,,,,,,false,true,true
+miro.com,video_conferencing,Video Conferencing,website,.*,miro.com,,,,,,false,true,true
+fast.com,personal,Personal,website,.*,fast.com,,,,,,false,true,true
+angel.co,personal,Personal,website,.*,angel.co,,,,,,false,true,true
+apple.com,personal,Personal,website,.*,apple.com,,,,,,false,true,true
+dashboard.twitch.tv,entertainment,Entertainment,website,.*,dashboard.twitch.tv,,,,,,false,true,true
+twitch.tv,entertainment,Entertainment,website,.*,twitch.tv,,,,,,false,true,true
+groupon.com,personal,Personal,website,.*,groupon.com,,,,,,false,true,true
+angular.io,code,Code,website,.*,angular.io,,,,,,false,true,true
+calendly.com,scheduling,Scheduling,website,.*,calendly.com,,,,,,false,true,true
+businessinsider.com,news,News,website,.*,businessinsider.com,,,,,,false,true,true
+direct.chownow.com,personal,Personal,website,.*,direct.chownow.com,,,,,,false,true,true
+sailsjs.com,code,Code,website,.*,sailsjs.com,,,,,,false,true,true
+weather.com,personal,Personal,website,.*,weather.com,,,,,,false,true,true
+app.bitrise.io,code,Code,website,.*,app.bitrise.io,,,,,,false,true,true
+web.whatsapp.com,social_media,Social Media,website,.*,web.whatsapp.com,,,,,,false,true,true
+azure.github.io,code,Code,website,.*,azure.github.io,,,,,,false,true,true
+football.fantasysports.yahoo.com,entertainment,Entertainment,website,.*,football.fantasysports.yahoo.com,,,,,,false,true,true
+pivotaltracker.com,task_management,Task Management,website,.*,pivotaltracker.com,,,,,,false,true,true
+hulu.com,entertainment,Entertainment,website,.*,hulu.com,,,,,,false,true,true
+yelp.com,entertainment,Entertainment,website,.*,yelp.com,,,,,,false,true,true
+duckduckgo.com,search,Search,website,.*,duckduckgo.com,,,,,,false,true,true
+app.intercom.com,customer_support,Customer Support,website,.*,app.intercom.com,,,,,,false,true,true
+intercom.com,customer_support,Customer Support,website,.*,intercom.com,,,,,,false,true,true
+travis-ci.org,code,Code,website,.*,travis-ci.org,,,,,,false,true,true
+skyscanner.com,personal,Personal,website,.*,skyscanner.com,,,,,,false,true,true
+accounts.google.com,utility,Utility,website,.*,accounts.google.com,,,,,,false,true,true
+github.io,code,Code,website,.*,github.io,,,,,,false,true,true
+crunchbase.com,news,News,website,.*,crunchbase.com,,,,,,false,true,true
+outlook.live.com,email,Email,website,.*,outlook.live.com,,,,,,false,true,true
+bestbuy.com,personal,Personal,website,.*,bestbuy.com,,,,,,false,true,true
+app.circleci.com,code,Code,website,.*,app.circleci.com,,,,,,false,true,true
+circleci.com,code,Code,website,.*,circleci.com,,,,,,false,true,true
+zillow.com,personal,Personal,website,.*,zillow.com,,,,,,false,true,true
+console.aws.amazon.com,code,Code,website,.*,console.aws.amazon.com,,,,,,false,true,true
+docs.aws.amazon.com,code,Code,website,.*,docs.aws.amazon.com,,,,,,false,true,true
+aws.amazon.com,code,Code,website,.*,aws.amazon.com,,,,,,false,true,true
+overleaf.com,writing,Writing,website,.*,overleaf.com,,,,,,false,true,true
+colab.research.google.com,code,Code,website,.*,colab.research.google.com,,,,,,false,true,true
+docs.travis-ci.com,code,Code,website,.*,docs.travis-ci.com,,,,,,false,true,true
+boardgamearena.com,personal,Personal,website,.*,boardgamearena.com,,,,,,false,true,true
+smile.amazon.com,personal,Personal,website,.*,smile.amazon.com,,,,,,false,true,true
+glassdoor.com,personal,Personal,website,.*,glassdoor.com,,,,,,false,true,true
+bamboohr.com,utility,Utility,website,.*,bamboohr.com,,,,,,false,true,true
+personal.vanguard.com,personal,Personal,website,.*,personal.vanguard.com,,,,,,false,true,true
+vanguard.com,personal,Personal,website,.*,vanguard.com,,,,,,false,true,true
+rightmove.co.uk,personal,Personal,website,.*,rightmove.co.uk,,,,,,false,true,true
+apartments.com,personal,Personal,website,.*,apartments.com,,,,,,false,true,true
+upwork.com,personal,Personal,website,.*,upwork.com,,,,,,false,true,true
+theringer.com,news,News,website,.*,theringer.com,,,,,,false,true,true
+readymag.com,design,Design,website,.*,readymag.com,,,,,,false,true,true
+machinelearningmastery.com,code,Code,website,.*,machinelearningmastery.com,,,,,,false,true,true
+tripadvisor.com,personal,Personal,website,.*,tripadvisor.com,,,,,,false,true,true
+figma.com,design,Design,website,.*,figma.com,,,,,,false,true,true
+mitpress.mit.edu,reading,Reading,website,.*,mitpress.mit.edu,,,,,,false,true,true
+nudgetext.com,personal,Personal,website,.*,nudgetext.com,,,,,,false,true,true
+translate.google.com,personal,Personal,website,.*,translate.google.com,,,,,,false,true,true
+app.grammarly.com,utility,Utility,website,.*,app.grammarly.com,,,,,,false,true,true
+grammarly.com,utility,Utility,website,.*,grammarly.com,,,,,,false,true,true
+realsimple.com,personal,Personal,website,.*,realsimple.com,,,,,,false,true,true
+discord.com,messaging,Messaging,website,.*,discord.com,,,,,,false,true,true
+cloud.google.com,code,Code,website,.*,cloud.google.com,,,,,,false,true,true
+booking.com,personal,Personal,website,.*,booking.com,,,,,,false,true,true
+preview.pitch.com,documenting,Documenting,website,.*,preview.pitch.com,,,,,,false,true,true
+pitch.com,documenting,Documenting,website,.*,pitch.com,,,,,,false,true,true
+ebay.com,personal,Personal,website,.*,ebay.com,,,,,,false,true,true
+theguardian.com,news,News,website,.*,theguardian.com,,,,,,false,true,true
+jira.com,task_management,Task Management,website,.*,jira.com,,,,,,false,true,true
+slack.com,messaging,Messaging,website,.*,slack.com,,,,,,false,true,true
+myjetbrains.com,code,Code,website,.*,myjetbrains.com,,,,,,false,true,true
+kudoboard.com,personal,Personal,website,.*,kudoboard.com,,,,,,false,true,true
+mixpanel.com,code,Code,website,.*,mixpanel.com,,,,,,false,true,true
+elastic.co,code,Code,website,.*,elastic.co,,,,,,false,true,true
+flow.org,code,Code,website,.*,flow.org,,,,,,false,true,true
+dropbox.com,documenting,Documenting,website,.*,dropbox.com,,,,,,false,true,true
+ubereats.com,personal,Personal,website,.*,ubereats.com,,,,,,false,true,true
+newyorker.com,news,News,website,.*,newyorker.com,,,,,,false,true,true
+jam.dev,design,Design,website,.*,jam.dev,,,,,,false,true,true
+teams.microsoft.com,messaging,Messaging,website,.*,teams.microsoft.com,,,,,,false,true,true
+canva.com,design,Design,website,.*,canva.com,,,,,,false,true,true
+stratechery.com,news,News,website,.*,stratechery.com,,,,,,false,true,true
+zendesk.com,customer_support,Customer Support,website,.*,zendesk.com,,,,,,false,true,true
+googleapis.com,code,Code,website,.*,googleapis.com,,,,,,false,true,true
+robinhood.com,personal,Personal,website,.*,robinhood.com,,,,,,false,true,true
+stackexchange.com,code,Code,website,.*,stackexchange.com,,,,,,false,true,true
+usertesting.com,user_research,User Research,website,.*,usertesting.com,,,,,,false,true,true
+salesforce.com,sales,Sales,website,.*,salesforce.com,,,,,,false,true,true
+geico.com,personal,Personal,website,.*,geico.com,,,,,,false,true,true
+amplitude.com,product,Product,website,.*,amplitude.com,,,,,,false,true,true
+goldcast.io,events,Events,website,.*,goldcast.io,,,,,,false,true,true
+analytics.amplitude.com,product,Product,website,.*,analytics.amplitude.com,,,,,,false,true,true
+travis-ci.com,code,Code,website,.*,travis-ci.com,,,,,,false,true,true
+chase.com,personal,Personal,website,.*,chase.com,,,,,,false,true,true
+dailymail.co.uk,personal,Personal,website,.*,dailymail.co.uk,,,,,,false,true,true
+coda.io,documenting,Documenting,website,.*,coda.io,,,,,,false,true,true
+airbnb.co.uk,personal,Personal,website,.*,airbnb.co.uk,,,,,,false,true,true
+styled-components.com,code,Code,website,.*,styled-components.com,,,,,,false,true,true
+graphql-ruby.org,code,Code,website,.*,graphql-ruby.org,,,,,,false,true,true
+web.dev,code,Code,website,.*,web.dev,,,,,,false,true,true
+material-ui.com,code,Code,website,.*,material-ui.com,,,,,,false,true,true
+lodash.com,code,Code,website,.*,lodash.com,,,,,,false,true,true
+newline.co,code,Code,website,.*,newline.co,,,,,,false,true,true
+us02web.zoom.us,video_conferencing,Video Conferencing,website,.*,us02web.zoom.us,,,,,,false,true,true
+ideaboardz.com,product,Product,website,.*,ideaboardz.com,,,,,,false,true,true
+highcharts.com,code,Code,website,.*,highcharts.com,,,,,,false,true,true
+fivethirtyeight.com,news,News,website,.*,fivethirtyeight.com,,,,,,false,true,true
+theverge.com,news,News,website,.*,theverge.com,,,,,,false,true,true
+notion.so,documenting,Documenting,website,.*,notion.so,,,,,,false,true,true
+successfactors.com,utility,Utility,website,.*,successfactors.com,,,,,,false,true,true
+betterdoctor.com,personal,Personal,website,.*,betterdoctor.com,,,,,,false,true,true
+kayak.com,personal,Personal,website,.*,kayak.com,,,,,,false,true,true
+saucelabs.com,code,Code,website,.*,saucelabs.com,,,,,,false,true,true
+fullstory.com,user_research,User Research,website,.*,fullstory.com,,,,,,false,true,true
+retool.com,product,Product,website,.*,retool.com,,,,,,false,true,true
+shift.com,personal,Personal,website,.*,shift.com,,,,,,false,true,true
+stripe.com,finance,Finance,website,.*,stripe.com,,,,,,false,true,true
+productboard.com,task_management,Task Management,website,.*,productboard.com,,,,,,false,true,true
+nypost.com,entertainment,Entertainment,website,.*,nypost.com,,,,,,false,true,true
+edmunds.com,personal,Personal,website,.*,edmunds.com,,,,,,false,true,true
+kbb.com,personal,Personal,website,.*,kbb.com,,,,,,false,true,true
+segment.com,product,Product,website,.*,segment.com,,,,,,false,true,true
+zoom.us,video_conferencing,Video Conferencing,website,.*,zoom.us,,,,,,false,true,true
+bitbucket.org,code,Code,website,.*,bitbucket.org,,,,,,false,true,true
+visualstudio.com,code,Code,website,.*,visualstudio.com,,,,,,false,true,true
+messenger.com,personal,Personal,website,.*,messenger.com,,,,,,false,true,true
+indeed.com,personal,Personal,website,.*,indeed.com,,,,,,false,true,true
+protonmail.com,email,Email,website,.*,protonmail.com,,,,,,false,true,true
+craigslist.org,personal,Personal,website,.*,craigslist.org,,,,,,false,true,true
+asana.com,task_management,Task Management,website,.*,asana.com,,,,,,false,true,true
+codeinterview.io,marketing,Marketing,website,.*,codeinterview.io,,,,,,false,true,true
+app.gotomeeting.com,marketing,Marketing,website,.*,app.gotomeeting.com,,,,,,false,true,true
+global.gotomeeting.com,marketing,Marketing,website,.*,global.gotomeeting.com,,,,,,false,true,true
+webex.com,marketing,Marketing,website,.*,webex.com,,,,,,false,true,true
+hangouts.google.com,marketing,Marketing,website,.*,hangouts.google.com,,,,,,false,true,true
+ringcentral.com,marketing,Marketing,website,.*,ringcentral.com,,,,,,false,true,true
+bluejeans.com,marketing,Marketing,website,.*,bluejeans.com,,,,,,false,true,true
+highfive.com,marketing,Marketing,website,.*,highfive.com,,,,,,false,true,true
+vowel.com,marketing,Marketing,website,.*,vowel.com,,,,,,false,true,true
+whereby.com,marketing,Marketing,website,.*,whereby.com,,,,,,false,true,true
+roamresearch.com,documenting,Documenting,website,.*,roamresearch.com,,,,,,false,true,true
+zapier.com,productivity,Productivity,website,.*,zapier.com,,,,,,false,true,true
+appsumo.com,personal,Personal,website,.*,appsumo.com,,,,,,false,true,true
+instagram.com,social_media,Social Media,website,.*,instagram.com,,,,,,false,true,true
+loginwindow,do_not_track,Do Not Track,macos,loginwindow,,,,,,,false,true,true
+MacSystem Preferences,do_not_track,Do Not Track,macos,MacSystem Preferences,,,,,,,false,true,true
+UI Agent Mac,do_not_track,Do Not Track,macos,UI Agent Mac,,,,,,,false,true,true
+Screen Saver Engine,do_not_track,Do Not Track,macos,Screen Saver Engine,,,,,,,false,true,true
+Finder,do_not_track,Do Not Track,macos,Finder,,,,,,,false,true,true
+UserNotificationCenter,do_not_track,Do Not Track,macos,UserNotificationCenter,,,,,,,false,true,true
+Installer,do_not_track,Do Not Track,macos,Installer,,,,,,,false,true,true
+Wi-Fi,do_not_track,Do Not Track,macos,Wi-Fi,,,,,,,false,true,true
+Setup Assistant,do_not_track,Do Not Track,macos,Setup Assistant,,,,,,,false,true,true
+Archive Utility,do_not_track,Do Not Track,macos,Archive Utility,,,,,,,false,true,true
+Mobile Device Updated,do_not_track,Do Not Track,macos,Mobile Device Updated,,,,,,,false,true,true
+Command Line Tools,do_not_track,Do Not Track,macos,Command Line Tools,,,,,,,false,true,true
+Flow,do_not_track,Do Not Track,macos,Flow,,,,,,,false,true,true
+Time Out,do_not_track,Do Not Track,macos,Time Out,,,,,,,false,true,true
+Rubymine,code,Code,macos,Rubymine,,,,,,,false,true,true
+iTerm,code,Code,macos,iTerm,,,,,,,false,true,true
+Chrome,browsing,Browsing,macos,Chrome,,,,,,,false,true,true
+Numbers,documenting,Documenting,macos,Numbers,,,,,,,false,true,true
+Slack,messaging,Messaging,macos,Slack,,,,,,,false,true,true
+Messages,messaging,Messaging,macos,Messages,,,,,,,false,true,true
+Apple Mail,email,Email,macos,Apple Mail,,,,,,,false,true,true
+Zoom,video_conferencing,Video Conferencing,macos,Zoom,,,,,,,false,true,true
+Ulysses,writing,Writing,macos,Ulysses,,,,,,,false,true,true
+Airtable,task_management,Task Management,macos,Airtable,,,,,,,false,true,true
+Microsoft Excel,documenting,Documenting,macos,Microsoft Excel,,,,,,,false,true,true
+Command E,productivity,Productivity,macos,Command E,,,,,,,false,true,true
+1Password 7,utility,Utility,macos,1Password 7,,,,,,,false,true,true
+WebStorm,code,Code,macos,WebStorm,,,,,,,false,true,true
+Sketch,design,Design,macos,Sketch,,,,,,,false,true,true
+Rize (Staging),productivity,Productivity,macos,Rize (Staging),,,,,,,false,true,true
+Electron,code,Code,macos,Electron,,,,,,,false,true,true
+Microsoft Word,documenting,Documenting,macos,Microsoft Word,,,,,,,false,true,true
+Safari,browsing,Browsing,macos,Safari,,,,,,,false,true,true
+TextEdit,writing,Writing,macos,TextEdit,,,,,,,false,true,true
+Notes,writing,Writing,macos,Notes,,,,,,,false,true,true
+Creative Cloud,design,Design,macos,Creative Cloud,,,,,,,false,true,true
+Sublime Text,code,Code,macos,Sublime Text,,,,,,,false,true,true
+Terminal,code,Code,macos,Terminal,,,,,,,false,true,true
+Code - Insiders,code,Code,macos,Code - Insiders,,,,,,,false,true,true
+FaceTime,personal,Personal,macos,FaceTime,,,,,,,false,true,true
+IntelliJ IDEA,code,Code,macos,IntelliJ IDEA,,,,,,,false,true,true
+Mozilla Firefox,browsing,Browsing,macos,Mozilla Firefox,,,,,,,false,true,true
+Preview,personal,Personal,macos,Preview,,,,,,,false,true,true
+Spotify,personal,Personal,macos,Spotify,,,,,,,false,true,true
+OBS,code,Code,macos,OBS,,,,,,,false,true,true
+Figma,design,Design,macos,Figma,,,,,,,false,true,true
+PyCharm,code,Code,macos,PyCharm,,,,,,,false,true,true
+Notion,documenting,Documenting,macos,Notion,,,,,,,false,true,true
+Xcode,code,Code,macos,Xcode,,,,,,,false,true,true
+Docker Desktop,code,Code,macos,Docker Desktop,,,,,,,false,true,true
+Twitch,personal,Personal,macos,Twitch,,,,,,,false,true,true
+GitHub Desktop,code,Code,macos,GitHub Desktop,,,,,,,false,true,true
+Microsoft PowerPoint,documenting,Documenting,macos,Microsoft PowerPoint,,,,,,,false,true,true
+QuickTime Player,personal,Personal,macos,QuickTime Player,,,,,,,false,true,true
+Tableau Public,code,Code,macos,Tableau Public,,,,,,,false,true,true
+Skype,personal,Personal,macos,Skype,,,,,,,false,true,true
+Microsoft Teams,messaging,Messaging,macos,Microsoft Teams,,,,,,,false,true,true
+Cisco Webex Meetings,video_conferencing,Video Conferencing,macos,Cisco Webex Meetings,,,,,,,false,true,true
+mmhmm,personal,Personal,macos,mmhmm,,,,,,,false,true,true
+Photos,personal,Personal,macos,Photos,,,,,,,false,true,true
+Find My,personal,Personal,macos,Find My,,,,,,,false,true,true
+Dropbox,documenting,Documenting,macos,Dropbox,,,,,,,false,true,true
+Evernote,documenting,Documenting,macos,Evernote,,,,,,,false,true,true
+Code,code,Code,macos,Code,,,,,,,false,true,true
+Docker,code,Code,macos,Docker,,,,,,,false,true,true
+Music,personal,Personal,macos,Music,,,,,,,false,true,true
+Plan,task_management,Task Management,macos,Plan,,,,,,,false,true,true
+Reminders,personal,Personal,macos,Reminders,,,,,,,false,true,true
+App Store,personal,Personal,macos,App Store,,,,,,,false,true,true
+Pages,documenting,Documenting,macos,Pages,,,,,,,false,true,true
+Brave,browsing,Browsing,macos,Brave,,,,,,,false,true,true
+WhatsApp,messaging,Messaging,macos,WhatsApp,,,,,,,false,true,true
+Mattermost,messaging,Messaging,macos,Mattermost,,,,,,,false,true,true
+iCal,scheduling,Scheduling,macos,iCal,,,,,,,false,true,true
+Outlook,email,Email,macos,Outlook,,,,,,,false,true,true
+GoodNotes,writing,Writing,macos,GoodNotes,,,,,,,false,true,true
+Superhuman,email,Email,macos,Superhuman,,,,,,,false,true,true
+Zeplin,design,Design,macos,Zeplin,,,,,,,false,true,true
+OmniFocus 3,task_management,Task Management,macos,OmniFocus 3,,,,,,,false,true,true
+Nuclino,documenting,Documenting,macos,Nuclino,,,,,,,false,true,true
+iPhone Simulator,code,Code,macos,iPhone Simulator,,,,,,,false,true,true
+KeepPassX,utility,Utility,macos,KeepPassX,,,,,,,false,true,true
+Activity Monitor,utility,Utility,macos,Activity Monitor,,,,,,,false,true,true
+Desktop Dimmer,personal,Personal,macos,Desktop Dimmer,,,,,,,false,true,true
+Steam,personal,Personal,macos,Steam,,,,,,,false,true,true
+Flux,personal,Personal,macos,Flux,,,,,,,false,true,true
+Postman,code,Code,macos,Postman,,,,,,,false,true,true
+Discord,messaging,Messaging,macos,Discord,,,,,,,false,true,true
+Telegram,messaging,Messaging,macos,Telegram,,,,,,,false,true,true
+Edge,browsing,Browsing,macos,Edge,,,,,,,false,true,true
+Chromium,browsing,Browsing,macos,Chromium,,,,,,,false,true,true
+Dashlane,utility,Utility,macos,Dashlane,,,,,,,false,true,true
+Spark,email,Email,macos,Spark,,,,,,,false,true,true
+Puppetry,code,Code,macos,Puppetry,,,,,,,false,true,true
+Dropbox Paper,documenting,Documenting,macos,Dropbox Paper,,,,,,,false,true,true
+Fantastical,task_management,Task Management,macos,Fantastical,,,,,,,false,true,true
+Bluejeans,video_conferencing,Video Conferencing,macos,Bluejeans,,,,,,,false,true,true
+Things,task_management,Task Management,macos,Things,,,,,,,false,true,true
+Atom,code,Code,macos,Atom,,,,,,,false,true,true
+Adobe Illustrator,design,Design,macos,Adobe Illustrator,,,,,,,false,true,true
+Signal,messaging,Messaging,macos,Signal,,,,,,,false,true,true
+Microsoft Edge,browsing,Browsing,macos,Microsoft Edge,,,,,,,false,true,true
+Apple TV,entertainment,Entertainment,macos,Apple TV,,,,,,,false,true,true
+DataGrip,code,Code,macos,DataGrip,,,,,,,false,true,true
+Calculator,utility,Utility,macos,Calculator,,,,,,,false,true,true
+Dictionary,utility,Utility,macos,Dictionary,,,,,,,false,true,true
+Tandem,messaging,Messaging,macos,Tandem,,,,,,,false,true,true
+PhotoBooth,personal,Personal,macos,PhotoBooth,,,,,,,false,true,true
+Kindle,reading,Reading,macos,Kindle,,,,,,,false,true,true
+Keynote,documenting,Documenting,macos,Keynote,,,,,,,false,true,true
+Clocker,utility,Utility,macos,Clocker,,,,,,,false,true,true
+PHP Storm,code,Code,macos,PHP Storm,,,,,,,false,true,true
+Kiwi,email,Email,macos,Kiwi,,,,,,,false,true,true
+Citrix XenApp,virtual_machine,Virtual Machine,macos,Citrix XenApp,,,,,,,false,true,true
+Viber,messaging,Messaging,macos,Viber,,,,,,,false,true,true
+Tor,browsing,Browsing,macos,Tor,,,,,,,false,true,true
+Microsoft RDC,documenting,Documenting,macos,Microsoft RDC,,,,,,,false,true,true
+Azure Data Studio,code,Code,macos,Azure Data Studio,,,,,,,false,true,true
+Photoshop,design,Design,macos,Photoshop,,,,,,,false,true,true
+Amazon Chime,video_conferencing,Video Conferencing,macos,Amazon Chime,,,,,,,false,true,true
+Adobe Reader,documenting,Documenting,macos,Adobe Reader,,,,,,,false,true,true
+Intellij,code,Code,macos,Intellij,,,,,,,false,true,true
+Nova,code,Code,macos,Nova,,,,,,,false,true,true
+Canary,utility,Utility,macos,Canary,,,,,,,false,true,true
+VLC,entertainment,Entertainment,macos,VLC,,,,,,,false,true,true
+Hyper,code,Code,macos,Hyper,,,,,,,false,true,true
+TickTick,task_management,Task Management,macos,TickTick,,,,,,,false,true,true
+Cisco Spark,messaging,Messaging,macos,Cisco Spark,,,,,,,false,true,true
+Obsidian,documenting,Documenting,macos,Obsidian,,,,,,,false,true,true
+Stickies,documenting,Documenting,macos,Stickies,,,,,,,false,true,true
+Unclutter,utility,Utility,macos,Unclutter,,,,,,,false,true,true
+Adobe XD,design,Design,macos,Adobe XD,,,,,,,false,true,true
+CleanShot,utility,Utility,macos,CleanShot,,,,,,,false,true,true
+Edison Mail,email,Email,macos,Edison Mail,,,,,,,false,true,true
+Adobe Dreamweaver,code,Code,macos,Adobe Dreamweaver,,,,,,,false,true,true
+Sequel Pro,code,Code,macos,Sequel Pro,,,,,,,false,true,true
+Linear,task_management,Task Management,macos,Linear,,,,,,,false,true,true
+Adobe Acrobat,utility,Utility,macos,Adobe Acrobat,,,,,,,false,true,true
+Grammarly,utility,Utility,macos,Grammarly,,,,,,,false,true,true
+DB Beaver,code,Code,macos,DB Beaver,,,,,,,false,true,true
+GoToMeeting,video_conferencing,Video Conferencing,macos,GoToMeeting,,,,,,,false,true,true
+Google Chat,video_conferencing,Video Conferencing,macos,Google Chat,,,,,,,false,true,true
+Meet,video_conferencing,Video Conferencing,macos,Meet,,,,,,,false,true,true
+AnyDesk,video_conferencing,Video Conferencing,macos,AnyDesk,,,,,,,false,true,true
+Mighty,browsing,Browsing,macos,Mighty,,,,,,,false,true,true
+InDesign,design,Design,macos,InDesign,,,,,,,false,true,true
+Warp,code,Code,macos,Warp,,,,,,,false,true,true
+Clean My Mac,utility,Utility,macos,Clean My Mac,,,,,,,false,true,true
+SigmaOS,browsing,Browsing,macos,SigmaOS,,,,,,,false,true,true
+Slack,messaging,Messaging,windows,Slack,,,,,,,false,true,true
+Explorer,utility,Utility,windows,Explorer,,,,,,,false,true,true
+Electron,code,Code,windows,Electron,,,,,,,false,true,true
+VS Debug Console,code,Code,windows,VS Debug Console,,,,,,,false,true,true
+Git Bash,code,Code,windows,Git Bash,,,,,,,false,true,true
+WebStorm,code,Code,windows,WebStorm,,,,,,,false,true,true
+Brave,browsing,Browsing,windows,Brave,,,,,,,false,true,true
+Visual Studio,code,Code,windows,Visual Studio,,,,,,,false,true,true
+RubyMine,code,Code,windows,RubyMine,,,,,,,false,true,true
+OneNote,documenting,Documenting,windows,OneNote,,,,,,,false,true,true
+Rize (Staging),productivity,Productivity,windows,Rize (Staging),,,,,,,false,true,true
+Rize,productivity,Productivity,windows,Rize,,,,,,,false,true,true
+Search App,utility,Utility,windows,Search App,,,,,,,false,true,true
+Shell Experience Host,utility,Utility,windows,Shell Experience Host,,,,,,,false,true,true
+Firefox,browsing,Browsing,windows,Firefox,,,,,,,false,true,true
+Chrome,browsing,Browsing,windows,Chrome,,,,,,,false,true,true
+Command Line Interpreter,code,Code,windows,Command Line Interpreter,,,,,,,false,true,true
+Powershell,code,Code,windows,Powershell,,,,,,,false,true,true
+Cortana,productivity,Productivity,windows,Cortana,,,,,,,false,true,true
+Accessibility Insights,utility,Utility,windows,Accessibility Insights,,,,,,,false,true,true
+Sublime Text,code,Code,windows,Sublime Text,,,,,,,false,true,true
+Microsoft Screen Magnifier,utility,Utility,windows,Microsoft Screen Magnifier,,,,,,,false,true,true
+Start Menu,utility,Utility,windows,Start Menu,,,,,,,false,true,true
+Edge,browsing,Browsing,windows,Edge,,,,,,,false,true,true
+File Picker UI,utility,Utility,windows,File Picker UI,,,,,,,false,true,true
+Windows Task Manager,utility,Utility,windows,Windows Task Manager,,,,,,,false,true,true
+Screen Sketch,utility,Utility,windows,Screen Sketch,,,,,,,false,true,true
+System Settings,utility,Utility,windows,System Settings,,,,,,,false,true,true
+Excel,documenting,Documenting,windows,Excel,,,,,,,false,true,true
+Discord,messaging,Messaging,windows,Discord,,,,,,,false,true,true
+Telegram,messaging,Messaging,windows,Telegram,,,,,,,false,true,true
+Vivaldi,browsing,Browsing,windows,Vivaldi,,,,,,,false,true,true
+Sidekick,browsing,Browsing,windows,Sidekick,,,,,,,false,true,true
+Outlook,email,Email,windows,Outlook,,,,,,,false,true,true
+Microsoft Word,documenting,Documenting,windows,Microsoft Word,,,,,,,false,true,true
+Powerpoint,documenting,Documenting,windows,Powerpoint,,,,,,,false,true,true
+Picasa,design,Design,windows,Picasa,,,,,,,false,true,true
+Photoshop,design,Design,windows,Photoshop,,,,,,,false,true,true
+Visual Studio Code,code,Code,windows,Visual Studio Code,,,,,,,false,true,true
+Zoom,video_conferencing,Video Conferencing,windows,Zoom,,,,,,,false,true,true
+Opera,browsing,Browsing,windows,Opera,,,,,,,false,true,true
+WhatsApp,messaging,Messaging,windows,WhatsApp,,,,,,,false,true,true
+Teams,messaging,Messaging,windows,Teams,,,,,,,false,true,true
+Illustrator,design,Design,windows,Illustrator,,,,,,,false,true,true
+Obsidian,writing,Writing,windows,Obsidian,,,,,,,false,true,true
+AutoCAD,code,Code,windows,AutoCAD,,,,,,,false,true,true
+Wavebox,browsing,Browsing,windows,Wavebox,,,,,,,false,true,true
+SketchUp,design,Design,windows,SketchUp,,,,,,,false,true,true
+Camtasia Studio,video_editing,Video Editing,windows,Camtasia Studio,,,,,,,false,true,true
+Notepad,writing,Writing,windows,Notepad,,,,,,,false,true,true
+Mailbird,email,Email,windows,Mailbird,,,,,,,false,true,true
+Notion,documenting,Documenting,windows,Notion,,,,,,,false,true,true
+Mattermost,task_management,Task Management,windows,Mattermost,,,,,,,false,true,true
+Postbox,email,Email,windows,Postbox,,,,,,,false,true,true
+Adobe Premiere Pro,video_editing,Video Editing,windows,Adobe Premiere Pro,,,,,,,false,true,true
+Adobe Acrobat,documenting,Documenting,windows,Adobe Acrobat,,,,,,,false,true,true
+TradingView,finance,Finance,windows,TradingView,,,,,,,false,true,true
+JetBrains Rider,code,Code,windows,JetBrains Rider,,,,,,,false,true,true
+Spotify,personal,Personal,windows,Spotify,,,,,,,false,true,true
+ClickUp,task_management,Task Management,windows,ClickUp,,,,,,,false,true,true
+Notepad++,writing,Writing,windows,Notepad++,,,,,,,false,true,true
+IntelliJ IDEA,code,Code,windows,IntelliJ IDEA,,,,,,,false,true,true
+Netflix,personal,Personal,windows,Netflix,,,,,,,false,true,true
+OneDrive,documenting,Documenting,windows,OneDrive,,,,,,,false,true,true
+Creative Cloud,documenting,Documenting,windows,Creative Cloud,,,,,,,false,true,true
+MS Info,utility,Utility,windows,MS Info,,,,,,,false,true,true
+Microsoft Windows Based Script Host,do_not_track,Do Not Track,windows,Microsoft Windows Based Script Host,,,,,,,false,true,true
+Windows Installer Command Line,do_not_track,Do Not Track,windows,Windows Installer Command Line,,,,,,,false,true,true
+Windows Defender Application,do_not_track,Do Not Track,windows,Windows Defender Application,,,,,,,false,true,true
+Windows Security notification icon,do_not_track,Do Not Track,windows,Windows Security notification icon,,,,,,,false,true,true
+Lock Screen,do_not_track,Do Not Track,windows,Lock Screen,,,,,,,false,true,true
+Microsoft Management Console,do_not_track,Do Not Track,windows,Microsoft Management Console,,,,,,,false,true,true
+Application Frame Host,do_not_track,Do Not Track,windows,Application Frame Host,,,,,,,false,true,true
+pornhub.com,do_not_track,Do Not Track,website,.*,pornhub.com,,,,,,false,true,true
+Google Chrome,browsing,Browsing,macos,Google Chrome,,,,,,,false,true,true
+Login Window,do_not_track,Do Not Track,macos,Login Window,,,,,,,false,true,true
