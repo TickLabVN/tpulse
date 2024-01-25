@@ -58,21 +58,21 @@ impl Default for Filters {
 }
 
 impl Filters {
-    pub fn new(language: Language) -> Self {
+    fn new(language: Language) -> Self {
         Filters {
             stop_words_list: language.get_stop_words(),
             stemmer: Stemmer::create(language.get()),
         }
     }
 
-    pub fn lowercase<I>(&self, tokens: I) -> impl Iterator<Item = String>
+    fn lowercase<I>(&self, tokens: I) -> impl Iterator<Item = String>
     where
         I: Iterator<Item = String>,
     {
         tokens.map(|s| s.to_lowercase())
     }
 
-    pub fn stop_words<I>(&self, tokens: I) -> impl Iterator<Item = String>
+    fn stop_words<I>(&self, tokens: I) -> impl Iterator<Item = String>
     where
         I: Iterator<Item = String>,
     {
@@ -84,7 +84,7 @@ impl Filters {
             .into_iter()
     }
 
-    pub fn stemming<'a, I>(&'a self, tokens: I) -> impl Iterator<Item = String> + 'a
+    fn stemming<'a, I>(&'a self, tokens: I) -> impl Iterator<Item = String> + 'a
     where
         I: Iterator<Item = String> + 'a,
     {

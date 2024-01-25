@@ -2,6 +2,7 @@ use std::{fs, path};
 
 use rusqlite::Connection;
 
+use crate::categorizer::load_table_from_path;
 use crate::utils::get_data_directory;
 
 pub fn initialize_db() {
@@ -14,7 +15,7 @@ pub fn initialize_db() {
         fs::File::create(&db_path).expect("Failed to create file");
     }
 
-    let conn = Connection::open(db_path).unwrap();
+    let mut conn = Connection::open(db_path).unwrap();
     conn.execute(
         "CREATE TABLE IF NOT EXISTS afk_log (
                 time            INTEGER PRIMARY KEY,
@@ -34,4 +35,12 @@ pub fn initialize_db() {
         [],
     )
     .expect("create window_log table");
+
+    load_table_from_path(
+        &mut conn,
+        "tracking_rule",
+        "Tracking_Rule_Package_Default_Export.csv",
+        b',',
+    )
+    .expect("create tracking_rule table");
 }
