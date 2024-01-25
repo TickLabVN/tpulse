@@ -6,6 +6,14 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use rusqlite::Connection;
 
+#[derive(Debug, PartialEq)]
+struct Record {
+    c_name: String,
+    c_category_key: String,
+    c_category_name: String,
+    c_source: String,
+}
+
 pub fn load_table_from_path(
     db: &mut Connection,
     table_name: &str,
@@ -18,21 +26,20 @@ pub fn load_table_from_path(
         .delimiter(delimiter)
         .from_reader(f);
 
-    let normalized_cols =
-        reader
-            .headers()?
-            .iter()
-            .map(normalize_col)
-            .fold(vec![], |mut v, orig_col| {
-                let mut col = orig_col.clone();
-                let mut i = 1;
-                while v.contains(&col) {
-                    col = format!("{orig_col}_{i}");
-                    i += 1;
-                }
-                v.push(col);
-                v
-            });
+    let filter_column = reader.headers()?.iter().take(4);
+
+    let normalized_cols = filter_column
+        .map(normalize_col)
+        .fold(vec![], |mut v, orig_col| {
+            let mut col = orig_col.clone();
+            let mut i = 1;
+            while v.contains(&col) {
+                col = format!("{orig_col}_{i}");
+                i += 1;
+            }
+            v.push(col);
+            v
+        });
 
     create_table(db, table_name, &normalized_cols);
 
@@ -53,6 +60,8 @@ pub fn load_table_from_path(
         let mut stmt = tx.prepare(&insert_query).expect("tx.prepare() failed");
         while let Some(row) = records.next() {
             let mut row = row?;
+            row.truncate(normalized_cols.len());
+
             match row.len().cmp(&normalized_cols.len()) {
                 Ordering::Less => {
                     for _ in 0..normalized_cols.len() - row.len() {
@@ -126,46 +135,13 @@ mod loader_tests {
 
         assert_eq!(
             col_names,
-            [
-                "c_name",
-                "c_category_key",
-                "c_category_name",
-                "c_source",
-                "c_app_name",
-                "c_url",
-                "c_keyword",
-                "c_block_in_break",
-                "c_block_in_focus",
-                "c_block_in_meeting",
-                "c_always_block",
-                "c_do_not_track_any_urls",
-                "c_track_full_url_enabled",
-                "c_track_titles_enabled",
-            ]
+            ["c_name", "c_category_key", "c_category_name", "c_source"]
         );
     }
 
     #[test]
     fn test_create_table() {
         use std::io::Write;
-
-        #[derive(Debug, PartialEq)]
-        struct Record {
-            c_name: String,
-            c_category_key: String,
-            c_category_name: String,
-            c_source: String,
-            c_app_name: String,
-            c_url: String,
-            c_keyword: String,
-            c_block_in_break: String,
-            c_block_in_focus: String,
-            c_block_in_meeting: String,
-            c_always_block: String,
-            c_do_not_track_any_urls: String,
-            c_track_full_url_enabled: String,
-            c_track_titles_enabled: String,
-        }
 
         let mut conn = Connection::open_in_memory().unwrap();
         let _ = load_table_from_path(
@@ -185,16 +161,6 @@ mod loader_tests {
                     c_category_key: row.get(1)?,
                     c_category_name: row.get(2)?,
                     c_source: row.get(3)?,
-                    c_app_name: row.get(4)?,
-                    c_url: row.get(5)?,
-                    c_keyword: row.get(6)?,
-                    c_block_in_break: row.get(7)?,
-                    c_block_in_focus: row.get(8)?,
-                    c_block_in_meeting: row.get(9)?,
-                    c_always_block: row.get(10)?,
-                    c_do_not_track_any_urls: row.get(11)?,
-                    c_track_full_url_enabled: row.get(12)?,
-                    c_track_titles_enabled: row.get(13)?,
                 })
             })
             .unwrap();
