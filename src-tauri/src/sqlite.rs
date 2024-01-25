@@ -24,7 +24,10 @@ pub fn insert_window_log(window_log: &WindowInformation) {
     let conn = Connection::open(&*DB_PATH).unwrap();
 
     let time = window_log.time as i64;
-    let title = window_log.title.clone();
+    let title = match window_log.title.clone() {
+        Some(title) => title,
+        None => "".to_string(),
+    };
     let class = match window_log.class.clone() {
         Some(class) => class.join("|"),
         None => "".to_string(),

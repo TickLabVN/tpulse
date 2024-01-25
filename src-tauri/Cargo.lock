@@ -2828,6 +2828,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust-stemmers"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e46a2036019fdb888131db7a4c847a1063a7493f971ed94ea82c67eada63ca54"
+dependencies = [
+ "serde",
+ "serde_derive",
+]
+
+[[package]]
 name = "rust_decimal"
 version = "1.33.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3419,6 +3429,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dbe866e1e51e8260c9eed836a042a5e7f6726bb2b411dffeaa712e19c388f23b"
 dependencies = [
  "loom",
+]
+
+[[package]]
+name = "stop-words"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8500024d809de02ecbf998472b7bed3c4fca380df2be68917f6a473bdb28ddcc"
+dependencies = [
+ "serde_json",
 ]
 
 [[package]]
@@ -4039,12 +4058,15 @@ dependencies = [
  "log",
  "regex",
  "rusqlite",
+ "rust-stemmers",
  "serde",
  "serde_json",
+ "stop-words",
  "tauri",
  "tauri-build",
  "tauri-plugin-log",
  "tauri-plugin-sql",
+ "unicode-segmentation",
  "windows 0.52.0",
 ]
 
