@@ -39,12 +39,10 @@ windows = { version = "0.52.0", features = [
     "Win32_System",
     "Win32_System_Threading",
 ] }
-errno = "0.2.4"
-libc = "0.2.43"
-ctrlc = "3.1.1"
-fs2 = "0.4.3"
-miniserde = "0.1"
-unix-named-pipe = "0.2.0"
+core-graphics = "0.23"
+core-foundation = "0.9"
+appkit-nsworkspace-bindings = "0.1.2"
+objc = "0.2"
 
 
 [features]
