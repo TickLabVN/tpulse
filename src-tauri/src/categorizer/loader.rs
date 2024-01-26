@@ -8,6 +8,7 @@ use rusqlite::Connection;
 
 #[derive(Debug, PartialEq)]
 struct Record {
+    c_id: i32,
     c_name: String,
     c_category_key: String,
     c_category_name: String,
@@ -44,11 +45,13 @@ pub fn load_table_from_path(
     create_table(db, table_name, &normalized_cols);
 
     let insert_query = format!(
-        "insert into {} values ({})",
+        "insert into {} ({}) values ({})",
         table_name,
+        normalized_cols.join(", "),
         normalized_cols
             .iter()
-            .map(|_| "?")
+            .enumerate()
+            .map(|(i, _)| format!("?{}", i + 1))
             .collect::<Vec<_>>()
             .join(", ")
     );
@@ -106,11 +109,13 @@ fn normalize_col(col: &str) -> String {
 }
 
 fn create_table(db: &Connection, table_name: &str, cols: &[String]) {
-    let create_columns = cols
-        .iter()
-        .map(|c| format!("\"{c}\" varchar"))
-        .collect::<Vec<String>>()
-        .join(", ");
+    let create_columns = format!(
+        "\"c_id\" integer primary key, {}",
+        cols.iter()
+            .map(|c| format!("\"{c}\" varchar"))
+            .collect::<Vec<String>>()
+            .join(", ")
+    );
     db.execute(
         &format!("create table {table_name} ({create_columns})"),
         &[] as &[&dyn rusqlite::types::ToSql],
@@ -157,10 +162,11 @@ mod loader_tests {
         let records = stmt
             .query_map([], |row| {
                 Ok(Record {
-                    c_name: row.get(0)?,
-                    c_category_key: row.get(1)?,
-                    c_category_name: row.get(2)?,
-                    c_source: row.get(3)?,
+                    c_id: row.get(0)?,
+                    c_name: row.get(1)?,
+                    c_category_key: row.get(2)?,
+                    c_category_name: row.get(3)?,
+                    c_source: row.get(4)?,
                 })
             })
             .unwrap();
