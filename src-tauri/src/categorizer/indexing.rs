@@ -11,8 +11,8 @@ lazy_static! {
 }
 
 pub struct InvertedIndex {
-    pub idx: HashMap<String, HashSet<i32>>,
-    pub analyzer: Analyzer,
+    idx: HashMap<String, HashSet<i32>>,
+    analyzer: Analyzer,
 }
 
 #[derive(Debug, PartialEq)]
@@ -23,7 +23,7 @@ pub struct Document {
 
 impl Document {
     pub fn build(
-        db: Connection,
+        db: &Connection,
         table_name: &str,
     ) -> Result<Vec<Document>, Box<dyn std::error::Error>> {
         let mut statement = db.prepare(&format!("select c_id, c_name from {}", table_name))?;
@@ -72,7 +72,7 @@ impl InvertedIndex {
         }
     }
 
-    pub fn search(&self, text: &str) -> HashSet<i32> {
+    pub fn categorize(&self, text: &str) -> HashSet<i32> {
         let mut result: HashSet<i32> = HashSet::new();
         for token in self.analyzer.analyze(text) {
             match self.idx.get(&token) {
@@ -108,7 +108,7 @@ mod indexing_tests {
             b',',
         );
 
-        let result = Document::build(conn, "t").unwrap();
+        let result = Document::build(&conn, "t").unwrap();
         let formatted_result = format!("{:#?}", result);
         let mut output = File::create("app_url_name.txt").unwrap();
         write!(output, "{}", formatted_result).unwrap();
@@ -125,7 +125,7 @@ mod indexing_tests {
             "Tracking_Rule_Package_Default_Export.csv",
             b',',
         );
-        let documents = Document::build(conn, "t").unwrap();
+        let documents = Document::build(&conn, "t").unwrap();
 
         let mut token_idx = InvertedIndex::default();
         token_idx.generate_token_index(&documents);

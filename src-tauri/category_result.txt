@@ -1,0 +1,566 @@
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"Rust: Fix Local Variable — Mozilla Firefox"
+["Mozilla Firefox"]
+"Rust: Fix Local Variable — Mozilla Firefox"
+["Mozilla Firefox"]
+"Rust: Fix Local Variable — Mozilla Firefox"
+["Mozilla Firefox"]
+"Google Dịch — Mozilla Firefox"
+["Mozilla Firefox"]
+"Google Dịch — Mozilla Firefox"
+["Mozilla Firefox", "Firefox"]
+"csv-sql/src/main.rs at master · alex/csv-sql — Mozilla Firefox"
+["Mozilla Firefox"]
+"csv-sql/src/main.rs at master · alex/csv-sql — Mozilla Firefox"
+["Mozilla Firefox"]
+"tpulse/src-tauri/src/initializer/db.rs at master · TickLabVN/tpulse — Mozilla Firefox"
+["Mozilla Firefox"]
+"tpulse/src-tauri/src/initializer/db.rs at master · TickLabVN/tpulse — Mozilla Firefox"
+["Mozilla Firefox"]
+"tpulse/src-tauri/src/initializer/db.rs at master · TickLabVN/tpulse — Mozilla Firefox"
+["Mozilla Firefox"]
+"HOÀNG TÔN - YÊU EM RẤT NHIỀU (Lyrics Video) - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"HOÀNG TÔN - YÊU EM RẤT NHIỀU (Lyrics Video) - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"HOÀNG TÔN - YÊU EM RẤT NHIỀU (Lyrics Video) - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"rust-programming/inverted-index/src/indexing/mod.rs at main · ngyngcphu/rust-programming — Mozilla Firefox"
+["Mozilla Firefox"]
+"rust-programming/inverted-index/src/indexing/mod.rs at main · ngyngcphu/rust-programming — Mozilla Firefox"
+["Mozilla Firefox"]
+"tpulse/docs/architecture.md at master · TickLabVN/tpulse — Mozilla Firefox"
+["Mozilla Firefox"]
+"tpulse/docs/architecture.md at master · TickLabVN/tpulse — Mozilla Firefox"
+["Mozilla Firefox"]
+"tpulse/docs/architecture.md at master · TickLabVN/tpulse — Mozilla Firefox"
+["Mozilla Firefox"]
+"hniksic/rust-subprocess: Execution of and interaction with external processes and pipelines — Mozilla Firefox"
+["Mozilla Firefox"]
+"hniksic/rust-subprocess: Execution of and interaction with external processes and pipelines — Mozilla Firefox"
+["Mozilla Firefox"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"hniksic/rust-subprocess: Execution of and interaction with external processes and pipelines — Mozilla Firefox"
+["Mozilla Firefox"]
+"Home - Mozilla Thunderbird"
+["Mozilla Firefox"]
+"Home - Mozilla Thunderbird"
+["Mozilla Firefox"]
+"Account Setup - Mozilla Thunderbird"
+[]
+"Settings"
+["System Settings"]
+"Account Setup - Mozilla Thunderbird"
+[]
+"Account Setup - Mozilla Thunderbird"
+[]
+"Account Setup - Mozilla Thunderbird"
+[]
+"Account Setup - Mozilla Thunderbird"
+[]
+"Account Setup - Mozilla Thunderbird"
+[]
+"Account Setup - Mozilla Thunderbird"
+[]
+"Account Setup - Mozilla Thunderbird"
+[]
+"Settings"
+["System Settings"]
+"Settings"
+["System Settings"]
+"Home"
+[]
+"Home"
+[]
+"Settings"
+["System Settings"]
+"Home"
+[]
+"Rhythmbox"
+[]
+"Home"
+[]
+"Rhythmbox"
+[]
+"Rhythmbox"
+[]
+"Rhythmbox"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Rhythmbox"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Untitled 1 - LibreOffice Writer"
+[]
+"Software"
+[]
+"Software"
+[]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"#classes-announcements | The English Hub - Discord"
+["Discord", "Discord"]
+"#classes-announcements | The English Hub - Discord"
+["Discord", "Discord"]
+"#classes-announcements | The English Hub - Discord"
+["Discord", "Discord"]
+"#classes-announcements | The English Hub - Discord"
+["Discord", "Discord"]
+"#tpulse | TICKLAB - Discord"
+["Discord", "Discord"]
+"Software"
+[]
+"Help"
+[]
+"Software"
+[]
+"Help"
+[]
+"Help"
+[]
+"ngyngcphu@ngyngcphu-Inspiron-5558: ~"
+[]
+"Help"
+[]
+"ngyngcphu@ngyngcphu-Inspiron-5558: ~"
+[]
+"ngyngcphu@ngyngcphu-Inspiron-5558: ~"
+[]
+"Untitled Document 1 - gedit"
+[]
+"ngyngcphu@ngyngcphu-Inspiron-5558: ~"
+[]
+"Untitled Document 1 - gedit"
+[]
+"Recent Documents"
+[]
+"a91ace57a8c4c8cdd9f1663e1051bf93.pdf — The Definitive ANTLR 4 Reference"
+[]
+"Untitled Document 1 - gedit"
+[]
+"Untitled Document 1 - gedit"
+[]
+"a91ace57a8c4c8cdd9f1663e1051bf93.pdf — The Definitive ANTLR 4 Reference"
+[]
+"a91ace57a8c4c8cdd9f1663e1051bf93.pdf — The Definitive ANTLR 4 Reference"
+[]
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"a91ace57a8c4c8cdd9f1663e1051bf93.pdf — The Definitive ANTLR 4 Reference"
+[]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"phu.nguyen2310@hcmut.edu.vn"
+[]
+"phu.nguyen2310@hcmut.edu.vn"
+[]
+"phu.nguyen2310@hcmut.edu.vn"
+[]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"Thùng rác"
+[]
+"Thùng rác"
+[]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"Software & Updates"
+["Mobile Device Updated"]
+"Software & Updates"
+["Mobile Device Updated"]
+"Canfield"
+[]
+"Canfield"
+[]
+"Software & Updates"
+["Mobile Device Updated"]
+"Software & Updates"
+["Mobile Device Updated"]
+"Software & Updates"
+["Mobile Device Updated"]
+"Software & Updates"
+["Mobile Device Updated"]
+"Software & Updates"
+["Mobile Device Updated"]
+"Software & Updates"
+["Mobile Device Updated"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"New Tab - Google Chrome"
+["Google Chrome"]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calculator"
+["Calculator"]
+"Calendar"
+[]
+"Calendar"
+[]
+"Calculator"
+["Calculator"]
+"Calculator"
+["Calculator"]
+"Calculator"
+["Calculator"]
+"Calculator"
+["Calculator"]
+"Calculator"
+["Calculator"]
+"Calculator"
+["Calculator"]
+"Calculator"
+["Calculator"]
+"System Monitor"
+["Activity Monitor"]
+"Calculator"
+["Calculator"]
+"Calculator"
+["Calculator"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"System Monitor"
+["Activity Monitor"]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"System Monitor"
+["Activity Monitor"]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"hniksic/rust-subprocess: Execution of and interaction with external processes and pipelines — Mozilla Firefox"
+["Mozilla Firefox"]
+"hniksic/rust-subprocess: Execution of and interaction with external processes and pipelines — Mozilla Firefox"
+["Mozilla Firefox"]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"Sudoku"
+[]
+"To Do"
+[]
+"Sudoku"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"To Do"
+[]
+"Terminal"
+["Terminal"]
+"Terminal"
+["Terminal"]
+"To Do"
+[]
+"hniksic/rust-subprocess: Execution of and interaction with external processes and pipelines — Mozilla Firefox"
+["Mozilla Firefox"]
+"hniksic/rust-subprocess: Execution of and interaction with external processes and pipelines — Mozilla Firefox"
+["Mozilla Firefox"]
+"hniksic/rust-subprocess: Execution of and interaction with external processes and pipelines — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"TPulse"
+[]
+"TPulse"
+[]
+"TPulse"
+[]
+"TPulse"
+[]
+"TPulse"
+[]
+"TPulse"
+[]
+"TPulse"
+[]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Terminal"
+["Terminal"]
+"Terminal"
+["Terminal"]
+"Terminal"
+["Terminal"]
+"Terminal"
+["Terminal"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"Đừng Bắt Anh Mạnh Mẽ - Hồ Quang Hiếu [LYRIC VIDEO] Nghe Đi Rồi Khóc - YouTube — Mozilla Firefox"
+["Mozilla Firefox"]
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"category_result.txt - tpulse - Visual Studio Code"
+["Visual Studio Code"]
+"Visual Studio Code"
+["Visual Studio Code"]
+""
+[]
+""
+[]
+"Cisco Packet Tracer"
+["Cisco Webex Meetings", "Cisco Spark"]
+"Cisco Packet Tracer"
+["Cisco Webex Meetings", "Cisco Spark"]
+"Cisco Packet Tracer"
+["Cisco Webex Meetings", "Cisco Spark"]
+"Cisco Packet Tracer"
+["Cisco Webex Meetings", "Cisco Spark"]
+""
+[]
+""
+[]
+"Visual Studio Code"
+["Visual Studio Code"]
+"Visual Studio Code"
+["Visual Studio Code"]
+"Visual Studio Code"
+["Visual Studio Code"]
+"Visual Studio Code"
+["Visual Studio Code"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+"Discord"
+["Discord", "Discord"]
+"Discord"
+["Discord", "Discord"]
+"Discord"
+["Discord", "Discord"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+"mod.rs - rust-programming - Visual Studio Code"
+["Visual Studio Code"]
+" - Discord"
+["Discord", "Discord"]

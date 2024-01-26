@@ -22,7 +22,6 @@ pub fn watch_window(poll_time: u64, tx: mpsc::Sender<UserMetric>) {
         let window_info = get_current_window_information();
         match window_info {
             std::result::Result::Ok(window_info) => {
-                print!("Window information: {:#?}", window_info);
                 tx.send(UserMetric::Window(window_info))
                     .expect("Failed to send window information");
             }
