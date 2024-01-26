@@ -38,6 +38,11 @@ windows = { version = "0.52.0", features = [
     "Win32_System",
     "Win32_System_Threading",
 ] }
+[target.'cfg(target_os = "macos")'.dependencies]
+core-graphics = "0.23"
+core-foundation = "0.9"
+appkit-nsworkspace-bindings = "0.1.2"
+objc = "0.2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
