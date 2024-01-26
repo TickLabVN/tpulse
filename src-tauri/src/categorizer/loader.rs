@@ -6,6 +6,10 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use rusqlite::Connection;
 
+/// Load a file csv and save into database.
+///
+
+/// Struct representing a record with only meaningfull fields corresponding to a CSV file's columns.
 #[derive(Debug, PartialEq)]
 struct Record {
     c_id: i32,
@@ -15,6 +19,7 @@ struct Record {
     c_source: String,
 }
 
+/// Function to load a table from a CSV file into an SQLite database
 pub fn load_table_from_path(
     db: &mut Connection,
     table_name: &str,
@@ -27,6 +32,7 @@ pub fn load_table_from_path(
         .delimiter(delimiter)
         .from_reader(f);
 
+    // Extract headers from the CSV file and normalize column names, only get the first 4 columns in the csv file.
     let filter_column = reader.headers()?.iter().take(4);
 
     let normalized_cols = filter_column
@@ -44,6 +50,7 @@ pub fn load_table_from_path(
 
     create_table(db, table_name, &normalized_cols);
 
+    // Generate the INSERT query
     let insert_query = format!(
         "insert into {} ({}) values ({})",
         table_name,
@@ -56,6 +63,7 @@ pub fn load_table_from_path(
             .join(", ")
     );
 
+    // Read records from the CSV file and insert them into the database
     let mut records = reader.byte_records();
     let mut num_rows = 0;
     let tx = db.transaction().unwrap();
@@ -65,6 +73,7 @@ pub fn load_table_from_path(
             let mut row = row?;
             row.truncate(normalized_cols.len());
 
+            // Handle mismatched column counts
             match row.len().cmp(&normalized_cols.len()) {
                 Ordering::Less => {
                     for _ in 0..normalized_cols.len() - row.len() {
@@ -76,6 +85,8 @@ pub fn load_table_from_path(
                 }
                 Ordering::Equal => {}
             }
+
+            // Execute the INSERT statement with parameters
             stmt.execute(rusqlite::params_from_iter(
                 row.iter().map(String::from_utf8_lossy),
             ))
@@ -89,6 +100,12 @@ pub fn load_table_from_path(
     Ok(normalized_cols)
 }
 
+/// Function to normalize column names.
+/// ### Example:
+/// ```
+/// "Name" -> "c_name"
+/// "Category Name" -> "c_category_name"
+/// ```
 fn normalize_col(col: &str) -> String {
     lazy_static! {
         static ref RE: Regex = Regex::new(r"\(.*?\)$").unwrap();
@@ -108,6 +125,7 @@ fn normalize_col(col: &str) -> String {
     col
 }
 
+/// Function to create a table in the database
 fn create_table(db: &Connection, table_name: &str, cols: &[String]) {
     let create_columns = format!(
         "\"c_id\" integer primary key, {}",

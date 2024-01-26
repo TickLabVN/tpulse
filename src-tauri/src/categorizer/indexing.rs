@@ -1,20 +1,19 @@
 use std::collections::{HashMap, HashSet};
 
-use lazy_static::lazy_static;
 use rusqlite::Connection;
 
 use super::analyzer::{Analyzer, Language};
-use crate::utils::get_data_directory;
 
-lazy_static! {
-    static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
-}
+/// Find the intersection of IDs for given tokens by Inverted Index technique.
+///
 
+/// Struct representing an inverted index with a token-to-document mapping
 pub struct InvertedIndex {
     idx: HashMap<String, HashSet<i32>>,
     analyzer: Analyzer,
 }
 
+/// Struct representing a document with an ID and text content
 #[derive(Debug, PartialEq)]
 pub struct Document {
     id: i32,
@@ -22,6 +21,7 @@ pub struct Document {
 }
 
 impl Document {
+    /// Builder method to construct a vector of documents from the database
     pub fn build(
         db: &Connection,
         table_name: &str,
@@ -49,6 +49,7 @@ impl Default for InvertedIndex {
 }
 
 impl InvertedIndex {
+    /// Constructor for InvertedIndex with a specified language for the analyzer
     fn new(language: Language) -> Self {
         Self {
             idx: HashMap::new(),
@@ -56,6 +57,7 @@ impl InvertedIndex {
         }
     }
 
+    /// Method to generate an inverted index from a vector of documents
     pub fn generate_token_index(&mut self, docs: &[Document]) {
         for doc in docs {
             for token in self.analyzer.analyze(doc.text.as_str()) {
@@ -72,6 +74,7 @@ impl InvertedIndex {
         }
     }
 
+    /// Method to categorize a text based on the generated inverted index
     pub fn categorize(&self, text: &str) -> HashSet<i32> {
         let mut result: HashSet<i32> = HashSet::new();
         for token in self.analyzer.analyze(text) {
