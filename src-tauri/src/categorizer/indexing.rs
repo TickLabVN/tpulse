@@ -11,18 +11,18 @@ lazy_static! {
 }
 
 pub struct InvertedIndex {
-    idx: HashMap<String, HashSet<i32>>,
-    analyzer: Analyzer,
+    pub idx: HashMap<String, HashSet<i32>>,
+    pub analyzer: Analyzer,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Document {
     id: i32,
     text: String,
 }
 
 impl Document {
-    fn build(
+    pub fn build(
         db: Connection,
         table_name: &str,
     ) -> Result<Vec<Document>, Box<dyn std::error::Error>> {
@@ -56,7 +56,7 @@ impl InvertedIndex {
         }
     }
 
-    fn add(&mut self, docs: &[Document]) {
+    pub fn generate_token_index(&mut self, docs: &[Document]) {
         for doc in docs {
             for token in self.analyzer.analyze(doc.text.as_str()) {
                 match self.idx.get_mut(&token) {
@@ -72,7 +72,7 @@ impl InvertedIndex {
         }
     }
 
-    fn search(&self, text: &str) -> HashSet<i32> {
+    pub fn search(&self, text: &str) -> HashSet<i32> {
         let mut result: HashSet<i32> = HashSet::new();
         for token in self.analyzer.analyze(text) {
             match self.idx.get(&token) {
@@ -91,15 +91,15 @@ impl InvertedIndex {
 
 #[cfg(test)]
 mod indexing_tests {
+    use std::fs::File;
+    use std::io::Write;
+
     use crate::categorizer::load_table_from_path;
 
     use super::*;
 
     #[test]
-    fn test_select_document() {
-        use std::fs::File;
-        use std::io::Write;
-
+    fn test_build_document() {
         let mut conn = Connection::open_in_memory().unwrap();
         let _ = load_table_from_path(
             &mut conn,
@@ -114,5 +114,26 @@ mod indexing_tests {
         write!(output, "{}", formatted_result).unwrap();
 
         assert_eq!(result.len(), 448);
+    }
+
+    #[test]
+    fn test_generate_token_index() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        let _ = load_table_from_path(
+            &mut conn,
+            "t",
+            "Tracking_Rule_Package_Default_Export.csv",
+            b',',
+        );
+        let documents = Document::build(conn, "t").unwrap();
+
+        let mut token_idx = InvertedIndex::default();
+        token_idx.generate_token_index(&documents);
+
+        let formatted_result = format!("{:#?}", token_idx.idx);
+        let mut output = File::create("token.txt").unwrap();
+        write!(output, "{}", formatted_result).unwrap();
+
+        assert_eq!(token_idx.idx.keys().len(), 453)
     }
 }

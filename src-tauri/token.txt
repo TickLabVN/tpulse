@@ -1,0 +1,1444 @@
+{
+    "zoom.us": {
+        202,
+    },
+    "discord.com": {
+        141,
+    },
+    "newyorker.com": {
+        157,
+    },
+    "calcul": {
+        328,
+    },
+    "rize.io": {
+        17,
+    },
+    "citrix": {
+        337,
+    },
+    "data": {
+        341,
+    },
+    "materi": {
+        180,
+    },
+    "football.fantasysports.yahoo.com": {
+        98,
+    },
+    "monitor": {
+        306,
+    },
+    "airbnb.com": {
+        37,
+    },
+    "webex.com": {
+        213,
+    },
+    "app.intercom.com": {
+        103,
+    },
+    "picasa": {
+        409,
+    },
+    "cloud": {
+        437,
+        259,
+    },
+    "safari": {
+        256,
+    },
+    "reader": {
+        344,
+    },
+    "azur": {
+        341,
+    },
+    "brave": {
+        379,
+        294,
+    },
+    "note": {
+        258,
+    },
+    "thespoon.tech": {
+        68,
+    },
+    "direct.chownow.com": {
+        92,
+    },
+    "hulu.com": {
+        100,
+    },
+    "assist": {
+        232,
+    },
+    "desktop": {
+        307,
+        273,
+        275,
+    },
+    "priceline.com": {
+        47,
+    },
+    "dev.azure.com": {
+        40,
+    },
+    "elastic.co": {
+        153,
+    },
+    "photobooth": {
+        331,
+    },
+    "news.ycombinator.com": {
+        42,
+    },
+    "airbnb.co.uk": {
+        176,
+    },
+    "mac": {
+        226,
+        371,
+    },
+    "docker": {
+        273,
+        288,
+    },
+    "espnplus.com": {
+        75,
+    },
+    "kiwi": {
+        336,
+    },
+    "rdc": {
+        340,
+    },
+    "duckduckgo.com": {
+        102,
+    },
+    "youtube.com": {
+        24,
+        25,
+    },
+    "blog.rize.io": {
+        60,
+    },
+    "vercel.com": {
+        67,
+    },
+    "zendesk.com": {
+        162,
+    },
+    "localhost": {
+        33,
+    },
+    "airtable.com": {
+        3,
+    },
+    "segment.com": {
+        201,
+    },
+    "picker": {
+        397,
+    },
+    "console.aws.amazon.com": {
+        115,
+    },
+    "simul": {
+        304,
+    },
+    "jetbrain": {
+        430,
+    },
+    "shift.com": {
+        195,
+    },
+    "experi": {
+        386,
+    },
+    "facebook.com": {
+        32,
+    },
+    "rider": {
+        430,
+    },
+    "notion": {
+        424,
+        271,
+    },
+    "amazon.com": {
+        23,
+    },
+    "prefer": {
+        225,
+    },
+    "engin": {
+        227,
+    },
+    "techcrunch.com": {
+        64,
+    },
+    "ubereats.com": {
+        156,
+    },
+    "salesforce.com": {
+        167,
+    },
+    "mattermost": {
+        296,
+        425,
+    },
+    "nypost.com": {
+        198,
+    },
+    "draftkings.com": {
+        35,
+    },
+    "info": {
+        438,
+    },
+    "php": {
+        335,
+    },
+    "docker.com": {
+        74,
+    },
+    "termin": {
+        261,
+    },
+    "meet.google.com": {
+        13,
+    },
+    "drive.google.com": {
+        38,
+    },
+    "sailsjs.com": {
+        93,
+    },
+    "docs.aws.amazon.com": {
+        116,
+    },
+    "productboard.com": {
+        197,
+    },
+    "indeed.com": {
+        206,
+    },
+    "nuclino": {
+        303,
+    },
+    "facetim": {
+        263,
+    },
+    "ob": {
+        268,
+    },
+    "clickup": {
+        432,
+    },
+    "flux": {
+        309,
+    },
+    "chromium": {
+        314,
+    },
+    "postbox": {
+        426,
+    },
+    "mighti": {
+        368,
+    },
+    "docs.npmjs.com": {
+        72,
+    },
+    "adob": {
+        358,
+        361,
+        344,
+        427,
+        323,
+        355,
+        428,
+    },
+    "usertesting.com": {
+        166,
+    },
+    "github": {
+        275,
+    },
+    "successfactors.com": {
+        189,
+    },
+    "mail": {
+        244,
+        357,
+    },
+    "google.com": {
+        28,
+    },
+    "finder": {
+        228,
+    },
+    "gitlab.com": {
+        48,
+    },
+    "tool": {
+        235,
+    },
+    "file": {
+        397,
+    },
+    "lodash.com": {
+        181,
+    },
+    "yelp.com": {
+        101,
+    },
+    "mailchimp.com": {
+        53,
+    },
+    "anydesk": {
+        367,
+    },
+    "azure.github.io": {
+        97,
+    },
+    "sublim": {
+        260,
+        393,
+    },
+    "powerpoint": {
+        276,
+        408,
+    },
+    "accounts.google.com": {
+        107,
+    },
+    "edison": {
+        357,
+    },
+    "producthunt.com": {
+        63,
+    },
+    "icon": {
+        442,
+    },
+    "stratechery.com": {
+        161,
+    },
+    "dreamweav": {
+        358,
+    },
+    "whereby.com": {
+        219,
+    },
+    "screen": {
+        394,
+        227,
+        399,
+        443,
+    },
+    "codeinterview.io": {
+        210,
+    },
+    "netflix": {
+        435,
+    },
+    "colab.research.google.com": {
+        119,
+    },
+    "cisco": {
+        351,
+        281,
+    },
+    "overleaf.com": {
+        118,
+    },
+    "agent": {
+        226,
+    },
+    "command": {
+        440,
+        249,
+        235,
+        389,
+    },
+    "glassdoor.com": {
+        123,
+    },
+    "grammar": {
+        362,
+    },
+    "ideaboardz.com": {
+        184,
+    },
+    "mobil": {
+        234,
+    },
+    "docs.microsoft.com": {
+        30,
+    },
+    "travi": {
+        172,
+        105,
+    },
+    "wi": {
+        231,
+    },
+    "superhuman": {
+        300,
+    },
+    "stackoverflow.com": {
+        11,
+    },
+    "opera": {
+        413,
+    },
+    "canva.com": {
+        160,
+    },
+    "git": {
+        377,
+    },
+    "calendar.google.com": {
+        52,
+    },
+    "outlook.live.com": {
+        110,
+    },
+    "coda.io": {
+        175,
+    },
+    "protonmail.com": {
+        207,
+    },
+    "highcharts.com": {
+        185,
+    },
+    "us02web.zoom.us": {
+        183,
+    },
+    "store": {
+        292,
+    },
+    "atom": {
+        322,
+    },
+    "mail.superhuman.com": {
+        8,
+    },
+    "appsumo.com": {
+        222,
+    },
+    "skype": {
+        279,
+    },
+    "task": {
+        398,
+    },
+    "wavebox": {
+        419,
+    },
+    "applic": {
+        445,
+        441,
+    },
+    "outlook.office365": {
+        46,
+    },
+    "bitbucket.org": {
+        203,
+    },
+    "creativ": {
+        259,
+        437,
+    },
+    "kindl": {
+        332,
+    },
+    "window": {
+        439,
+        441,
+        442,
+        448,
+        440,
+        398,
+    },
+    "personal.vanguard.com": {
+        125,
+    },
+    "debug": {
+        376,
+    },
+    "bestbuy.com": {
+        111,
+    },
+    "updat": {
+        234,
+    },
+    "dashboard.heroku.com": {
+        14,
+    },
+    "dev.to": {
+        12,
+    },
+    "craigslist.org": {
+        208,
+    },
+    "twilio.com": {
+        41,
+    },
+    "db": {
+        363,
+    },
+    "highfive.com": {
+        217,
+    },
+    "ui.com": {
+        180,
+    },
+    "nytimes.com": {
+        59,
+    },
+    "mailbird": {
+        423,
+    },
+    "apple.com": {
+        85,
+    },
+    "teams.microsoft.com": {
+        159,
+    },
+    "insid": {
+        262,
+    },
+    "public": {
+        278,
+    },
+    "visual": {
+        380,
+        411,
+    },
+    "player": {
+        277,
+    },
+    "host": {
+        439,
+        386,
+        445,
+    },
+    "theringer.com": {
+        130,
+    },
+    "explor": {
+        374,
+    },
+    "messag": {
+        243,
+    },
+    "booking.com": {
+        143,
+    },
+    "dashlan": {
+        315,
+    },
+    "zapier.com": {
+        221,
+    },
+    "figma.com": {
+        134,
+    },
+    "sachi.la": {
+        36,
+    },
+    "mail.google.com": {
+        7,
+    },
+    "notif": {
+        442,
+    },
+    "ci.com": {
+        120,
+        172,
+    },
+    "realsimple.com": {
+        140,
+    },
+    "flow.org": {
+        154,
+    },
+    "xenapp": {
+        337,
+    },
+    "retool.com": {
+        194,
+    },
+    "app.grammarly.com": {
+        138,
+    },
+    "nextjs.org": {
+        78,
+    },
+    "script": {
+        439,
+    },
+    "ebay.com": {
+        146,
+    },
+    "storm": {
+        335,
+    },
+    "sketchup": {
+        420,
+    },
+    "roamresearch.com": {
+        220,
+    },
+    "util": {
+        233,
+    },
+    "espn.com": {
+        26,
+    },
+    "sentry.io": {
+        31,
+    },
+    "groupon.com": {
+        88,
+    },
+    "theguardian.com": {
+        147,
+    },
+    "textedit": {
+        257,
+    },
+    "iterm": {
+        239,
+    },
+    "setup": {
+        232,
+    },
+    "bash": {
+        377,
+    },
+    "clocker": {
+        334,
+    },
+    "menu": {
+        395,
+    },
+    "steam": {
+        308,
+    },
+    "hyper": {
+        349,
+    },
+    "unsplash.com": {
+        61,
+    },
+    "bluejeans.com": {
+        216,
+    },
+    "linear.app": {
+        18,
+    },
+    "xcode": {
+        272,
+    },
+    "archiv": {
+        233,
+    },
+    "dailymail.co.uk": {
+        174,
+    },
+    "spark": {
+        316,
+        351,
+    },
+    "canari": {
+        347,
+    },
+    "googleapis.com": {
+        163,
+    },
+    "ruby.org": {
+        178,
+    },
+    "slack": {
+        373,
+        242,
+    },
+    "geico.com": {
+        168,
+    },
+    "bluejean": {
+        320,
+    },
+    "readymag.com": {
+        131,
+    },
+    "defend": {
+        441,
+    },
+    "zillow.com": {
+        114,
+    },
+    "plan": {
+        290,
+    },
+    "xd": {
+        355,
+    },
+    "googl": {
+        365,
+        447,
+    },
+    "3": {
+        302,
+    },
+    "illustr": {
+        323,
+        416,
+    },
+    "figma": {
+        269,
+    },
+    "saver": {
+        227,
+    },
+    "ulyss": {
+        246,
+    },
+    "webex": {
+        281,
+    },
+    "reddit.com": {
+        45,
+    },
+    "remind": {
+        291,
+    },
+    "flow": {
+        236,
+    },
+    "mail.yahoo.com": {
+        65,
+    },
+    "notion.so": {
+        188,
+    },
+    "linkedin.com": {
+        21,
+    },
+    "myjetbrains.com": {
+        150,
+    },
+    "stackexchange.com": {
+        165,
+    },
+    "manag": {
+        398,
+        444,
+    },
+    "cloud.google.com": {
+        142,
+    },
+    "rize": {
+        384,
+        383,
+        253,
+    },
+    "businessinsider.com": {
+        91,
+    },
+    "outlook": {
+        406,
+        298,
+    },
+    "docs.google.com": {
+        1,
+    },
+    "edg": {
+        325,
+        313,
+        396,
+    },
+    "mozilla": {
+        265,
+    },
+    "azure.microsoft.com": {
+        77,
+    },
+    "pro": {
+        427,
+        359,
+    },
+    "preview.pitch.com": {
+        144,
+    },
+    "kbb.com": {
+        200,
+    },
+    "vlc": {
+        348,
+    },
+    "twitch.tv": {
+        87,
+    },
+    "atlassian.com": {
+        5,
+    },
+    "saucelabs.com": {
+        192,
+    },
+    "trello.com": {
+        6,
+    },
+    "nova": {
+        346,
+    },
+    "beaver": {
+        363,
+    },
+    "newrelic.com": {
+        44,
+    },
+    "start": {
+        395,
+    },
+    "skyscanner.com": {
+        106,
+    },
+    "twitch": {
+        274,
+    },
+    "discord": {
+        311,
+        402,
+    },
+    "insight": {
+        392,
+    },
+    "access": {
+        392,
+    },
+    "atlassian.net": {
+        4,
+    },
+    "puppetri": {
+        317,
+    },
+    "netflix.com": {
+        22,
+    },
+    "ringcentral.com": {
+        215,
+    },
+    "miro.com": {
+        82,
+    },
+    "edmunds.com": {
+        199,
+    },
+    "apartments.com": {
+        128,
+    },
+    "machinelearningmastery.com": {
+        132,
+    },
+    "newline.co": {
+        182,
+    },
+    "evernot": {
+        286,
+    },
+    "mitpress.mit.edu": {
+        135,
+    },
+    "dashboard.stripe.com": {
+        54,
+    },
+    "slack.com": {
+        149,
+    },
+    "onenot": {
+        382,
+    },
+    "zeplin": {
+        301,
+    },
+    "robinhood.com": {
+        164,
+    },
+    "set": {
+        400,
+    },
+    "newrepublic.com": {
+        58,
+    },
+    "autocad": {
+        418,
+    },
+    "magnifi": {
+        394,
+    },
+    "getplan.co": {
+        56,
+    },
+    "invisionapp.com": {
+        20,
+    },
+    "vanguard.com": {
+        126,
+    },
+    "instagram.com": {
+        223,
+    },
+    "signal": {
+        324,
+    },
+    "base": {
+        439,
+    },
+    "hackernoon.com": {
+        66,
+    },
+    "appl": {
+        244,
+        326,
+    },
+    "dimmer": {
+        307,
+    },
+    "activ": {
+        306,
+    },
+    "linear": {
+        360,
+    },
+    "airtabl": {
+        247,
+    },
+    "graphql": {
+        178,
+    },
+    "delta.com": {
+        69,
+    },
+    "smile.amazon.com": {
+        122,
+    },
+    "powershel": {
+        390,
+    },
+    "circleci.com": {
+        113,
+    },
+    "forbes.com": {
+        80,
+    },
+    "rightmove.co.uk": {
+        127,
+    },
+    "secur": {
+        442,
+    },
+    "spotifi": {
+        431,
+        267,
+    },
+    "vivaldi": {
+        404,
+    },
+    "fast.com": {
+        83,
+    },
+    "weather.com": {
+        94,
+    },
+    "amplitude.com": {
+        169,
+    },
+    "amazon": {
+        343,
+    },
+    "tandem": {
+        330,
+    },
+    "photoshop": {
+        342,
+        410,
+    },
+    "kudoboard.com": {
+        151,
+    },
+    "nudgetext.com": {
+        136,
+    },
+    "docs.travi": {
+        120,
+    },
+    "sticki": {
+        353,
+    },
+    "electron.build": {
+        70,
+    },
+    "quicktim": {
+        277,
+    },
+    "app.bitrise.io": {
+        95,
+    },
+    "bamboohr.com": {
+        124,
+    },
+    "pivotaltracker.com": {
+        99,
+    },
+    "app": {
+        385,
+        292,
+    },
+    "hangouts.google.com": {
+        214,
+    },
+    "clean": {
+        371,
+    },
+    "fullstory.com": {
+        193,
+    },
+    "ui": {
+        397,
+        226,
+    },
+    "cleanshot": {
+        356,
+    },
+    "style": {
+        177,
+    },
+    "unclutt": {
+        354,
+    },
+    "intercom.com": {
+        104,
+    },
+    "translate.google.com": {
+        137,
+    },
+    "iphon": {
+        304,
+    },
+    "rescuetime.com": {
+        43,
+    },
+    "app.slack.com": {
+        9,
+    },
+    "dropbox": {
+        318,
+        285,
+    },
+    "whatsapp": {
+        295,
+        414,
+    },
+    "omnifocus": {
+        302,
+    },
+    "chat": {
+        365,
+    },
+    "preview": {
+        266,
+    },
+    "telegram": {
+        312,
+        403,
+    },
+    "staging.rize.io": {
+        16,
+    },
+    "pornhub.com": {
+        446,
+    },
+    "time": {
+        237,
+    },
+    "obsidian": {
+        417,
+        352,
+    },
+    "angular.io": {
+        89,
+    },
+    "asana.com": {
+        209,
+    },
+    "ticktick": {
+        350,
+    },
+    "vowel.com": {
+        218,
+    },
+    "stage": {
+        383,
+        253,
+    },
+    "zoom": {
+        412,
+        245,
+    },
+    "photo": {
+        283,
+    },
+    "github.com": {
+        2,
+    },
+    "medium.com": {
+        10,
+    },
+    "boardgamearena.com": {
+        121,
+    },
+    "sigmao": {
+        372,
+    },
+    "jira.com": {
+        148,
+    },
+    "postman": {
+        310,
+    },
+    "fantast": {
+        319,
+    },
+    "disneyplus.com": {
+        55,
+    },
+    "npmjs.com": {
+        71,
+    },
+    "1password": {
+        250,
+    },
+    "viber": {
+        338,
+    },
+    "portal.azure.com": {
+        27,
+    },
+    "upwork.com": {
+        129,
+    },
+    "aws.amazon.com": {
+        117,
+    },
+    "tableau": {
+        278,
+    },
+    "studio": {
+        341,
+        421,
+        380,
+        411,
+    },
+    "pycharm": {
+        270,
+    },
+    "tripadvisor.com": {
+        133,
+    },
+    "stripe.com": {
+        196,
+    },
+    "web.whatsapp.com": {
+        96,
+    },
+    "bloomberg.com": {
+        81,
+    },
+    "onedr": {
+        436,
+    },
+    "twitter.com": {
+        15,
+    },
+    "frame": {
+        445,
+    },
+    "music": {
+        289,
+    },
+    "idea": {
+        434,
+        264,
+    },
+    "tradingview": {
+        429,
+    },
+    "qz.com": {
+        76,
+    },
+    "global.gotomeeting.com": {
+        212,
+    },
+    "analytics.amplitude.com": {
+        171,
+    },
+    "goldcast.io": {
+        170,
+    },
+    "en.wikipedia.org": {
+        50,
+    },
+    "account.postmarkapp.com": {
+        79,
+    },
+    "angel.co": {
+        84,
+    },
+    "webstorm": {
+        378,
+        251,
+    },
+    "word": {
+        255,
+        407,
+    },
+    "app.usertesting.com": {
+        19,
+    },
+    "lock": {
+        443,
+    },
+    "betterdoctor.com": {
+        190,
+    },
+    "tor": {
+        339,
+    },
+    "rubymin": {
+        238,
+        381,
+    },
+    "webflow.com": {
+        49,
+    },
+    "acrobat": {
+        361,
+        428,
+    },
+    "app.circleci.com": {
+        112,
+    },
+    "visualstudio.com": {
+        204,
+    },
+    "sidekick": {
+        405,
+    },
+    "vimeo.com": {
+        57,
+    },
+    "theverge.com": {
+        187,
+    },
+    "keeppassx": {
+        305,
+    },
+    "ical": {
+        297,
+    },
+    "dropbox.com": {
+        155,
+    },
+    "dictionari": {
+        329,
+    },
+    "gotomeet": {
+        364,
+    },
+    "usernotificationcent": {
+        229,
+    },
+    "indesign": {
+        369,
+    },
+    "devic": {
+        234,
+    },
+    "mmhmm": {
+        282,
+    },
+    "outlook.office.com": {
+        34,
+    },
+    "chime": {
+        343,
+    },
+    "intellij": {
+        264,
+        345,
+        434,
+    },
+    "camtasia": {
+        421,
+    },
+    "meet": {
+        281,
+        366,
+    },
+    "kayak.com": {
+        191,
+    },
+    "instal": {
+        440,
+        230,
+    },
+    "chrome": {
+        240,
+        447,
+        388,
+    },
+    "cortana": {
+        391,
+    },
+    "tutori": {
+        25,
+    },
+    "interpret": {
+        389,
+    },
+    "web.dev": {
+        179,
+    },
+    "ci.org": {
+        105,
+    },
+    "filestack.com": {
+        62,
+    },
+    "datagrip": {
+        327,
+    },
+    "premier": {
+        427,
+    },
+    "messenger.com": {
+        205,
+    },
+    "docs.docker.com": {
+        73,
+    },
+    "notepad": {
+        433,
+        422,
+    },
+    "search": {
+        385,
+    },
+    "box.com": {
+        39,
+    },
+    "calendly.com": {
+        90,
+    },
+    "wikipedia.org": {
+        51,
+    },
+    "loginwindow": {
+        224,
+    },
+    "components.com": {
+        177,
+    },
+    "electron": {
+        254,
+        375,
+    },
+    "console.google.com": {
+        29,
+    },
+    "code": {
+        262,
+        411,
+        287,
+    },
+    "github.io": {
+        108,
+    },
+    "login": {
+        448,
+    },
+    "chase.com": {
+        173,
+    },
+    "macsystem": {
+        225,
+    },
+    "crunchbase.com": {
+        109,
+    },
+    "excel": {
+        248,
+        401,
+    },
+    "sketch": {
+        252,
+        399,
+    },
+    "7": {
+        250,
+    },
+    "jam.dev": {
+        158,
+    },
+    "pitch.com": {
+        145,
+    },
+    "paper": {
+        318,
+    },
+    "mixpanel.com": {
+        152,
+    },
+    "fivethirtyeight.com": {
+        186,
+    },
+    "firefox": {
+        387,
+        265,
+    },
+    "grammarly.com": {
+        139,
+    },
+    "goodnot": {
+        299,
+    },
+    "app.gotomeeting.com": {
+        211,
+    },
+    "consol": {
+        376,
+        444,
+    },
+    "keynot": {
+        333,
+    },
+    "warp": {
+        370,
+    },
+    "dashboard.twitch.tv": {
+        86,
+    },
+    "sequel": {
+        359,
+    },
+    "team": {
+        280,
+        415,
+    },
+}
