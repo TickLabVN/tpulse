@@ -8,6 +8,7 @@ use tpulse::{
     event_handler::handle_events,
     events::UserMetric,
     initializer::initialize_db,
+    metrics_handler::handle_metrics,
     watcher::{watch_afk, watch_window},
 };
 
@@ -17,7 +18,7 @@ fn main() {
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
-
+    let open_pipe_server = thread::spawn(move || handle_metrics());
     let afk_watcher = thread::spawn(move || watch_afk(5000, 50000, afk_tx));
     let window_watcher = thread::spawn(move || watch_window(1000, window_tx));
     let event_handler = thread::spawn(move || handle_events(rx));
@@ -39,4 +40,5 @@ fn main() {
     afk_watcher.join().unwrap();
     window_watcher.join().unwrap();
     event_handler.join().unwrap();
+    open_pipe_server.join().unwrap();
 }
