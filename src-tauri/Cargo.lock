@@ -4165,6 +4165,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-log",
  "tauri-plugin-sql",
+ "winapi",
  "windows 0.52.0",
 ]
 
