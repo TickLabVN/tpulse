@@ -11,12 +11,15 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "barrels": "barrelsby --config .barrelsby.json -q",
     "clean:git": "git branch --merged >/tmp/merged-branches && nano /tmp/merged-branches && xargs git branch -D </tmp/merged-branches && git fetch --prune --all"
   },
   "dependencies": {
+    "@primer/react": "^36.9.0",
     "@tauri-apps/api": "^1.5.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "styled-components": "5"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",
@@ -28,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "barrelsby": "^2.8.1",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -38,6 +42,7 @@
     "prettier": "^3.2.2",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
-    "vite-plugin-eslint": "^1.8.1"
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-tsconfig-paths": "^4.3.1"
   }
 }
