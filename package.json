@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@primer/react": "^36.9.0",
+    "@tanstack/react-router": "^1.17.4",
     "@tauri-apps/api": "^1.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
+    "@tanstack/router-vite-plugin": "^1.16.5",
     "@tauri-apps/cli": "^1.5.9",
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.45",

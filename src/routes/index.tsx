@@ -1,6 +1,11 @@
+import { createFileRoute } from '@tanstack/react-router';
 import { PageLayout } from '@primer/react';
 
-export function Page() {
+export const Route = createFileRoute('/')({
+  component: HomePage
+});
+
+function HomePage() {
   return (
     <PageLayout>
       <PageLayout.Header>

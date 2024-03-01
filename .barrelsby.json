@@ -1,6 +1,4 @@
 {
-    "directory": [
-      "./src/pages"
-    ],
+    "directory": [],
     "delete": true
 }
