@@ -1,13 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { DayView } from '@pages';
 
 export const Route = createFileRoute('/page')({
-  component: ExamplePage
+  component: DayView
 });
-
-function ExamplePage() {
-  return (
-    <div className='p-2'>
-      <h3>Hello world!</h3>
-    </div>
-  );
-}
