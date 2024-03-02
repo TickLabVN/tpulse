@@ -14,9 +14,14 @@
     "clean:git": "git branch --merged >/tmp/merged-branches && nano /tmp/merged-branches && xargs git branch -D </tmp/merged-branches && git fetch --prune --all"
   },
   "dependencies": {
+    "@primer/octicons-react": "^19.8.0",
+    "@primer/react": "^36.9.0",
+    "@tanstack/react-table": "^8.12.0",
     "@tauri-apps/api": "^1.5.3",
+    "date-fns": "^3.3.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",
