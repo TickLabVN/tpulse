@@ -14,8 +14,12 @@
     "clean:git": "git branch --merged >/tmp/merged-branches && nano /tmp/merged-branches && xargs git branch -D </tmp/merged-branches && git fetch --prune --all"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.11",
+    "@fullcalendar/react": "^6.1.11",
+    "@fullcalendar/timegrid": "^6.1.11",
     "@primer/octicons-react": "^19.8.0",
     "@primer/react": "^36.9.0",
+    "@tanstack/react-router": "^1.18.1",
     "@tanstack/react-table": "^8.12.0",
     "@tauri-apps/api": "^1.5.3",
     "date-fns": "^3.3.1",
@@ -26,6 +30,7 @@
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
+    "@tanstack/router-vite-plugin": "^1.18.1",
     "@tauri-apps/cli": "^1.5.9",
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.45",
@@ -33,6 +38,7 @@
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.18",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -40,9 +46,12 @@
     "husky": "^8.0.3",
     "is-ci": "^3.0.1",
     "lint-staged": "^15.2.0",
+    "postcss": "^8.4.35",
     "prettier": "^3.2.2",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
-    "vite-plugin-eslint": "^1.8.1"
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-tsconfig-paths": "^4.3.1"
   }
 }

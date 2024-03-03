@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ES2020",
+    "sourceRoot": "src",
+    "sourceMap": true,
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "allowJs": false,
     "module": "ESNext",
     "skipLibCheck": true,
 
@@ -18,8 +22,14 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path */
+    "paths": {
+      "@assets/*": ["src/assets/*"],
+      "@pages": ["src/pages"]
+    },
   },
-  "include": ["src"],
+  "include": ["src", "**/*.ts", "**/*.tsx", "**/*.js", "*.cjs"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
