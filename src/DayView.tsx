@@ -23,18 +23,55 @@ export function DayView() {
     const currentDayOfWeek = daysOfWeek[currentDate.getDay()];
     return currentDayOfWeek;
   };
-  const handleClick = (hour: string) => (e: React.MouseEvent) => {
-    // console.log(`0${parseInt(hour) + 1}:00`, hour)
+  const handleDragStart = (handleName: string, hour: string) => (e: DragEvent) => {
     const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
     const bottomElement = document.getElementById(hour);
     const topElement = document.getElementById(hours[index]);
     if (bottomElement && topElement) {
       const bottomPosition = bottomElement.getBoundingClientRect().top;
-      // const topPosition = topElement.getBoundingClientRect().top
       const y = e?.clientY;
       const rangeItem = Math.round((convertTimeToNumber(hours[1]) - convertTimeToNumber(hours[0])) * 60);
-      const exactMinute = (rangeItem / 60) * (y - bottomPosition);
-      console.log(rangeItem, exactMinute);
+      const subMinute =
+        Math.round(parseInt(hours[index - 2].slice(3))) + Math.round((rangeItem / 60) * (y - bottomPosition));
+      const exactMinute = subMinute >= 60 ? subMinute - 60 : subMinute;
+      const exactHour =
+        exactMinute < parseInt(hours[index - 2].slice(3))
+          ? parseInt(hours[index - 2]) + 1
+          : parseInt(hours[index - 2]);
+      const exactHourToString = `${exactHour.toString()}:${exactMinute}`;
+      if (handleName === 'AFK' || handleName === 'ACTIVITY') {
+        setStartTime(exactHourToString);
+      } else {
+        setNewStartTime(exactHourToString);
+      }
+    } else {
+      alert('Error');
+    }
+  };
+  const handleDragEnd = (handleName: string) => (e: React.DragEvent) => {
+    const endElement = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
+    const hour = endElement.id;
+    const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
+    const bottomElement = document.getElementById(hour);
+    const topElement = document.getElementById(hours[index]);
+    if (bottomElement && topElement) {
+      const bottomPosition = bottomElement.getBoundingClientRect().top;
+      const y = e?.clientY;
+      const rangeItem = Math.round((convertTimeToNumber(hours[1]) - convertTimeToNumber(hours[0])) * 60);
+      const subMinute =
+        Math.round(parseInt(hours[index - 2].slice(3))) + Math.round((rangeItem / 60) * (y - bottomPosition));
+      const exactMinute = subMinute >= 60 ? subMinute - 60 : subMinute;
+      const exactHour =
+        exactMinute < parseInt(hours[index - 2].slice(3))
+          ? parseInt(hours[index - 2]) + 1
+          : parseInt(hours[index - 2]);
+      const exactHourToString = `${exactHour.toString()}:${exactMinute}`;
+      if (handleName === 'AFK' || handleName === 'ACTIVITY') {
+        handleSubmitRange(startTime, exactHourToString);
+      } else {
+        setNewEndTime(exactHourToString);
+        setIsOpen(true);
+      }
     } else {
       alert('Error');
     }
@@ -189,12 +226,10 @@ export function DayView() {
       formattedMillisecond === '000' ? formattedTime : formattedTime + '.' + formattedMillisecond;
     return formattedTime;
   };
-  const handleSubmitRange = () => {
-    const startInput = startTime;
-    const endInput = endTime;
+  const handleSubmitRange = (startInput: string, endInput: string) => {
     // Extract hours, minutes, and seconds from the input values
-    const parsedStartTime = convertTimeToNumber(startInput ?? '');
-    const parsedEndTime = convertTimeToNumber(endInput ?? '');
+    const parsedStartTime = convertTimeToNumber(startInput);
+    const parsedEndTime = convertTimeToNumber(endInput);
     if (isNaN(parsedStartTime) || isNaN(parsedEndTime) || parsedStartTime >= parsedEndTime) {
       // Handle invalid input or show an error message
       console.error('Invalid input. Please make sure the start time is before the end time.');
@@ -256,7 +291,7 @@ export function DayView() {
             border: '1px solid #ccc',
             backgroundColor: 'rgb(254 226 226)'
           }}
-          onClick={handleSubmitRange}
+          onClick={() => handleSubmitRange(startTime, endTime)}
         >
           Submit
         </Button>
@@ -357,7 +392,6 @@ export function DayView() {
                     textAlign: 'center',
                     position: 'relative'
                   }}
-                  // onClick={() => alert(1)}
                 >
                   <Box
                     sx={{
@@ -416,7 +450,9 @@ export function DayView() {
                         borderLeft: 0,
                         zIndex: 3
                       }}
-                      onClick={handleClick(hour)}
+                      draggable
+                      onDragStart={handleDragStart(header.name, hour)}
+                      onDragEnd={handleDragEnd(header.name)}
                     >
                       {i === 0 && (
                         <Text
