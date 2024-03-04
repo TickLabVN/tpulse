@@ -1,6 +1,13 @@
-import { useState, useRef } from 'react';
-import { TextInput, Text, Box, Button, Checkbox, Dialog, Select, ButtonGroup } from '@primer/react';
-import { DiffAddedIcon, CalendarIcon, PinIcon, TagIcon } from '@primer/octicons-react';
+import { useState, useRef, useEffect } from 'react';
+import { TextInput, Text, Box, Button, Dialog, Select, ButtonGroup, Radio } from '@primer/react';
+import {
+  CalendarIcon,
+  PinIcon,
+  TagIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  PlusIcon
+} from '@primer/octicons-react';
 
 export function DayView() {
   interface Item {
@@ -9,6 +16,35 @@ export function DayView() {
     end: string;
     color: string;
   }
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (isRunning) {
+      interval = setInterval(() => {
+        setElapsedTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isRunning]);
+
+  const formatTime = (time: number) => {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const toggleTimer = () => {
+    setIsRunning(!isRunning);
+  };
   const [newTaskName, setNewTaskName] = useState<string>('');
   const [newTaskPriority, setNewTaskPriority] = useState<string>('');
   const [newTaskType, setNewTaskType] = useState<string>('');
@@ -39,7 +75,7 @@ export function DayView() {
           ? parseInt(hours[index - 2]) + 1
           : parseInt(hours[index - 2]);
       const exactHourToString = `${exactHour.toString()}:${exactMinute}`;
-      if (handleName === 'AFK' || handleName === 'ACTIVITY') {
+      if (handleName === 'Activity') {
         setStartTime(exactHourToString);
       } else {
         setNewStartTime(exactHourToString);
@@ -66,7 +102,7 @@ export function DayView() {
           ? parseInt(hours[index - 2]) + 1
           : parseInt(hours[index - 2]);
       const exactHourToString = `${exactHour.toString()}:${exactMinute}`;
-      if (handleName === 'AFK' || handleName === 'ACTIVITY') {
+      if (handleName === 'Activity') {
         handleSubmitRange(startTime, exactHourToString);
       } else {
         setNewEndTime(exactHourToString);
@@ -178,24 +214,15 @@ export function DayView() {
   ]);
   const headers = [
     {
-      name: 'AFK',
-      width: '20px',
+      name: 'Activity',
       items: items
     },
     {
-      name: 'ACTIVITY',
-      width: '100%',
-      items: items
-    },
-    {
-      name: 'PLAN',
-      width: '100%',
+      name: 'Planning',
       items: planData
     }
   ];
-  // const [scale, setScale] = useState(1);
-  // const [dragStartCell, setDragStartCell] = useState(null);
-  // const [dragEndCell, setDragEndCell] = useState(null);
+
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
   const startRef = useRef<HTMLInputElement>(null);
@@ -245,120 +272,150 @@ export function DayView() {
   return (
     <Box
       sx={{
-        padding: '50px'
+        padding: '50px',
+        backgroundColor: '#E5E5E5',
+        display: 'flex',
+        gap: 4
       }}
     >
-      <Text
-        sx={{
-          fontSize: '32px',
-          fontWeight: 'bold',
-          opacity: '70%'
-        }}
-      >
-        {`${getCurrentDayOfWeek()} ${currentDate}`}
-      </Text>
       <Box
         sx={{
-          marginTop: 2,
-          display: 'flex',
-          columnGap: 4
+          flex: 9,
+          backgroundColor: 'white',
+          padding: '40px'
         }}
       >
-        <TextInput
-          placeholder='hh:mm'
-          ref={startRef}
+        <Text
           sx={{
-            width: '200px',
-            height: '40px',
-            border: '1px solid #ccc'
+            fontSize: '28px',
+            fontWeight: '500',
+            lineHeight: '28px',
+            borderBottom: '1px solid #ccc',
+            display: 'block',
+            paddingBottom: 3
           }}
-          onChange={(e) => setStartTime(e.target.value)}
-        />
-        <TextInput
-          placeholder='hh:mm'
-          ref={endRef}
-          sx={{
-            width: '200px',
-            height: '40px',
-            border: '1px solid #ccc'
-          }}
-          onChange={(e) => setEndTime(e.target.value)}
-        />
-        <Button
-          sx={{
-            width: '200px',
-            height: '40px',
-            border: '1px solid #ccc',
-            backgroundColor: 'rgb(254 226 226)'
-          }}
-          onClick={() => handleSubmitRange(startTime, endTime)}
         >
-          Submit
-        </Button>
-        <Button
-          sx={{
-            width: '200px',
-            height: '40px',
-            border: '1px solid #ccc',
-            backgroundColor: 'rgb(254 226 226)'
-          }}
-          onClick={() => setHours(hour)}
-        >
-          Reset
-        </Button>
-      </Box>
-      <Box
-        sx={{
-          height: 'fit-content',
-          overflowY: 'auto',
-          padding: '50px',
-          display: 'flex',
-          gap: 8
-        }}
-      >
+          Homepage
+        </Text>
         <Box
           sx={{
-            flex: 8,
-            display: 'flex'
+            marginTop: '32px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px'
+          }}
+        >
+          <Text
+            sx={{
+              fontWeight: 'bold'
+            }}
+          >
+            Time Tracking
+          </Text>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4
+            }}
+          >
+            <Text
+              sx={{
+                opacity: '70%'
+              }}
+            >
+              {`${getCurrentDayOfWeek()}, ${currentDate}`}
+            </Text>
+            <Button>Today</Button>
+            <ButtonGroup>
+              <Button>
+                <ArrowLeftIcon />
+              </Button>
+              <Button>
+                <CalendarIcon />
+              </Button>
+              <Button>
+                <ArrowRightIcon />
+              </Button>
+            </ButtonGroup>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            marginTop: 2,
+            display: 'flex',
+            columnGap: 4
+          }}
+        >
+          <TextInput
+            placeholder='hh:mm'
+            ref={startRef}
+            sx={{
+              width: '200px',
+              height: '40px',
+              border: '1px solid #ccc'
+            }}
+            onChange={(e) => setStartTime(e.target.value)}
+          />
+          <TextInput
+            placeholder='hh:mm'
+            ref={endRef}
+            sx={{
+              width: '200px',
+              height: '40px',
+              border: '1px solid #ccc'
+            }}
+            onChange={(e) => setEndTime(e.target.value)}
+          />
+          <Button
+            sx={{
+              width: '200px',
+              height: '40px',
+              border: '1px solid #ccc',
+              backgroundColor: 'rgb(163 230 53)'
+            }}
+            onClick={() => handleSubmitRange(startTime, endTime)}
+          >
+            Submit
+          </Button>
+          <Button
+            sx={{
+              width: '200px',
+              height: '40px',
+              border: '1px solid #ccc',
+              backgroundColor: 'rgb(163 230 53)'
+            }}
+            onClick={() => setHours(hour)}
+          >
+            Reset
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            height: 'fit-content',
+            overflowY: 'auto',
+            padding: '50px'
           }}
         >
           <Box
             sx={{
-              width: '50px',
-              flexShrink: 0
+              display: 'flex'
             }}
           >
             <Box
               sx={{
-                height: '40px',
-                textAlign: 'right',
-                fontSize: '14px',
-                position: 'relative',
-                paddingLeft: '8px'
+                width: '50px',
+                flexShrink: 0
               }}
             >
-              <Text
-                sx={{
-                  position: 'absolute',
-                  bottom: 0,
-                  transform: 'translateY(50%) translateX(-80px)',
-                  userSelect: 'none'
-                }}
-              >
-                GMT+7
-              </Text>
-            </Box>
-            {hours.map((hour, index) => (
               <Box
-                key={index}
                 sx={{
-                  height: '60px',
-                  paddingLeft: '8px',
-                  position: 'relative',
+                  height: '40px',
                   textAlign: 'right',
                   fontSize: '14px',
-                  borderRight: '1px solid #ccc',
-                  borderBottom: '1px solid transparent'
+                  position: 'relative',
+                  paddingLeft: '8px'
                 }}
               >
                 <Text
@@ -369,171 +426,219 @@ export function DayView() {
                     userSelect: 'none'
                   }}
                 >
-                  {hour}
+                  GMT+7
                 </Text>
               </Box>
-            ))}
-          </Box>
-          <Box sx={{ flex: '1' }}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: '5rem 1fr 1fr',
-                justifyItems: 'center'
-              }}
-            >
-              {headers.map((header, i) => (
+              {hours.map((hour, index) => (
                 <Box
-                  key={i}
+                  key={index}
                   sx={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    width: '100%',
-                    textAlign: 'center',
-                    position: 'relative'
+                    height: '60px',
+                    paddingLeft: '8px',
+                    position: 'relative',
+                    textAlign: 'right',
+                    fontSize: '14px',
+                    borderRight: '1px solid #ccc',
+                    borderBottom: '1px solid transparent'
                   }}
                 >
-                  <Box
+                  <Text
                     sx={{
-                      padding: 2,
-                      borderBottom: '1px solid #ccc',
+                      position: 'absolute',
+                      bottom: 0,
+                      transform: 'translateY(50%) translateX(-80px)',
+                      userSelect: 'none'
+                    }}
+                  >
+                    {hour}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+            <Box sx={{ flex: '1' }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  justifyItems: 'center'
+                }}
+              >
+                {headers.map((header, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr',
+                      width: '100%',
+                      textAlign: 'left',
                       position: 'relative'
                     }}
                   >
-                    {header.name}
-                    {i === 0 && (
+                    <Box
+                      sx={{
+                        padding: 2,
+                        borderBottom: '1px solid #ccc',
+                        position: 'relative',
+                        fontWeight: 'bold',
+                        backgroundColor: 'rgb(228 228 231)',
+                        borderRadius: '5px 5px 0 0'
+                      }}
+                    >
+                      {header.name}
+                      {i === headers.length - 1 && (
+                        <Text
+                          sx={{
+                            position: 'absolute',
+                            bottom: 0,
+                            right: 0,
+                            width: '1px',
+                            height: '20px',
+                            backgroundColor: '#ccc'
+                          }}
+                        />
+                      )}
                       <Text
                         sx={{
                           position: 'absolute',
                           bottom: 0,
                           left: 0,
-                          transform: 'translateX(-75%) translateY(1px)',
-                          width: '20px',
-                          height: '1px',
-                          backgroundColor: '#ccc'
-                        }}
-                      ></Text>
-                    )}
-                    {i === headers.length - 1 && (
-                      <Text
-                        sx={{
-                          position: 'absolute',
-                          bottom: 0,
-                          right: 0,
+                          transform: 'translateX(-1px)',
                           width: '1px',
                           height: '20px',
                           backgroundColor: '#ccc'
                         }}
                       />
-                    )}
-                    <Text
-                      sx={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        transform: 'translateX(-1px)',
-                        width: '1px',
-                        height: '20px',
-                        backgroundColor: '#ccc'
-                      }}
-                    />
-                  </Box>
-                  {hours.map((hour, index) => (
-                    <Box
-                      key={index}
-                      id={hour}
-                      sx={{
-                        height: '60px',
-                        border: '1px solid #ccc',
-                        position: 'relative',
-                        borderTop: 0,
-                        borderLeft: 0,
-                        zIndex: 3
-                      }}
-                      draggable
-                      onDragStart={handleDragStart(header.name, hour)}
-                      onDragEnd={handleDragEnd(header.name)}
-                    >
-                      {i === 0 && (
-                        <Text
-                          sx={{
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            transform: 'translateX(-75%) translateY(1px)',
-                            width: '20px',
-                            height: '1px',
-                            backgroundColor: '#ccc'
-                          }}
-                        />
-                      )}
                     </Box>
-                  ))}
-                  {header.items
-                    .filter((item) => filterItems(item))
-                    .map((item, index) => (
+                    {hours.map((hour, index) => (
                       <Box
                         key={index}
+                        id={hour}
                         sx={{
-                          width: '80%',
-                          height: placeItem(item).height,
-                          backgroundColor: item.color,
-                          position: 'absolute',
-                          top: placeItem(item).top,
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          borderRadius: '4px',
+                          height: '60px',
                           border: '1px solid #ccc',
-                          boxShadow: '0 0 4px 0 rgba(0, 0, 0, 0.2)',
-                          //   userSelect: 'none',
-                          cursor: 'pointer'
+                          position: 'relative',
+                          borderTop: 0,
+                          borderLeft: 0,
+                          zIndex: 3
                         }}
-                      >
-                        {item.title}
-                      </Box>
+                        draggable
+                        onDragStart={handleDragStart(header.name, hour)}
+                        onDragEnd={handleDragEnd(header.name)}
+                      ></Box>
                     ))}
-                </Box>
-              ))}
+                    {header.items
+                      .filter((item) => filterItems(item))
+                      .map((item, index) => (
+                        <Box
+                          key={index}
+                          sx={{
+                            width: '80%',
+                            height: placeItem(item).height,
+                            backgroundColor: item.color,
+                            position: 'absolute',
+                            top: placeItem(item).top,
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc',
+                            boxShadow: '0 0 4px 0 rgba(0, 0, 0, 0.2)',
+                            //   userSelect: 'none',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {item.title}
+                        </Box>
+                      ))}
+                  </Box>
+                ))}
+              </Box>
             </Box>
           </Box>
         </Box>
+      </Box>
+      <Box
+        sx={{
+          flex: 3
+        }}
+      >
         <Box
           sx={{
-            flex: 4
+            padding: 2,
+            borderBottom: '1px solid #ccc',
+            backgroundColor: 'white'
           }}
         >
+          <Text
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '28px',
+              display: 'block',
+              borderBottom: '1px solid #ccc',
+              marginBottom: '32px'
+            }}
+          >
+            Session timer
+          </Text>
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              backgroundColor: 'rgb(203 213 225)',
-              paddingX: 5,
-              paddingY: 2,
-              borderRadius: '10px 10px 0 0'
+              flexDirection: 'column',
+              alignItems: 'center'
             }}
           >
+            <Text>Time Elapse</Text>
             <Text
               sx={{
-                fontWeight: 'bold',
-                fontSize: '32px'
+                fontSize: '40px',
+                fontWeight: 'bold'
               }}
             >
-              Task list
+              {formatTime(elapsedTime)}
             </Text>
-            <Box
-              sx={{
-                color: 'green',
-                cursor: 'pointer'
-              }}
-              onClick={() => setIsOpen(true)}
-            >
-              <DiffAddedIcon size={32} />
-            </Box>
           </Box>
+        </Box>
+        <Button
+          sx={{
+            backgroundColor: 'black',
+            paddingY: 5,
+            borderRadius: 0,
+            color: 'white',
+            width: '100%',
+            fontWeight: 'bold',
+            marginBottom: 5
+          }}
+          onClick={toggleTimer}
+        >
+          {isRunning ? 'Stop Session' : 'Start Session'}
+        </Button>
+        <Box
+          sx={{
+            paddingX: 5,
+            paddingY: 2,
+            backgroundColor: 'white'
+          }}
+        >
+          <Text
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '32px'
+            }}
+          >
+            Today Task
+          </Text>
           {planData.map((plan, index) => (
-            <Box key={index} sx={{ padding: '20px', border: '1px solid #ccc', display: 'flex', gap: 3 }}>
-              <Checkbox sx={{ width: '26px', height: '26px' }} />
+            <Box
+              key={index}
+              sx={{
+                padding: '20px',
+                border: '1px solid #ccc',
+                display: 'flex',
+                gap: 3,
+                backgroundColor: 'rgb(228 228 231)',
+                marginBottom: 5
+              }}
+            >
+              <Radio sx={{ width: '26px', height: '26px' }} value='default' />
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Text sx={{ fontSize: '20px', fontWeight: 'bold' }}>{plan.title}</Text>
                 <ButtonGroup
@@ -563,68 +668,87 @@ export function DayView() {
               </Box>
             </Box>
           ))}
-          <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
-            <Dialog.Header
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              opacity: '70%',
+              cursor: 'pointer'
+            }}
+            onClick={() => setIsOpen(true)}
+          >
+            <PlusIcon size={32} />
+            <Text
               sx={{
-                backgroundColor: '#8ae670'
+                fontSize: 4
               }}
             >
-              Please enter new planning task!
-            </Dialog.Header>
+              Add a task
+            </Text>
+          </Box>
+        </Box>
+
+        <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
+          <Dialog.Header
+            sx={{
+              backgroundColor: '#8ae670'
+            }}
+          >
+            Please enter new planning task!
+          </Dialog.Header>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 3,
+              padding: 20
+            }}
+          >
+            <TextInput
+              placeholder='New task name...'
+              value={newTaskName}
+              onChange={(e) => setNewTaskName(e.target.value)}
+            />
+            <Select value={newTaskPriority} onChange={(e) => setNewTaskPriority(e.target.value)}>
+              <Select.Option value='High'>High</Select.Option>
+              <Select.Option value='Medium'>Medium</Select.Option>
+              <Select.Option value='Low'>Low</Select.Option>
+            </Select>
+            <TextInput
+              placeholder='New task type...'
+              value={newTaskType}
+              onChange={(e) => setNewTaskType(e.target.value)}
+            />
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: 'column',
-                gap: 3,
-                padding: 20
+                gap: 2
               }}
             >
               <TextInput
-                placeholder='New task name...'
-                value={newTaskName}
-                onChange={(e) => setNewTaskName(e.target.value)}
+                value={newStartTime}
+                onChange={(e) => setNewStartTime(e.target.value)}
+                placeholder='Start time...'
               />
-              <Select value={newTaskPriority} onChange={(e) => setNewTaskPriority(e.target.value)}>
-                <Select.Option value='High'>High</Select.Option>
-                <Select.Option value='Medium'>Medium</Select.Option>
-                <Select.Option value='Low'>Low</Select.Option>
-              </Select>
               <TextInput
-                placeholder='New task type...'
-                value={newTaskType}
-                onChange={(e) => setNewTaskType(e.target.value)}
+                value={newEndTime}
+                onChange={(e) => setNewEndTime(e.target.value)}
+                placeholder='End time...'
               />
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 2
-                }}
-              >
-                <TextInput
-                  value={newStartTime}
-                  onChange={(e) => setNewStartTime(e.target.value)}
-                  placeholder='Start time...'
-                />
-                <TextInput
-                  value={newEndTime}
-                  onChange={(e) => setNewEndTime(e.target.value)}
-                  placeholder='End time...'
-                />
-              </Box>
-              <Button
-                sx={{
-                  '&:hover': {
-                    color: 'green',
-                    fontWeight: 'bold'
-                  }
-                }}
-                onClick={handleAddTask}
-              >
-                Add task
-              </Button>
             </Box>
-          </Dialog>
-        </Box>
+            <Button
+              sx={{
+                '&:hover': {
+                  color: 'green',
+                  fontWeight: 'bold'
+                }
+              }}
+              onClick={handleAddTask}
+            >
+              Add task
+            </Button>
+          </Box>
+        </Dialog>
       </Box>
     </Box>
   );
