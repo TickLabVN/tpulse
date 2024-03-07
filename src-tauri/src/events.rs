@@ -11,7 +11,7 @@ pub struct AFKEvent {
 
 #[derive(Debug)]
 pub struct WindowInformation {
-    pub time: u64,
+    pub time: u128,
     pub title: Option<String>,
     pub class: Option<Vec<String>>,
     pub exec_path: Option<String>,
