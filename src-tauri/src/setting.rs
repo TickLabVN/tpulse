@@ -3,9 +3,19 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 
-#[derive(Default, Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct AppConfig {
     settings: HashMap<Setting, Option<String>>,
+}
+
+impl Default for AppConfig {
+    fn default() -> Self {
+        let mut settings = HashMap::new();
+        settings.insert(Setting::PollTime, Some("500".to_string()));
+        settings.insert(Setting::Timeout, Some("1000".to_string()));
+
+        AppConfig { settings }
+    }
 }
 
 #[derive(Debug, Hash, Eq, PartialEq, Serialize, Deserialize)]
@@ -47,10 +57,8 @@ pub fn read_setting_from_file<T>(
 where
     T: serde::de::DeserializeOwned,
 {
-    let settings = read_all_settings_from_file().unwrap_or_else(|err| {
-        eprintln!("Error reading configuration: {}", err);
-        AppConfig::default()
-    });
+    let settings = read_all_settings_from_file()
+        .unwrap_or_else(|err| handle_setting_error(Setting::Timeout, &err, AppConfig::default()));
 
     if let Some(setting_value) = settings.get_setting(&setting_name).cloned().flatten() {
         let parsed_value: T = serde_json::from_str(&setting_value)?;
@@ -64,10 +72,8 @@ pub fn write_setting_to_file(
     setting_name: Setting,
     new_value: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let mut settings = read_all_settings_from_file().unwrap_or_else(|err| {
-        eprintln!("Error reading configuration: {}", err);
-        AppConfig::default()
-    });
+    let mut settings = read_all_settings_from_file()
+        .unwrap_or_else(|err| handle_setting_error(Setting::Timeout, &err, AppConfig::default()));
     settings.set_setting(setting_name, Some(new_value));
 
     write_all_settings_to_file(&settings)?;
