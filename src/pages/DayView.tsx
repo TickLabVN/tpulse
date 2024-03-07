@@ -47,7 +47,7 @@ export function DayView() {
   };
   const [divHeight, setDivHeight] = useState<number>(0);
   const [divWidth, setDivWidth] = useState<number>(0);
-  const [isResizing, setIsResizing] = useState(false);
+  const [isResizing, setIsResizing] = useState<boolean>(false);
   const [divLeft, setDivLeft] = useState<number>(0);
   const [divTop, setDivTop] = useState<number>(0);
 
@@ -65,14 +65,18 @@ export function DayView() {
     const currentDayOfWeek = daysOfWeek[currentDate.getDay()];
     return currentDayOfWeek;
   };
+  const handleMouseClick = () => {
+    setIsResizing(!isResizing);
+  };
   const handleMouseMove = (e: MouseEvent) => {
     if (isResizing) {
       setDivWidth((prev) => (e.clientX - prev === 0 ? 0 : e.clientX - divLeft));
       setDivHeight((prev) => (e.clientY - prev === 0 ? 0 : e.clientY - divTop));
+    } else {
+      return;
     }
   };
   const handleDragStart = (handleName: string, hour: string) => (e: MouseEvent) => {
-    setIsResizing(true);
     setDivLeft(e.clientX);
     setDivTop(e.clientY);
     const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
@@ -100,11 +104,8 @@ export function DayView() {
     }
   };
   const handleDragEnd = (handleName: string) => (e: MouseEvent) => {
-    if (isResizing) {
-      setIsResizing(false);
-      setDivWidth(0);
-      setDivHeight(0);
-    }
+    setDivWidth(0);
+    setDivHeight(0);
     const endElement = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
     const hour = endElement.id;
     const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
@@ -156,6 +157,7 @@ export function DayView() {
     setPlanData([...planData, newTask]);
     resetNewTask();
     setIsOpen(false);
+    setIsResizing(false);
   };
 
   const placeItem = (item: Item) => {
@@ -569,8 +571,9 @@ export function DayView() {
                             borderLeft: 0,
                             zIndex: 3
                           }}
-                          onMouseUp={handleDragStart(header.name, hour)}
-                          onMouseMove={handleMouseMove}
+                          onClick={handleMouseClick}
+                          onMouseUp={!isResizing && handleDragStart(header.name, hour)}
+                          onMouseMove={isResizing && handleMouseMove}
                           onMouseDown={handleDragEnd(header.name)}
                         ></Box>
                       ))}
@@ -699,6 +702,8 @@ export function DayView() {
                   backgroundColor: 'rgb(228 228 231)',
                   marginBottom: 5
                 }}
+                draggable
+                onDragEnd={() => setIsOpen(true)}
               >
                 <Radio sx={{ width: '26px', height: '26px' }} value='default' />
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
