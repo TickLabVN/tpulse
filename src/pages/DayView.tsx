@@ -10,8 +10,14 @@ import {
   ArrowRightIcon,
   PlusIcon
 } from '@primer/octicons-react';
+import moment from 'moment';
+//import { useZoom } from '@hooks';
 
 export function DayView() {
+  // const zoomRef = useRef<HTMLDivElement>(null) as React.MutableRefObject<HTMLDivElement>;
+  // // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+  // const dimensions = useZoom(zoomRef);
+
   interface Item {
     title: string;
     start: string;
@@ -63,8 +69,6 @@ export function DayView() {
   const [startElement, setStartElement] = useState<number>(0);
   const [startWidenElement, setStartWidenElement] = useState<number>(0);
 
-  const now = new Date();
-  const currentDate = now.toLocaleDateString();
   const handleWidenStart = (e: React.MouseEvent<HTMLElement, MouseEvent> | React.TouchEvent<HTMLElement>) => {
     let topEdgeElement = 0;
     if ('clientY' in e) {
@@ -112,12 +116,7 @@ export function DayView() {
       setPlanData(newPlanData);
       setIsResizing(false);
     };
-  const getCurrentDayOfWeek = (): string => {
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const currentDate = new Date();
-    const currentDayOfWeek = daysOfWeek[currentDate.getDay()];
-    return currentDayOfWeek;
-  };
+
   const handleMouseClick = () => {
     setIsResizing(!isResizing);
   };
@@ -347,7 +346,6 @@ export function DayView() {
     const parsedEndTime = convertTimeToNumber(endInput);
     if (isNaN(parsedStartTime) || isNaN(parsedEndTime) || parsedStartTime >= parsedEndTime) {
       // Handle invalid input or show an error message
-      console.error('Invalid input. Please make sure the start time is before the end time.');
       return;
     }
     const stepSize = (parsedEndTime - parsedStartTime) / 12;
@@ -381,6 +379,7 @@ export function DayView() {
         }}
       >
         <Box
+          // ref={zoomRef}
           sx={{
             flex: 9,
             backgroundColor: 'white',
@@ -427,7 +426,7 @@ export function DayView() {
                   opacity: '70%'
                 }}
               >
-                {`${getCurrentDayOfWeek()}, ${currentDate}`}
+                {`${moment().format('dddd')}, ${moment().format('L')}`}
               </Text>
               <Button>Today</Button>
               <ButtonGroup>
