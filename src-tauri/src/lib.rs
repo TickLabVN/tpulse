@@ -1,5 +1,6 @@
 pub mod event_handler;
 pub mod events;
+pub mod google_calendar;
 pub mod initializer;
 pub mod metrics_handler;
 pub mod setting;
