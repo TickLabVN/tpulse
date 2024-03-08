@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { TextInput, Text, Box, Button, Dialog, Select, ButtonGroup, Radio } from '@primer/react';
+import { TextInput, Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
+import { Resizable } from 're-resizable';
+import { TaskDialog } from './TaskDialog';
 import {
   CalendarIcon,
   PinIcon,
@@ -45,6 +47,7 @@ export function DayView() {
   const toggleTimer = () => {
     setIsRunning(!isRunning);
   };
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [divHeight, setDivHeight] = useState<number>(0);
   const [divWidth, setDivWidth] = useState<number>(0);
   const [isResizing, setIsResizing] = useState<boolean>(false);
@@ -57,8 +60,58 @@ export function DayView() {
   const [newStartTime, setNewStartTime] = useState<string>('');
   const [newEndTime, setNewEndTime] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [startElement, setStartElement] = useState<number>(0);
+  const [startWidenElement, setStartWidenElement] = useState<number>(0);
+
   const now = new Date();
   const currentDate = now.toLocaleDateString();
+  const handleWidenStart = (e: React.MouseEvent<HTMLElement, MouseEvent> | React.TouchEvent<HTMLElement>) => {
+    let topEdgeElement = 0;
+    if ('clientY' in e) {
+      topEdgeElement = e.clientY;
+    } else {
+      topEdgeElement = e.touches[0].clientY;
+    }
+    setStartWidenElement(topEdgeElement);
+    setIsResizing(false);
+  };
+  const handleWidenEnd = (end: string, index: number) => (e: MouseEvent | TouchEvent) => {
+    let bottomEdgeElement = 0;
+    if (e instanceof MouseEvent) {
+      bottomEdgeElement = e.clientY;
+    }
+    if (e instanceof TouchEvent) {
+      bottomEdgeElement = e.touches[0].clientY;
+    }
+    const distance = bottomEdgeElement - startWidenElement;
+    const eachTimeRange = Math.round(convertTimeToNumber(hours[1]) - convertTimeToNumber(hours[0])) / 60; // 1px ung voi bao nhieu gio (gio/px)
+    const timeRange = distance * eachTimeRange;
+    const newEndTime = convertNumberToTime(convertTimeToNumber(end) + timeRange);
+    const newPlanData = [...planData];
+    newPlanData[index].end = newEndTime;
+    setPlanData(newPlanData);
+    setIsResizing(false);
+  };
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    e.currentTarget.style.opacity = '0.5';
+    setStartElement(e.clientY);
+  };
+  const handleDragEnd =
+    (start: string, end: string, index: number) => (e: React.DragEvent<HTMLDivElement>) => {
+      e.currentTarget.style.opacity = '1';
+      const endElement = e.clientY;
+      const distance = endElement - startElement; // khoang cach giua 2 diem start va end khi drag (px)
+      const eachTimeRange = Math.round(convertTimeToNumber(hours[1]) - convertTimeToNumber(hours[0])) / 60; // 1px ung voi bao nhieu gio (gio/px)
+      const timeRange = distance * eachTimeRange;
+      const newPlanningStartTime = convertNumberToTime(convertTimeToNumber(start) + timeRange);
+      const newPlanningEndTime = convertNumberToTime(convertTimeToNumber(end) + timeRange);
+      const newPlanData = [...planData];
+      newPlanData[index].start = newPlanningStartTime;
+      newPlanData[index].end = newPlanningEndTime;
+      setPlanData(newPlanData);
+      setIsResizing(false);
+    };
   const getCurrentDayOfWeek = (): string => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const currentDate = new Date();
@@ -76,7 +129,7 @@ export function DayView() {
       return;
     }
   };
-  const handleDragStart = (handleName: string, hour: string) => (e: MouseEvent) => {
+  const handleMouseUp = (handleName: string, hour: string) => (e: MouseEvent) => {
     setDivLeft(e.clientX);
     setDivTop(e.clientY);
     const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
@@ -103,7 +156,7 @@ export function DayView() {
       alert('Error');
     }
   };
-  const handleDragEnd = (handleName: string) => (e: MouseEvent) => {
+  const handleMouseDown = (handleName: string) => (e: MouseEvent) => {
     setDivWidth(0);
     setDivHeight(0);
     const endElement = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
@@ -129,7 +182,9 @@ export function DayView() {
       } else {
         setNewEndTime(exactHourToString);
         if (newStartTime && newEndTime) {
+          setMousePosition({ x: e.pageX, y: e.pageY });
           setIsOpen(true);
+          setIsResizing(false);
         }
       }
     } else {
@@ -302,9 +357,6 @@ export function DayView() {
     });
     setHours(newHour);
   };
-  // const handleDoubleClick = () => {
-  //   setHours(hour);
-  // };
 
   return (
     <>
@@ -568,24 +620,24 @@ export function DayView() {
                             border: '1px solid #ccc',
                             position: 'relative',
                             borderTop: 0,
-                            borderLeft: 0,
-                            zIndex: 3
+                            borderLeft: 0
+                            // zIndex: 3
                           }}
                           onClick={handleMouseClick}
-                          onMouseUp={!isResizing && handleDragStart(header.name, hour)}
+                          onMouseUp={!isResizing && handleMouseUp(header.name, hour)}
                           onMouseMove={isResizing && handleMouseMove}
-                          onMouseDown={handleDragEnd(header.name)}
+                          onMouseDown={handleMouseDown(header.name)}
                         ></Box>
                       ))}
                       {header.items
                         .filter((item) => filterItems(item))
                         .map((item, index) => (
-                          <Box
-                            key={index}
-                            sx={{
+                          <Resizable
+                            size={{
                               width: '80%',
-                              height: placeItem(item).height,
-                              backgroundColor: item.color,
+                              height: placeItem(item).height
+                            }}
+                            style={{
                               position: 'absolute',
                               top: placeItem(item).top,
                               left: '50%',
@@ -595,24 +647,49 @@ export function DayView() {
                               color: 'white',
                               userSelect: 'none',
                               cursor: 'pointer',
-                              borderLeft: '5px solid rgb(66, 133, 244)',
-                              padding: '5px'
+                              borderLeft: '5px solid rgb(66, 133, 244)'
                             }}
+                            key={index}
+                            enable={{
+                              top: false,
+                              right: false,
+                              bottom: header.name === 'Planning' ? true : false,
+                              left: false,
+                              topRight: false,
+                              bottomRight: false,
+                              bottomLeft: false,
+                              topLeft: false
+                            }}
+                            onResizeStart={handleWidenStart}
+                            onResizeStop={handleWidenEnd(item.end, index)}
                           >
                             <Box
+                              height='100%'
                               sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                fontWeight: 'bold'
+                                padding: '5px',
+                                backgroundColor: item.color
                               }}
+                              draggable={header.name === 'Planning' ? true : false}
+                              onDragStart={header.name === 'Planning' && handleDragStart}
+                              onDragEnd={
+                                header.name === 'Planning' && handleDragEnd(item.start, item.end, index)
+                              }
                             >
-                              <Text>{item.title}</Text>
-                              <Text>
-                                {item.start.split(':')[0] + ':' + item.start.split(':')[1]} -{' '}
-                                {item.end.split(':')[0] + ':' + item.end.split(':')[1]}
-                              </Text>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  fontWeight: 'bold'
+                                }}
+                              >
+                                <Text>{item.title}</Text>
+                                <Text>
+                                  {item.start.split(':')[0] + ':' + item.start.split(':')[1]} -{' '}
+                                  {item.end.split(':')[0] + ':' + item.end.split(':')[1]}
+                                </Text>
+                              </Box>
                             </Box>
-                          </Box>
+                          </Resizable>
                         ))}
                     </Box>
                   ))}
@@ -702,10 +779,8 @@ export function DayView() {
                   backgroundColor: 'rgb(228 228 231)',
                   marginBottom: 5
                 }}
-                draggable
-                onDragEnd={() => setIsOpen(true)}
               >
-                <Radio sx={{ width: '26px', height: '26px' }} value='default' />
+                <Radio sx={{ width: '26px', height: '26px' }} value='default' name='item' />
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Text sx={{ fontSize: '20px', fontWeight: 'bold' }}>{plan.title}</Text>
                   <ButtonGroup
@@ -754,74 +829,19 @@ export function DayView() {
               </Text>
             </Box>
           </Box>
-
-          <Dialog
-            isOpen={isOpen}
-            onDismiss={() => {
-              setIsOpen(false);
-              resetNewTask();
-            }}
-          >
-            <Dialog.Header
-              sx={{
-                backgroundColor: '#8ae670'
-              }}
-            >
-              Please enter new planning task!
-            </Dialog.Header>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 3,
-                padding: 20
-              }}
-            >
-              <TextInput
-                placeholder='New task name...'
-                value={newTaskName}
-                onChange={(e) => setNewTaskName(e.target.value)}
-              />
-              <Select value={newTaskPriority} onChange={(e) => setNewTaskPriority(e.target.value)}>
-                <Select.Option value='High'>High</Select.Option>
-                <Select.Option value='Medium'>Medium</Select.Option>
-                <Select.Option value='Low'>Low</Select.Option>
-              </Select>
-              <TextInput
-                placeholder='New task type...'
-                value={newTaskType}
-                onChange={(e) => setNewTaskType(e.target.value)}
-              />
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 2
-                }}
-              >
-                <TextInput
-                  value={newStartTime}
-                  onChange={(e) => setNewStartTime(e.target.value)}
-                  placeholder='Start time...'
-                />
-                <TextInput
-                  value={newEndTime}
-                  onChange={(e) => setNewEndTime(e.target.value)}
-                  placeholder='End time...'
-                />
-              </Box>
-              <Button
-                sx={{
-                  '&:hover': {
-                    color: 'green',
-                    fontWeight: 'bold'
-                  }
-                }}
-                onClick={handleAddTask}
-              >
-                Add task
-              </Button>
-            </Box>
-          </Dialog>
+          {isOpen && (
+            <TaskDialog
+              handleAddTask={handleAddTask}
+              setNewTaskName={setNewTaskName}
+              setNewTaskType={setNewTaskType}
+              setNewTaskPriority={setNewTaskPriority}
+              setNewStartTime={setNewStartTime}
+              setNewEndTime={setNewEndTime}
+              setIsOpen={setIsOpen}
+              mousePosition={mousePosition}
+              setIsResizing={setIsResizing}
+            />
+          )}
         </Box>
       </Box>
     </>
