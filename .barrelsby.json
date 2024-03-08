@@ -1,5 +1,6 @@
 {
     "directory": [
+        "./src/hooks",
         "./src/pages"
     ],
     "delete": true
