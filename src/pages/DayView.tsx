@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useState, useRef, useEffect } from 'react';
 import { TextInput, Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
 import { Resizable } from 're-resizable';
@@ -118,17 +119,18 @@ export function DayView() {
     };
 
   const handleMouseClick = () => {
-    setIsResizing(!isResizing);
+    // setIsResizing((prev) => !prev);
   };
   const handleMouseMove = (e: MouseEvent) => {
     if (isResizing) {
-      setDivWidth((prev) => (e.clientX - prev === 0 ? 0 : e.clientX - divLeft));
-      setDivHeight((prev) => (e.clientY - prev === 0 ? 0 : e.clientY - divTop));
-    } else {
-      return;
+      const newWidth = e.clientX - divLeft;
+      const newHeight = e.clientY - divTop;
+      setDivWidth(newWidth > 0 ? newWidth : 0);
+      setDivHeight(newHeight > 0 ? newHeight : 0);
     }
   };
   const handleMouseUp = (handleName: string, hour: string) => (e: MouseEvent) => {
+    setIsResizing(true);
     setDivLeft(e.clientX);
     setDivTop(e.clientY);
     const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
@@ -156,8 +158,9 @@ export function DayView() {
     }
   };
   const handleMouseDown = (handleName: string) => (e: MouseEvent) => {
-    setDivWidth(0);
-    setDivHeight(0);
+    setIsResizing(false);
+    setDivWidth((prev) => prev * 0);
+    setDivHeight((prev) => prev * 0);
     const endElement = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
     const hour = endElement.id;
     const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
@@ -367,7 +370,8 @@ export function DayView() {
           height: `${divHeight}px`,
           backgroundColor: 'black',
           zIndex: 100,
-          opacity: 0.5
+          opacity: 0.5,
+          pointerEvents: 'none'
         }}
       ></Box>
       <Box
@@ -644,9 +648,9 @@ export function DayView() {
                               borderRadius: '8px',
                               border: '1px solid #ccc',
                               color: 'white',
-                              userSelect: 'none',
                               cursor: 'pointer',
-                              borderLeft: '5px solid rgb(66, 133, 244)'
+                              borderLeft: '5px solid rgb(66, 133, 244)',
+                              pointerEvents: header.name === 'Planning' ? 'auto' : 'none'
                             }}
                             key={index}
                             enable={{
@@ -666,7 +670,8 @@ export function DayView() {
                               height='100%'
                               sx={{
                                 padding: '5px',
-                                backgroundColor: item.color
+                                backgroundColor: item.color,
+                                pointerEvents: header.name === 'Planning' ? 'auto' : 'none'
                               }}
                               draggable={header.name === 'Planning' ? true : false}
                               onDragStart={header.name === 'Planning' && handleDragStart}
