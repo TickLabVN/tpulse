@@ -10,6 +10,8 @@ use std::sync::{Arc, Mutex};
 use tokio::io::{AsyncWriteExt, BufReader};
 use tokio::net::TcpListener;
 
+use crate::setting::{handle_setting_error, read_setting, write_setting, Setting};
+
 #[derive(Debug, Deserialize)]
 pub struct CalendarInfo {
     pub id: String,
@@ -123,6 +125,7 @@ impl GoogleCalendar {
         // Generate PKCE challenge
         let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
         self.pkce_verifier = pkce_verifier.secret().clone();
+        let _ = write_setting(Setting::PkceVerifier, &self.pkce_verifier);
 
         // Start a local HTTP server to listen for the redirect URI
         let listener = TcpListener::bind("127.0.0.1:0").await?;
@@ -160,15 +163,32 @@ impl GoogleCalendar {
             code = handle_client(stream).await?;
         }
 
-        // Assign the authorization code to the struct
-        self.authorization_code = code;
+        // Assign the authorization code to the struct and setting.json
+        self.authorization_code = code.clone();
+        let _ = write_setting(
+            Setting::GoogleAuthorizationCode,
+            format!("\"{}\"", code).as_str(),
+        );
 
         Ok(())
     }
 
     // Function to authorize the GoogleCalendar struct
-    pub async fn authorize(&mut self) {
-        self.handle_authorization_code().await.unwrap();
+    async fn authorize(&mut self) {
+        let oauth_code: Option<String> = read_setting::<String>(Setting::GoogleAuthorizationCode)
+            .unwrap_or_else(|err| {
+                Some(handle_setting_error(
+                    Setting::GoogleAuthorizationCode,
+                    &err,
+                    "Invalid Google authorization code".to_string(),
+                ))
+            });
+        match oauth_code {
+            Some(code) => self.authorization_code = code,
+            None => {
+                self.handle_authorization_code().await.unwrap();
+            }
+        }
     }
 
     async fn is_access_token_valid(&self) -> bool {
@@ -189,6 +209,10 @@ impl GoogleCalendar {
 
     // Function to get the access token using the authorization code and OAuth2 client
     async fn get_access_token(&mut self) -> Result<String> {
+        if self.authorization_code.is_empty() {
+            self.authorize().await;
+        }
+
         if !self.is_access_token_valid().await {
             let code = &self.authorization_code;
             let pkce_verifier = PkceCodeVerifier::new(self.pkce_verifier.clone());

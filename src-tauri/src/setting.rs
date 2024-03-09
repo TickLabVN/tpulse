@@ -18,10 +18,13 @@ impl Default for AppConfig {
     }
 }
 
+// add new settings here
 #[derive(Debug, Hash, Eq, PartialEq, Serialize, Deserialize)]
 pub enum Setting {
     PollTime,
     Timeout,
+    GoogleAuthorizationCode,
+    PkceVerifier,
 }
 
 impl AppConfig {
@@ -51,9 +54,7 @@ fn write_all_settings_to_file(config: &AppConfig) -> Result<(), Box<dyn std::err
     Ok(())
 }
 
-pub fn read_setting_from_file<T>(
-    setting_name: Setting,
-) -> Result<Option<T>, Box<dyn std::error::Error>>
+pub fn read_setting<T>(setting_name: Setting) -> Result<Option<T>, Box<dyn std::error::Error>>
 where
     T: serde::de::DeserializeOwned,
 {
@@ -68,7 +69,7 @@ where
     }
 }
 
-pub fn write_setting_to_file(
+pub fn write_setting(
     setting_name: Setting,
     new_value: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {

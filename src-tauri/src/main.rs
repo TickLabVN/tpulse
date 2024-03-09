@@ -4,7 +4,7 @@
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
 use tauri_plugin_log::LogTarget;
-use tpulse::setting::read_setting_from_file;
+use tpulse::setting::read_setting;
 use tpulse::{
     event_handler::handle_events,
     events::UserMetric,
@@ -15,16 +15,14 @@ use tpulse::{
 };
 
 fn main() {
-    let poll_time: u64 = read_setting_from_file::<u64>(Setting::PollTime)
+    let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
         .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
         .unwrap_or_default();
 
-    let time_out: u64 = read_setting_from_file::<u64>(Setting::Timeout)
+    let time_out: u64 = read_setting::<u64>(Setting::Timeout)
         .unwrap_or_else(|err| Some(handle_setting_error(Setting::Timeout, &err, 100)))
         .unwrap_or_default();
 
-    println!("Poll Time: {}", poll_time);
-    println!("Timeout: {}", time_out);
     initialize_db();
 
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
