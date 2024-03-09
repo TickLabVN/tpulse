@@ -125,13 +125,18 @@ impl GoogleCalendar {
         // Generate PKCE challenge
         let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
         self.pkce_verifier = pkce_verifier.secret().clone();
-        let _ = write_setting(Setting::PkceVerifier, &self.pkce_verifier);
+        let _ = write_setting(
+            Setting::PkceVerifier,
+            format!("\"{}\"", self.pkce_verifier).as_str(),
+        );
 
         // Start a local HTTP server to listen for the redirect URI
         let listener = TcpListener::bind("127.0.0.1:0").await?;
         let local_addr = listener.local_addr()?;
         let port = local_addr.port();
         self.port = port;
+
+        let _ = write_setting(Setting::RedirectPort, &port.to_string());
 
         let redirect_url = format!("http://localhost:{}", port);
 
@@ -184,7 +189,38 @@ impl GoogleCalendar {
                 ))
             });
         match oauth_code {
-            Some(code) => self.authorization_code = code,
+            Some(code) => {
+                let pkce_verifier: String = read_setting::<String>(Setting::PkceVerifier)
+                    .unwrap_or_else(|err| {
+                        Some(handle_setting_error(
+                            Setting::PkceVerifier,
+                            &err,
+                            "Invalid Pkce Verifier secret".to_string(),
+                        ))
+                    })
+                    .unwrap_or_default();
+
+                let redirect_port: u16 = read_setting::<u16>(Setting::RedirectPort)
+                    .unwrap_or_else(|err| {
+                        Some(handle_setting_error(Setting::RedirectPort, &err, 0))
+                    })
+                    .unwrap_or_default();
+
+                let access_token: String = read_setting::<String>(Setting::GoogleAccessToken)
+                    .unwrap_or_else(|err| {
+                        Some(handle_setting_error(
+                            Setting::GoogleAccessToken,
+                            &err,
+                            "Invalid Google Access Token".into(),
+                        ))
+                    })
+                    .unwrap_or_default();
+
+                self.authorization_code = code;
+                self.pkce_verifier = pkce_verifier;
+                self.port = redirect_port;
+                self.access_token = access_token;
+            }
             None => {
                 self.handle_authorization_code().await.unwrap();
             }
@@ -232,6 +268,10 @@ impl GoogleCalendar {
 
             // Update the stored access token
             self.access_token = token_result.access_token().secret().to_string();
+            let _ = write_setting(
+                Setting::GoogleAccessToken,
+                &format!("\"{}\"", self.access_token),
+            );
         }
 
         Ok(self.access_token.clone())

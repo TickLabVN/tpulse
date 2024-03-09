@@ -25,6 +25,8 @@ pub enum Setting {
     Timeout,
     GoogleAuthorizationCode,
     PkceVerifier,
+    RedirectPort,
+    GoogleAccessToken,
 }
 
 impl AppConfig {
