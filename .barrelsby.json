@@ -1,7 +1,9 @@
 {
     "directory": [
+        "./src/constants",
         "./src/hooks",
-        "./src/pages"
+        "./src/pages",
+        "./src/utils"
     ],
     "delete": true
 }

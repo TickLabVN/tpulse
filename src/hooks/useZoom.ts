@@ -7,7 +7,7 @@ interface Dimension {
   height: number;
 }
 
-export function useZoom(ref: React.MutableRefObject<SVGSVGElement>) {
+export function useZoom(ref: React.MutableRefObject<HTMLElement>) {
   const [dimensions, setDimensions] = useState<Dimension>({
     width: 0,
     height: 0
@@ -30,13 +30,13 @@ export function useZoom(ref: React.MutableRefObject<SVGSVGElement>) {
 
     element.call(
       d3
-        .zoom<SVGSVGElement, unknown>()
+        .zoom<HTMLElement, unknown>()
         .extent([
           [0, 0],
           [dimensions.width, dimensions.height]
         ])
         .scaleExtent([0.5, 8])
-        .on('zoom', (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+        .on('zoom', (event: d3.D3ZoomEvent<HTMLElement, unknown>) => {
           g.attr('transform', event.transform.toString());
         })
     );

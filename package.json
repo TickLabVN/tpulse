@@ -21,14 +21,14 @@
     "@tanstack/react-router": "^1.18.1",
     "@tanstack/react-table": "^8.12.0",
     "@tauri-apps/api": "^1.5.3",
-    "d3": "^7.8.5",
     "antd": "^5.15.1",
-    "date-fns": "^3.3.1",
+    "d3": "^7.8.5",
     "moment": "^2.30.1",
     "re-resizable": "^6.9.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^6.1.8"
+    "react-toastify": "^10.0.4",
+    "styled-components": "5"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",

@@ -3,3 +3,4 @@
  */
 
 export * from './DayView';
+export * from './TaskDialog';
