@@ -1,14 +1,18 @@
+use std::io::{Read, Write};
+use std::net::{TcpListener, TcpStream};
+use std::sync::{Arc, Mutex};
+
+use reqwest::blocking::Client;
+use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
+
 use anyhow::Result;
 use oauth2::basic::BasicClient;
-use oauth2::reqwest::async_http_client;
+use oauth2::reqwest::http_client;
 use oauth2::{
     AuthUrl, AuthorizationCode, CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, Scope,
     TokenResponse, TokenUrl,
 };
 use serde::Deserialize;
-use std::sync::{Arc, Mutex};
-use tokio::io::{AsyncWriteExt, BufReader};
-use tokio::net::TcpListener;
 
 use crate::setting::{handle_setting_error, read_setting, write_setting, Setting};
 
@@ -67,49 +71,60 @@ impl GoogleCalendar {
     }
 
     // Function to handle the authorization code
-    async fn handle_authorization_code(&mut self) -> Result<()> {
-        async fn handle_client(stream: tokio::net::TcpStream) -> Result<String> {
+    fn handle_authorization_code(&mut self) -> Result<()> {
+        fn handle_client(mut stream: TcpStream) -> Result<String, std::io::Error> {
             let mut buffer = String::new();
-            let mut reader = BufReader::new(stream);
 
-            tokio::io::AsyncBufReadExt::read_line(&mut reader, &mut buffer).await?;
+            // Read from the stream until finding the authorization code or an error occurs
+            loop {
+                let mut byte = [0; 1];
+                match stream.read_exact(&mut byte) {
+                    Ok(_) => {
+                        buffer.push(byte[0] as char);
+                        if buffer.ends_with("\r\n\r\n") {
+                            break; // Stop reading when reaching the end of headers
+                        }
+                    }
+                    Err(e) => return Err(e),
+                }
+            }
 
             let code = extract_code_from_response(&buffer);
 
             let success_response = r#"HTTP/1.1 200 OK
-            Content-Type: text/html
+        Content-Type: text/html
 
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Login Success</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        background-color: #f4f4f4;
-                        text-align: center;
-                        margin: 20px;
-                    }
-                    h1 {
-                        color: #2ecc71;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>Login Successful!</h1>
-                <p>Thank you for authorizing the application.</p>
-            </body>
-            </html>"#;
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Login Success</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    text-align: center;
+                    margin: 20px;
+                }
+                h1 {
+                    color: #2ecc71;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Login Successful!</h1>
+            <p>Thank you for authorizing the application.</p>
+        </body>
+        </html>"#;
 
-            let _ = reader.write_all(success_response.as_bytes()).await;
+            let _ = stream.write_all(success_response.as_bytes());
 
-            let _ = reader.shutdown().await;
+            // Close the connection
+            let _ = stream.shutdown(std::net::Shutdown::Both);
 
             Ok(code)
         }
-
         fn extract_code_from_response(response: &str) -> String {
             if let Some(start_idx) = response.find("code=") {
                 let start_idx = start_idx + 5; // Move past "code="
@@ -131,7 +146,7 @@ impl GoogleCalendar {
         );
 
         // Start a local HTTP server to listen for the redirect URI
-        let listener = TcpListener::bind("127.0.0.1:0").await?;
+        let listener = TcpListener::bind("127.0.0.1:0")?;
         let local_addr = listener.local_addr()?;
         let port = local_addr.port();
         self.port = port;
@@ -164,8 +179,8 @@ impl GoogleCalendar {
         }
 
         // Accept the first incoming connection
-        if let Ok((stream, _)) = listener.accept().await {
-            code = handle_client(stream).await?;
+        if let Ok((stream, _)) = listener.accept() {
+            code = handle_client(stream)?;
         }
 
         // Assign the authorization code to the struct and setting.json
@@ -179,7 +194,7 @@ impl GoogleCalendar {
     }
 
     // Function to authorize the GoogleCalendar struct
-    async fn authorize(&mut self) {
+    fn authorize(&mut self) {
         let oauth_code: Option<String> = read_setting::<String>(Setting::GoogleAuthorizationCode)
             .unwrap_or_else(|err| {
                 Some(handle_setting_error(
@@ -222,20 +237,17 @@ impl GoogleCalendar {
                 self.access_token = access_token;
             }
             None => {
-                self.handle_authorization_code().await.unwrap();
+                self.handle_authorization_code().unwrap();
             }
         }
     }
 
-    async fn is_access_token_valid(&self) -> bool {
+    fn is_access_token_valid(&self) -> bool {
         let validation_url = "https://www.googleapis.com/oauth2/v1/tokeninfo";
         let access_token = &self.access_token;
 
-        let response = reqwest::Client::new()
-            .get(validation_url)
-            .query(&[("access_token", access_token)])
-            .send()
-            .await;
+        let response =
+            reqwest::blocking::get(format!("{}?access_token={}", validation_url, access_token));
 
         match response {
             Ok(response) if response.status().as_u16() == 200 => true,
@@ -244,12 +256,12 @@ impl GoogleCalendar {
     }
 
     // Function to get the access token using the authorization code and OAuth2 client
-    async fn get_access_token(&mut self) -> Result<String> {
+    fn get_access_token(&mut self) -> Result<String> {
         if self.authorization_code.is_empty() {
-            self.authorize().await;
+            self.authorize();
         }
 
-        if !self.is_access_token_valid().await {
+        if !self.is_access_token_valid() {
             let code = &self.authorization_code;
             let pkce_verifier = PkceCodeVerifier::new(self.pkce_verifier.clone());
 
@@ -259,12 +271,7 @@ impl GoogleCalendar {
                 .unwrap()
                 .exchange_code(AuthorizationCode::new(code.clone()))
                 .set_pkce_verifier(pkce_verifier)
-                .request_async(async_http_client)
-                .await
-                .map_err(|err| {
-                    // You can customize this error conversion based on your needs
-                    anyhow::anyhow!("Error exchanging authorization code: {:?}", err)
-                })?;
+                .request(http_client)?;
 
             // Update the stored access token
             self.access_token = token_result.access_token().secret().to_string();
@@ -278,18 +285,21 @@ impl GoogleCalendar {
     }
 
     // Function to get the calendar list using the access token
-    pub async fn get_calendar_list(&mut self) -> Result<Vec<CalendarInfo>> {
+    pub fn get_calendar_list(&mut self) -> Result<Vec<CalendarInfo>> {
         let api_url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?fields=items(id%2Csummary)";
-        let access_token = self.get_access_token().await?;
+        let access_token = self.get_access_token()?;
 
-        let response = reqwest::Client::new()
-            .get(api_url)
-            .header("Authorization", format!("Bearer {}", access_token))
-            .send()
-            .await?;
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            AUTHORIZATION,
+            HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
+        );
+
+        let client = Client::new();
+        let response = client.get(api_url).headers(headers).send()?;
 
         if response.status().is_success() {
-            let calendar_list: CalendarInfoResponse = response.json().await?;
+            let calendar_list: CalendarInfoResponse = response.json()?;
             Ok(calendar_list.items)
         } else {
             println!("Error calling Google Calendar API: {:?}", response.status());
@@ -298,7 +308,7 @@ impl GoogleCalendar {
     }
 
     // Function to get events for a specific day for the provided calendar ID
-    pub async fn get_events_for_day_selected_calendar(
+    pub fn get_events_for_day_selected_calendar(
         &mut self,
         calendar_id: &str,
         date: &str,
@@ -310,16 +320,19 @@ impl GoogleCalendar {
             sanitized_calendar_id, date, date
         );
 
-        let access_token = self.get_access_token().await?;
+        let access_token = self.get_access_token()?;
 
-        let response = reqwest::Client::new()
-            .get(&api_url)
-            .header("Authorization", format!("Bearer {}", access_token))
-            .send()
-            .await?;
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            AUTHORIZATION,
+            HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
+        );
+
+        let client = Client::new();
+        let response = client.get(api_url).headers(headers).send()?;
 
         if response.status().is_success() {
-            let event_list: EventInfoResponse = response.json().await?;
+            let event_list: EventInfoResponse = response.json()?;
             Ok(event_list.items)
         } else {
             println!(
@@ -334,6 +347,5 @@ impl GoogleCalendar {
 
 // Function to replace hash with percent_23 in a string
 fn replace_hash_with_percent_23(input_string: &str) -> String {
-    let result_string = input_string.replace("#", "%23");
-    result_string
+    input_string.replace("#", "%23")
 }
