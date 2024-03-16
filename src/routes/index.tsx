@@ -1,22 +1,120 @@
-import { MutableRefObject, useRef } from 'react';
+import { useMemo } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import { useZoom } from '@hooks';
+import {
+  RowModel,
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable
+} from '@tanstack/react-table';
+import { Box } from '@primer/react';
+import moment from 'moment';
 
 export const Route = createFileRoute('/')({
   component: HomePage
 });
 
+interface TimelineTable {
+  hour: string;
+  activity: string;
+  planning: string;
+}
+
 function HomePage() {
-  const svgRef = useRef<HTMLDivElement>(null);
-  const dimensions = useZoom(svgRef as MutableRefObject<HTMLElement>);
+  const HOURS = Array.from({ length: 24 }, (_, i) =>
+    moment().utcOffset('GMT+7').startOf('day').add(i, 'hours').format('HH:mm')
+  );
+  //const [hour] = useState<string[]>(HOURS);
+
+  const columnHelper = createColumnHelper<TimelineTable>();
+  const columnDefs = useMemo(
+    () => [
+      columnHelper.accessor('hour', {
+        header: 'GMT +7',
+        cell: (info) => <span className='flex items-start'>{info.getValue()}</span>
+      }),
+      columnHelper.accessor('activity', {
+        header: () => (
+          <Box
+            sx={{
+              padding: 2,
+              fontWeight: 'bold'
+            }}
+          >
+            Activity
+          </Box>
+        ),
+        cell: () => (
+          <Box
+            sx={{
+              height: '60px'
+            }}
+          ></Box>
+        )
+      }),
+      columnHelper.accessor('planning', {
+        header: () => (
+          <Box
+            sx={{
+              padding: 2,
+              fontWeight: 'bold'
+            }}
+          >
+            Planning
+          </Box>
+        ),
+        cell: () => (
+          <Box
+            sx={{
+              height: '60px'
+            }}
+          ></Box>
+        )
+      })
+    ],
+    [columnHelper]
+  );
+
+  const timelineTable = useReactTable<TimelineTable>({
+    columns: columnDefs,
+    data: HOURS.map((hour) => ({
+      hour,
+      activity: '',
+      planning: ''
+    })),
+    getCoreRowModel: getCoreRowModel<RowModel<TimelineTable>>()
+  });
 
   return (
-    <div ref={svgRef} style={{ width: '100vw', height: '100vh', border: '1px solid red' }}>
-      <svg style={{ width: '100%', height: '100%' }}>
-        <g>
-          <rect x={dimensions.width / 2} y={dimensions.height / 2} width='3em' height='3em' fill='gold' />
-        </g>
-      </svg>
-    </div>
+    <table className='w-full min-w-max table-auto text-left'>
+      <thead>
+        {timelineTable.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header, index) => (
+              <th
+                key={header.id}
+                colSpan={header.colSpan}
+                className={index > 0 ? 'bg-gray-200 border-b border-r border-gray-300' : ''}
+              >
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(header.column.columnDef.header, header.getContext()) ?? ''}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {timelineTable.getRowModel().rows.map((row) => (
+          <tr key={row.id}>
+            {row.getAllCells().map((cell, index) => (
+              <td key={cell.id} className={'border-r border-gray-300' + (index > 0 && ' border-b')}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

@@ -3,5 +3,3 @@
  */
 
 export * from './domTarget';
-export * from './time';
-export * from './typeChecker';

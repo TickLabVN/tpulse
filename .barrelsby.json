@@ -2,6 +2,7 @@
     "directory": [
         "./src/constants",
         "./src/hooks",
+        "./src/interfaces",
         "./src/pages",
         "./src/utils"
     ],
