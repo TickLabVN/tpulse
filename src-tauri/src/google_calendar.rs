@@ -222,7 +222,7 @@ impl GoogleCalendar {
 
     // Function to authorize the GoogleCalendar struct
     fn authorize(&mut self) -> Result<()> {
-        let oauth_code: Option<String> = read_setting::<String>(Setting::GoogleRefreshToken)
+        let refresh_token: Option<String> = read_setting::<String>(Setting::GoogleRefreshToken)
             .unwrap_or_else(|err| {
                 Some(handle_setting_error(
                     Setting::GoogleRefreshToken,
@@ -230,8 +230,8 @@ impl GoogleCalendar {
                     "Invalid Google authorization code".to_string(),
                 ))
             });
-        match oauth_code {
-            Some(code) => {
+        match refresh_token {
+            Some(token) => {
                 let redirect_port: u16 = read_setting::<u16>(Setting::RedirectPort)
                     .unwrap_or_else(|err| {
                         Some(handle_setting_error(Setting::RedirectPort, &err, 0))
@@ -248,7 +248,7 @@ impl GoogleCalendar {
                     })
                     .unwrap_or_default();
 
-                self.refresh_token = code;
+                self.refresh_token = token;
                 self.port = redirect_port;
                 self.access_token = access_token;
                 Ok(())
@@ -277,21 +277,44 @@ impl GoogleCalendar {
         }
 
         if !self.is_access_token_valid() {
-            let token_result = self
-                .create_oauth2_client()?
+            let client = self.create_oauth2_client()?;
+
+            let token_result = client
                 .lock()
                 .unwrap()
                 .exchange_refresh_token(&RefreshToken::new(self.refresh_token.clone()))
-                // .set_pkce_verifier(pkce_verifier)
-                .request(http_client)?;
+                .request(http_client);
 
-            // // Update the stored access token
-            self.access_token = token_result.access_token().secret().to_string();
+            match token_result {
+                Ok(token) => {
+                    // Update and stored access token
 
-            let _ = write_setting(
-                Setting::GoogleAccessToken,
-                &format!("\"{}\"", self.access_token),
-            );
+                    self.access_token = token.access_token().secret().to_string();
+
+                    let _ = write_setting(
+                        Setting::GoogleAccessToken,
+                        &format!("\"{}\"", self.access_token),
+                    );
+                }
+
+                Err(_) => {
+                    //Regain the authorization code in case it's invalid. If error still occurs, return error.
+                    self.handle_authorization_code()?;
+
+                    let retry_token_result = client
+                        .lock()
+                        .unwrap()
+                        .exchange_refresh_token(&RefreshToken::new(self.refresh_token.clone()))
+                        .request(http_client)?;
+
+                    self.access_token = retry_token_result.access_token().secret().to_string();
+
+                    let _ = write_setting(
+                        Setting::GoogleAccessToken,
+                        &format!("\"{}\"", self.access_token),
+                    );
+                }
+            }
         }
 
         Ok(self.access_token.clone())
