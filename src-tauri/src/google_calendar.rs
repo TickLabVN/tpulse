@@ -1,9 +1,11 @@
-use std::io::{Read, Write};
-use std::net::{TcpListener, TcpStream};
-use std::sync::{Arc, Mutex};
-
 use reqwest::blocking::Client;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
+use std::io::{self, Read, Write};
+use std::net::{TcpListener, TcpStream};
+use std::sync::mpsc::channel;
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
 
 use anyhow::Result;
 use oauth2::basic::BasicClient;
@@ -172,15 +174,38 @@ impl GoogleCalendar {
             .set_pkce_challenge(pkce_challenge)
             .url();
 
-        let mut code = String::new();
+        let code: String;
 
         if let Err(err) = webbrowser::open(auth_url.as_str()) {
             eprintln!("Error opening browser: {:?}", err);
         }
 
-        // Accept the first incoming connection
-        if let Ok((stream, _)) = listener.accept() {
-            code = handle_client(stream)?;
+        let (sender, receiver) = channel();
+
+        // Spawn a thread to handle an incoming connection
+        thread::spawn(move || match listener.accept() {
+            Ok((stream, _)) => {
+                if sender.send(Ok(stream)).is_err() {
+                    eprintln!("Failed to send connection to main thread");
+                }
+            }
+            Err(e) => {
+                if sender.send(Err(e)).is_err() {
+                    eprintln!("Failed to send error to main thread");
+                }
+            }
+        });
+
+        // Wait for the specified timeout duration or until a connection is received
+        match receiver.recv_timeout(Duration::from_secs(120)) {
+            Ok(Ok(stream)) => {
+                code = handle_client(stream)?;
+            }
+            Ok(Err(e)) => return Err(e.into()),
+            Err(_) => {
+                //FIXME: resource may be leaked if handle an incoming connection thread runs forever.
+                return Err(io::Error::new(io::ErrorKind::TimedOut, "Connection timed out").into());
+            }
         }
 
         // Assign the authorization code to the struct and setting.json
@@ -194,7 +219,7 @@ impl GoogleCalendar {
     }
 
     // Function to authorize the GoogleCalendar struct
-    fn authorize(&mut self) {
+    fn authorize(&mut self) -> Result<()> {
         let oauth_code: Option<String> = read_setting::<String>(Setting::GoogleAuthorizationCode)
             .unwrap_or_else(|err| {
                 Some(handle_setting_error(
@@ -235,10 +260,9 @@ impl GoogleCalendar {
                 self.pkce_verifier = pkce_verifier;
                 self.port = redirect_port;
                 self.access_token = access_token;
+                Ok(())
             }
-            None => {
-                self.handle_authorization_code().unwrap();
-            }
+            None => self.handle_authorization_code(),
         }
     }
 
@@ -258,7 +282,7 @@ impl GoogleCalendar {
     // Function to get the access token using the authorization code and OAuth2 client
     fn get_access_token(&mut self) -> Result<String> {
         if self.authorization_code.is_empty() {
-            self.authorize();
+            self.authorize()?
         }
 
         if !self.is_access_token_valid() {

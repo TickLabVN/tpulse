@@ -16,27 +16,37 @@ use tpulse::{
 };
 
 fn main() {
-    // let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
-    //     .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
-    //     .unwrap_or_default();
+    let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
+        .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
+        .unwrap_or_default();
 
-    // let time_out: u64 = read_setting::<u64>(Setting::Timeout)
-    //     .unwrap_or_else(|err| Some(handle_setting_error(Setting::Timeout, &err, 100)))
-    //     .unwrap_or_default();
+    let time_out: u64 = read_setting::<u64>(Setting::Timeout)
+        .unwrap_or_else(|err| Some(handle_setting_error(Setting::Timeout, &err, 100)))
+        .unwrap_or_default();
 
-    // println!("Poll Time: {}", poll_time);
-    // println!("Timeout: {}", time_out);
-    // initialize_db();
+    println!("Poll Time: {}", poll_time);
+    println!("Timeout: {}", time_out);
+    initialize_db();
 
     let mut google_calendar = GoogleCalendar::default();
 
     // Call the get_calendar_list method
     match google_calendar.get_calendar_list() {
         Ok(calendar_list) => {
-            // Print the calendar list to the console
-            println!("Calendar List:");
             for calendar in calendar_list {
-                println!("ID: {}, Summary: {}", calendar.id, calendar.summary);
+                match google_calendar
+                    .get_events_for_day_selected_calendar(&calendar.id, "2024-03-15")
+                {
+                    Ok(event_list) => {
+                        println!("Events for calendar '{}':", calendar.summary);
+                        for event in event_list {
+                            println!("ID: {}, Summary: {}", event.id, event.summary);
+                        }
+                    }
+                    Err(err) => {
+                        eprintln!("Error retrieving events: {}", err);
+                    }
+                }
             }
         }
         Err(err) => {
@@ -44,30 +54,30 @@ fn main() {
         }
     }
 
-    // let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
-    // let afk_tx = tx.clone();
-    // let window_tx = tx.clone();
-    // let open_pipe_server = thread::spawn(move || handle_metrics());
-    // let afk_watcher = thread::spawn(move || watch_afk(poll_time, time_out, afk_tx));
-    // let window_watcher = thread::spawn(move || watch_window(poll_time, window_tx));
-    // let event_handler = thread::spawn(move || handle_events(rx));
+    let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
+    let afk_tx = tx.clone();
+    let window_tx = tx.clone();
+    let open_pipe_server = thread::spawn(move || handle_metrics());
+    let afk_watcher = thread::spawn(move || watch_afk(poll_time, time_out, afk_tx));
+    let window_watcher = thread::spawn(move || watch_window(poll_time, window_tx));
+    let event_handler = thread::spawn(move || handle_events(rx));
 
-    // tauri::Builder::default()
-    //     // We cannot see log when running in bundled app.
-    //     // This is a workaround to print log to stdout in production.
-    //     // Can use other log targets
-    //     .plugin(
-    //         tauri_plugin_log::Builder::default()
-    //             .targets([LogTarget::Stdout])
-    //             .build(),
-    //     )
-    //     // This plugin support us access sqlite database directly from Frontend-side
-    //     .plugin(tauri_plugin_sql::Builder::default().build())
-    //     .run(tauri::generate_context!())
-    //     .expect("Error while running tauri application");
+    tauri::Builder::default()
+        // We cannot see log when running in bundled app.
+        // This is a workaround to print log to stdout in production.
+        // Can use other log targets
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([LogTarget::Stdout])
+                .build(),
+        )
+        // This plugin support us access sqlite database directly from Frontend-side
+        .plugin(tauri_plugin_sql::Builder::default().build())
+        .run(tauri::generate_context!())
+        .expect("Error while running tauri application");
 
-    // afk_watcher.join().unwrap();
-    // window_watcher.join().unwrap();
-    // event_handler.join().unwrap();
-    // open_pipe_server.join().unwrap();
+    afk_watcher.join().unwrap();
+    window_watcher.join().unwrap();
+    event_handler.join().unwrap();
+    open_pipe_server.join().unwrap();
 }
