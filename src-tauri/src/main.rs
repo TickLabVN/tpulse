@@ -4,7 +4,6 @@
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
 use tauri_plugin_log::LogTarget;
-use tpulse::google_calendar::GoogleCalendar;
 use tpulse::setting::read_setting;
 use tpulse::{
     event_handler::handle_events,
@@ -27,32 +26,6 @@ fn main() {
     println!("Poll Time: {}", poll_time);
     println!("Timeout: {}", time_out);
     initialize_db();
-
-    let mut google_calendar = GoogleCalendar::default();
-
-    // Call the get_calendar_list method
-    match google_calendar.get_calendar_list() {
-        Ok(calendar_list) => {
-            for calendar in calendar_list {
-                match google_calendar
-                    .get_events_for_day_selected_calendar(&calendar.id, "2024-03-15")
-                {
-                    Ok(event_list) => {
-                        println!("Events for calendar '{}':", calendar.summary);
-                        for event in event_list {
-                            println!("ID: {}, Summary: {}", event.id, event.summary);
-                        }
-                    }
-                    Err(err) => {
-                        eprintln!("Error retrieving events: {}", err);
-                    }
-                }
-            }
-        }
-        Err(err) => {
-            eprintln!("Error: {}", err);
-        }
-    }
 
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
