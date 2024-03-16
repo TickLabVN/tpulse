@@ -26,3 +26,6 @@ dist-ssr
 # Environment
 */.env
 .env
+
+# Setting file of the project
+src-tauri/setting.json
