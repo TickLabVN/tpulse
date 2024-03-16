@@ -11,7 +11,7 @@ use anyhow::Result;
 use oauth2::basic::BasicClient;
 use oauth2::reqwest::http_client;
 use oauth2::{
-    AuthUrl, AuthorizationCode, CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, Scope,
+    AuthUrl, AuthorizationCode, CsrfToken, PkceCodeChallenge, RedirectUrl, RefreshToken, Scope,
     TokenResponse, TokenUrl,
 };
 use serde::Deserialize;
@@ -42,8 +42,7 @@ struct EventInfoResponse {
 
 #[derive(Default)]
 pub struct GoogleCalendar {
-    pkce_verifier: String,
-    authorization_code: String,
+    refresh_token: String,
     port: u16,
     access_token: String,
 }
@@ -141,11 +140,6 @@ impl GoogleCalendar {
 
         // Generate PKCE challenge
         let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
-        self.pkce_verifier = pkce_verifier.secret().clone();
-        let _ = write_setting(
-            Setting::PkceVerifier,
-            format!("\"{}\"", self.pkce_verifier).as_str(),
-        );
 
         // Start a local HTTP server to listen for the redirect URI
         let listener = TcpListener::bind("127.0.0.1:0")?;
@@ -174,7 +168,7 @@ impl GoogleCalendar {
             .set_pkce_challenge(pkce_challenge)
             .url();
 
-        let code: String;
+        let oauth_code: String;
 
         if let Err(err) = webbrowser::open(auth_url.as_str()) {
             eprintln!("Error opening browser: {:?}", err);
@@ -199,7 +193,7 @@ impl GoogleCalendar {
         // Wait for the specified timeout duration or until a connection is received
         match receiver.recv_timeout(Duration::from_secs(120)) {
             Ok(Ok(stream)) => {
-                code = handle_client(stream)?;
+                oauth_code = handle_client(stream)?;
             }
             Ok(Err(e)) => return Err(e.into()),
             Err(_) => {
@@ -208,11 +202,19 @@ impl GoogleCalendar {
             }
         }
 
+        let refresh_token: RefreshToken = oauth2_client
+            .exchange_code(AuthorizationCode::new(oauth_code.clone()))
+            .set_pkce_verifier(pkce_verifier)
+            .request(http_client)?
+            .refresh_token()
+            .expect("Fail to get refresh token")
+            .clone();
+
         // Assign the authorization code to the struct and setting.json
-        self.authorization_code = code.clone();
+        self.refresh_token = refresh_token.secret().to_string();
         let _ = write_setting(
-            Setting::GoogleAuthorizationCode,
-            format!("\"{}\"", code).as_str(),
+            Setting::GoogleRefreshToken,
+            format!("\"{}\"", self.refresh_token).as_str(),
         );
 
         Ok(())
@@ -220,26 +222,16 @@ impl GoogleCalendar {
 
     // Function to authorize the GoogleCalendar struct
     fn authorize(&mut self) -> Result<()> {
-        let oauth_code: Option<String> = read_setting::<String>(Setting::GoogleAuthorizationCode)
+        let oauth_code: Option<String> = read_setting::<String>(Setting::GoogleRefreshToken)
             .unwrap_or_else(|err| {
                 Some(handle_setting_error(
-                    Setting::GoogleAuthorizationCode,
+                    Setting::GoogleRefreshToken,
                     &err,
                     "Invalid Google authorization code".to_string(),
                 ))
             });
         match oauth_code {
             Some(code) => {
-                let pkce_verifier: String = read_setting::<String>(Setting::PkceVerifier)
-                    .unwrap_or_else(|err| {
-                        Some(handle_setting_error(
-                            Setting::PkceVerifier,
-                            &err,
-                            "Invalid Pkce Verifier secret".to_string(),
-                        ))
-                    })
-                    .unwrap_or_default();
-
                 let redirect_port: u16 = read_setting::<u16>(Setting::RedirectPort)
                     .unwrap_or_else(|err| {
                         Some(handle_setting_error(Setting::RedirectPort, &err, 0))
@@ -256,8 +248,7 @@ impl GoogleCalendar {
                     })
                     .unwrap_or_default();
 
-                self.authorization_code = code;
-                self.pkce_verifier = pkce_verifier;
+                self.refresh_token = code;
                 self.port = redirect_port;
                 self.access_token = access_token;
                 Ok(())
@@ -281,24 +272,22 @@ impl GoogleCalendar {
 
     // Function to get the access token using the authorization code and OAuth2 client
     fn get_access_token(&mut self) -> Result<String> {
-        if self.authorization_code.is_empty() {
+        if self.refresh_token.is_empty() {
             self.authorize()?
         }
 
         if !self.is_access_token_valid() {
-            let code = &self.authorization_code;
-            let pkce_verifier = PkceCodeVerifier::new(self.pkce_verifier.clone());
-
             let token_result = self
                 .create_oauth2_client()?
                 .lock()
                 .unwrap()
-                .exchange_code(AuthorizationCode::new(code.clone()))
-                .set_pkce_verifier(pkce_verifier)
+                .exchange_refresh_token(&RefreshToken::new(self.refresh_token.clone()))
+                // .set_pkce_verifier(pkce_verifier)
                 .request(http_client)?;
 
-            // Update the stored access token
+            // // Update the stored access token
             self.access_token = token_result.access_token().secret().to_string();
+
             let _ = write_setting(
                 Setting::GoogleAccessToken,
                 &format!("\"{}\"", self.access_token),
@@ -326,7 +315,6 @@ impl GoogleCalendar {
             let calendar_list: CalendarInfoResponse = response.json()?;
             Ok(calendar_list.items)
         } else {
-            println!("Error calling Google Calendar API: {:?}", response.status());
             Err(anyhow::anyhow!("Error calling Google Calendar API"))
         }
     }
@@ -359,11 +347,6 @@ impl GoogleCalendar {
             let event_list: EventInfoResponse = response.json()?;
             Ok(event_list.items)
         } else {
-            println!(
-                "Error calling Google Calendar API: {:?} \n {:?}",
-                response.status(),
-                response.error_for_status()
-            );
             Err(anyhow::anyhow!("Error calling Google Calendar API"))
         }
     }
