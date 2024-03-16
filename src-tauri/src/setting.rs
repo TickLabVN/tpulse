@@ -23,7 +23,7 @@ impl Default for AppConfig {
 pub enum Setting {
     PollTime,
     Timeout,
-    GoogleAuthorizationCode,
+    GoogleRefreshToken,
     PkceVerifier,
     RedirectPort,
     GoogleAccessToken,
@@ -81,6 +81,13 @@ pub fn write_setting(
 
     write_all_settings_to_file(&settings)?;
 
+    Ok(())
+}
+
+pub fn remove_setting(setting_name: Setting) -> Result<(), Box<dyn std::error::Error>> {
+    let mut settings = read_all_settings_from_file()?;
+    settings.settings.remove(&setting_name);
+    write_all_settings_to_file(&settings)?;
     Ok(())
 }
 
