@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
-import { useState, useRef, useEffect } from 'react';
-import { TextInput, Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
+import { useState, useEffect } from 'react';
+import { Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
 import { Resizable } from 're-resizable';
 import { TaskDialog } from './TaskDialog';
+import { TimePicker } from 'antd';
 import {
   CalendarIcon,
   PinIcon,
@@ -119,7 +120,8 @@ export function DayView() {
     };
 
   const handleMouseClick = () => {
-    // setIsResizing((prev) => !prev);
+    const not = !isResizing;
+    setIsResizing(not);
   };
   const handleMouseMove = (e: MouseEvent) => {
     if (isResizing) {
@@ -130,7 +132,7 @@ export function DayView() {
     }
   };
   const handleMouseUp = (handleName: string, hour: string) => (e: MouseEvent) => {
-    setIsResizing(true);
+    // setIsResizing(true);
     setDivLeft(e.clientX);
     setDivTop(e.clientY);
     const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
@@ -158,7 +160,7 @@ export function DayView() {
     }
   };
   const handleMouseDown = (handleName: string) => (e: MouseEvent) => {
-    setIsResizing(false);
+    // setIsResizing(false);
     setDivWidth((prev) => prev * 0);
     setDivHeight((prev) => prev * 0);
     const endElement = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
@@ -315,8 +317,6 @@ export function DayView() {
 
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
-  const startRef = useRef<HTMLInputElement>(null);
-  const endRef = useRef<HTMLInputElement>(null);
   const convertTimeToNumber = (time: string) => {
     const timeComponents = time.split(':').map((component) => parseInt(component, 10) || 0);
     return (
@@ -358,7 +358,9 @@ export function DayView() {
     });
     setHours(newHour);
   };
-
+  useEffect(() => {
+    console.log(isResizing);
+  }, [isResizing]);
   return (
     <>
       <Box
@@ -453,25 +455,19 @@ export function DayView() {
               columnGap: 4
             }}
           >
-            <TextInput
-              placeholder='hh:mm'
-              ref={startRef}
-              sx={{
-                width: '200px',
-                height: '40px',
-                border: '1px solid #ccc'
+            <TimePicker
+              placeholder='Start Time'
+              format='HH:mm'
+              onChange={(_, timeString) => {
+                if (typeof timeString === 'string') setStartTime(timeString);
               }}
-              onChange={(e) => setStartTime(e.target.value)}
             />
-            <TextInput
-              placeholder='hh:mm'
-              ref={endRef}
-              sx={{
-                width: '200px',
-                height: '40px',
-                border: '1px solid #ccc'
+            <TimePicker
+              placeholder='End Time'
+              format='HH:mm'
+              onChange={(_, timeString) => {
+                if (typeof timeString === 'string') setEndTime(timeString);
               }}
-              onChange={(e) => setEndTime(e.target.value)}
             />
             <Button
               sx={{

@@ -154,7 +154,6 @@ export const TaskDialog = ({
               </Box>
               <Box
                 sx={{
-                  display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
                 }}
