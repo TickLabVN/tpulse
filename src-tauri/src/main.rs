@@ -23,8 +23,6 @@ fn main() {
         .unwrap_or_else(|err| Some(handle_setting_error(Setting::Timeout, &err, 100)))
         .unwrap_or_default();
 
-    println!("Poll Time: {}", poll_time);
-    println!("Timeout: {}", time_out);
     initialize_db();
 
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
