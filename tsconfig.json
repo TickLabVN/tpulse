@@ -27,8 +27,11 @@
     /* Path */
     "paths": {
       "@assets/*": ["src/assets/*"],
+      "@constants": ["src/constants"],
       "@hooks": ["src/hooks"],
-      "@pages": ["src/pages"]
+      "@interfaces": ["src/interfaces"],
+      "@pages": ["src/pages"],
+      "@utils": ["src/utils"]
     },
   },
   "include": ["src", "**/*.ts", "**/*.tsx", "**/*.js", "*.cjs"],

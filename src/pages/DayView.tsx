@@ -1,9 +1,7 @@
-/* eslint-disable no-console */
 import { useState, useEffect } from 'react';
-import { Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
+import { TextInput, Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
 import { Resizable } from 're-resizable';
 import { TaskDialog } from './TaskDialog';
-import { TimePicker } from 'antd';
 import {
   CalendarIcon,
   PinIcon,
@@ -13,12 +11,12 @@ import {
   PlusIcon
 } from '@primer/octicons-react';
 import moment from 'moment';
+import { formatTime, convertTimeToNumber, convertNumberToTime } from '@utils';
 //import { useZoom } from '@hooks';
 
 export function DayView() {
-  // const zoomRef = useRef<HTMLDivElement>(null) as React.MutableRefObject<HTMLDivElement>;
-  // // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-  // const dimensions = useZoom(zoomRef);
+  // const zoomRef = useRef<HTMLDivElement>(null);
+  // const dimensions = useZoom(zoomRef as React.MutableRefObject<HTMLDivElement>);
 
   interface Item {
     title: string;
@@ -28,6 +26,7 @@ export function DayView() {
   }
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
@@ -43,14 +42,6 @@ export function DayView() {
       }
     };
   }, [isRunning]);
-
-  const formatTime = (time: number) => {
-    const hours = Math.floor(time / 3600);
-    const minutes = Math.floor((time % 3600) / 60);
-    const seconds = time % 60;
-
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);
@@ -120,8 +111,7 @@ export function DayView() {
     };
 
   const handleMouseClick = () => {
-    const not = !isResizing;
-    setIsResizing(not);
+    // setIsResizing((prev) => !prev);
   };
   const handleMouseMove = (e: MouseEvent) => {
     if (isResizing) {
@@ -132,7 +122,7 @@ export function DayView() {
     }
   };
   const handleMouseUp = (handleName: string, hour: string) => (e: MouseEvent) => {
-    // setIsResizing(true);
+    setIsResizing(true);
     setDivLeft(e.clientX);
     setDivTop(e.clientY);
     const index = hours.findIndex((elementHour) => elementHour === hour) + 1;
@@ -160,7 +150,7 @@ export function DayView() {
     }
   };
   const handleMouseDown = (handleName: string) => (e: MouseEvent) => {
-    // setIsResizing(false);
+    setIsResizing(false);
     setDivWidth((prev) => prev * 0);
     setDivHeight((prev) => prev * 0);
     const endElement = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
@@ -248,12 +238,10 @@ export function DayView() {
       (startItemTime <= startHourTime && endItemTime >= endHourTime)
     );
   };
-  const hour = Array.from({ length: 24 }, (_, i) => {
-    const date = new Date();
-    date.setHours(i + 7, 0, 0, 0);
-    return date.toISOString().split('T')[1].substring(0, 5);
-  });
-  const [hours, setHours] = useState(hour);
+  const hour = Array.from({ length: 24 }, (_, i) =>
+    moment().utcOffset('GMT+7').startOf('day').add(i, 'hours').format('HH:mm')
+  );
+  const [hours, setHours] = useState<string[]>(hour);
   const colors = {
     gray: 'rgb(97, 97, 97)',
     orange: 'rgb(244, 81, 30)',
@@ -317,34 +305,9 @@ export function DayView() {
 
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
-  const convertTimeToNumber = (time: string) => {
-    const timeComponents = time.split(':').map((component) => parseInt(component, 10) || 0);
-    return (
-      timeComponents[0] +
-      timeComponents[1] / 60 +
-      (timeComponents[2] || 0) / 3600 +
-      (timeComponents[3] || 0) / 3600000
-    );
-  };
-  const convertNumberToTime = (currentHour: number) => {
-    const formattedHour = Math.floor(currentHour).toString().padStart(2, '0');
-    const formattedMinute = Math.floor((currentHour % 1) * 60)
-      .toString()
-      .padStart(2, '0');
-    const formattedSecond = Math.floor(((currentHour * 60) % 1) * 60)
-      .toString()
-      .padStart(2, '0');
-    const formattedMillisecond = Math.floor(((currentHour * 60 * 60) % 1) * 1000)
-      .toString()
-      .padStart(3, '0');
-    let formattedTime = formattedHour + ':' + formattedMinute;
-    formattedTime = formattedSecond === '000' ? formattedTime + ':' + formattedSecond : formattedTime;
-    formattedTime =
-      formattedMillisecond === '000' ? formattedTime : formattedTime + '.' + formattedMillisecond;
-    return formattedTime;
-  };
+
   const handleSubmitRange = (startInput: string, endInput: string) => {
-    // Extract hours, minutes, and seconds from the input values
+    /* Extract hours, minutes, and seconds from the input values */
     const parsedStartTime = convertTimeToNumber(startInput);
     const parsedEndTime = convertTimeToNumber(endInput);
     if (isNaN(parsedStartTime) || isNaN(parsedEndTime) || parsedStartTime >= parsedEndTime) {
@@ -358,9 +321,7 @@ export function DayView() {
     });
     setHours(newHour);
   };
-  useEffect(() => {
-    console.log(isResizing);
-  }, [isResizing]);
+
   return (
     <>
       <Box
@@ -385,7 +346,6 @@ export function DayView() {
         }}
       >
         <Box
-          // ref={zoomRef}
           sx={{
             flex: 9,
             backgroundColor: 'white',
@@ -455,19 +415,23 @@ export function DayView() {
               columnGap: 4
             }}
           >
-            <TimePicker
-              placeholder='Start Time'
-              format='HH:mm'
-              onChange={(_, timeString) => {
-                if (typeof timeString === 'string') setStartTime(timeString);
+            <TextInput
+              type='time'
+              sx={{
+                width: '200px',
+                height: '40px',
+                border: '1px solid #ccc'
               }}
+              onChange={(e) => setStartTime(e.target.value)}
             />
-            <TimePicker
-              placeholder='End Time'
-              format='HH:mm'
-              onChange={(_, timeString) => {
-                if (typeof timeString === 'string') setEndTime(timeString);
+            <TextInput
+              type='time'
+              sx={{
+                width: '200px',
+                height: '40px',
+                border: '1px solid #ccc'
               }}
+              onChange={(e) => setEndTime(e.target.value)}
             />
             <Button
               sx={{
@@ -493,6 +457,7 @@ export function DayView() {
             </Button>
           </Box>
           <Box
+            // ref={zoomRef}
             sx={{
               height: 'fit-content',
               overflowY: 'auto',
