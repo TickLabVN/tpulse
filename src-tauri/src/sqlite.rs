@@ -1,5 +1,5 @@
 use crate::{
-    events::{AFKEvent, WindowInformation},
+    events::{AFKEvent, BrowserInformation, WindowInformation},
     utils::get_data_directory,
 };
 use lazy_static::lazy_static;
@@ -44,4 +44,20 @@ pub fn insert_window_log(window_log: &WindowInformation) {
         params![start_time, end_time, title, class, exec_path],
     )
     .expect("Failed to insert into window_log");
+}
+
+pub fn insert_browser_log(browser_log: &BrowserInformation) {
+    let conn = Connection::open(&*DB_PATH).unwrap();
+
+    let start_time = browser_log.start_time as i64;
+    let end_time = start_time + 5 * 60;
+    let title = browser_log.title.clone();
+
+    match conn.execute(
+        "INSERT INTO browser_log (start_time, end_time, title) VALUES (?1, ?2, ?3)",
+        params![start_time, end_time, title],
+    ) {
+        Ok(_) => println!("Successfully inserted into browser_log"),
+        Err(err) => eprintln!("Failed to insert into browser_log: {}", err),
+    }
 }

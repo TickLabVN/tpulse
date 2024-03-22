@@ -1,9 +1,16 @@
 #[cfg(any(target_os = "linux", target = "macos"))]
 use {
     libc::{mkfifo, open, read, O_RDONLY},
+    serde_json::{Error as JsonError, Result as JsonResult},
     std::ffi::CString,
     std::io::Error,
 };
+
+use crate::{
+    events::{BrowserData, BrowserInformation},
+    sqlite::insert_browser_log,
+};
+
 #[cfg(any(target_os = "linux", target = "macos"))]
 pub fn handle_metrics() {
     let pipe_name = "/tmp/tpulse";
@@ -13,11 +20,35 @@ pub fn handle_metrics() {
     };
     loop {
         match read_from_pipe(&pipe_name) {
-            Ok(data) => println!("Data read from the pipe: {}", data),
+            Ok(data) => process_data(&data),
             Err(err) => eprintln!("Error: {}", err),
         }
     }
 }
+fn process_data(data: &str) {
+    if let Ok(parsed_data) = parse_data(&data) {
+        if parsed_data.data_type == "Tab" {
+            if let Some(browser_info) = extract_browser_info(&parsed_data) {
+                insert_browser_log(&browser_info);
+            }
+        }
+    }
+}
+
+fn parse_data(data: &str) -> Result<BrowserData, serde_json::Error> {
+    match serde_json::from_str(data) {
+        Ok(parsed_data) => Ok(parsed_data),
+        Err(err) => Err(err),
+    }
+}
+
+fn extract_browser_info(data: &BrowserData) -> Option<BrowserInformation> {
+    Some(BrowserInformation {
+        start_time: data.start_time,
+        title: Some(data.title.clone()),
+    })
+}
+
 #[cfg(any(target_os = "linux", target = "macos"))]
 fn create_named_pipe(pipe_name: &str) -> Result<(), &'static str> {
     use std::fs;
@@ -60,7 +91,6 @@ fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
     };
     Ok(buffer)
 }
-
 #[cfg(target_os = "windows")]
 use {
     std::ffi::OsStr,

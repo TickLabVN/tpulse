@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 pub enum AFKStatus {
     ONLINE = 1,
     OFFLINE = 0,
@@ -17,7 +19,29 @@ pub struct WindowInformation {
     pub exec_path: Option<String>,
 }
 
+#[derive(Debug)]
+pub struct BrowserInformation {
+    pub start_time: u64,
+    pub title: Option<String>,
+}
+
 pub enum UserMetric {
     AFK(AFKEvent),
     Window(WindowInformation),
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct BrowserData {
+    #[serde(rename = "type")]
+    pub data_type: String,
+    pub title: String,
+    #[serde(default)]
+    pub url: Option<String>,
+    #[serde(default)]
+    pub window_id: Option<u32>,
+    #[serde(default)]
+    pub start_time: u64,
+    pub tabid: u32,
+    #[serde(default)]
+    pub paused: bool,
 }
