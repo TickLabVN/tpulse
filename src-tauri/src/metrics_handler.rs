@@ -20,6 +20,12 @@ pub fn handle_metrics() {
 }
 #[cfg(any(target_os = "linux", target = "macos"))]
 fn create_named_pipe(pipe_name: &str) -> Result<(), &'static str> {
+    use std::fs;
+
+    if fs::metadata(&pipe_name).is_ok() {
+        return Ok(());
+    }
+
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
     let result = unsafe { mkfifo(c_pipe_name.as_ptr(), 0o666) };
 
