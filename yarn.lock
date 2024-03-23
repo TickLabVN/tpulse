@@ -1037,10 +1037,10 @@
   resolved "https://registry.yarnpkg.com/@tanstack/history/-/history-1.15.13.tgz#544878665989e6ce07872378961fc6717d342682"
   integrity sha512-ToaeMtK5S4YaxCywAlYexc7KPFN0esjyTZ4vXzJhXEWAkro9iHgh7m/4ozPJb7oTo65WkHWX0W9GjcZbInSD8w==
 
-"@tanstack/react-router@^1.18.1":
-  version "1.18.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-router/-/react-router-1.18.1.tgz#d2477a6a80c0e39c0e21b02464a50f7b7f72030f"
-  integrity sha512-6Q3Rcg49wyqRzA5l0fln48H2cLxglQuNkxu3b9Oy0zO0VcljfTZorhUhUIqC6HZD2CfFJYfLverrFYxPmCs5JA==
+"@tanstack/react-router@^1.22.3":
+  version "1.22.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-router/-/react-router-1.22.3.tgz#3cd1557581b4c9758622b3028779cc9508d7a534"
+  integrity sha512-z3UUmT/RrF/2P8rUNDbPwu7YL2gZnajXLVjXb7zOI8KV3aCdOWkyCTJf9snkWiOrTfh8zH4opdNPHZpqilH0Jw==
   dependencies:
     "@tanstack/history" "1.15.13"
     "@tanstack/react-store" "^0.2.1"
@@ -1055,12 +1055,12 @@
     "@tanstack/store" "0.1.3"
     use-sync-external-store "^1.2.0"
 
-"@tanstack/react-table@^8.13.2":
-  version "8.13.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.13.2.tgz#a3aa737ae464abc651f68daa7e82dca17813606c"
-  integrity sha512-b6mR3mYkjRtJ443QZh9sc7CvGTce81J35F/XMr0OoWbx0KIM7TTTdyNP2XKObvkLpYnLpCrYDwI3CZnLezWvpg==
+"@tanstack/react-table@^8.15.0":
+  version "8.15.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.15.0.tgz#668ceb9f396d33409165d5b9bee7734b657061c6"
+  integrity sha512-8K4RSROUtXUtfiezV6Ehl8z99axFrkQnxXi0vjWBJv3Tsm5x4EyrgXI7d2tOOMoANykKZLB6S1sGZGemoMRt7Q==
   dependencies:
-    "@tanstack/table-core" "8.13.2"
+    "@tanstack/table-core" "8.14.0"
 
 "@tanstack/router-generator@1.18.1":
   version "1.18.1"
@@ -1082,10 +1082,10 @@
   resolved "https://registry.yarnpkg.com/@tanstack/store/-/store-0.1.3.tgz#b8410435dac0a0f6d3fe77d49509f296905d4c73"
   integrity sha512-GnolmC8Fr4mvsHE1fGQmR3Nm0eBO3KnZjDU0a+P3TeQNM/dDscFGxtA7p31NplQNW3KwBw4t1RVFmz0VeKLxcw==
 
-"@tanstack/table-core@8.13.2":
-  version "8.13.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.13.2.tgz#2512574dd3d20dc94b7db1f9f48090f0c18b5c85"
-  integrity sha512-/2saD1lWBUV6/uNAwrsg2tw58uvMJ07bO2F1IWMxjFRkJiXKQRuc3Oq2aufeobD3873+4oIM/DRySIw7+QsPPw==
+"@tanstack/table-core@8.14.0":
+  version "8.14.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.14.0.tgz#4c9fe8b74949bb0ffe4ac8b1937beaff1f3a19de"
+  integrity sha512-wDhpKJahGHWhmRt4RxtV3pES63CoeadljGWS/xeS9OJr1HBl2NB+OO44ht3sxDH5j5TRDAbQzC0NvSlsUfn7lQ==
 
 "@tauri-apps/api@^1.5.3":
   version "1.5.3"

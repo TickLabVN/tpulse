@@ -11,10 +11,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RefactorImport } from './routes/refactor'
 import { Route as PageImport } from './routes/page'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const RefactorRoute = RefactorImport.update({
+  path: '/refactor',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const PageRoute = PageImport.update({
   path: '/page',
@@ -38,11 +44,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PageImport
       parentRoute: typeof rootRoute
     }
+    '/refactor': {
+      preLoaderRoute: typeof RefactorImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexRoute, PageRoute])
+export const routeTree = rootRoute.addChildren([
+  IndexRoute,
+  PageRoute,
+  RefactorRoute,
+])
 
 /* prettier-ignore-end */

@@ -25,6 +25,14 @@ function RootComponent() {
         >
           Page
         </Link>
+        <Link
+          to={'/refactor'}
+          activeProps={{
+            className: 'font-bold'
+          }}
+        >
+          Refactor
+        </Link>
       </div>
       <hr />
       <Outlet />

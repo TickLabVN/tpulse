@@ -3,4 +3,5 @@
  */
 
 export * from './DayView';
+export * from './RefactorHomePage';
 export * from './TaskDialog';
