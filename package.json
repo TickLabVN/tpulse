@@ -28,7 +28,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-toastify": "^10.0.4",
-    "styled-components": "5"
+    "styled-components": "5",
+    "tauri-plugin-sql-api": "https://github.com/tauri-apps/tauri-plugin-sql#v1"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.4",

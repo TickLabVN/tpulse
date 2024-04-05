@@ -1087,7 +1087,7 @@
   resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.13.2.tgz#2512574dd3d20dc94b7db1f9f48090f0c18b5c85"
   integrity sha512-/2saD1lWBUV6/uNAwrsg2tw58uvMJ07bO2F1IWMxjFRkJiXKQRuc3Oq2aufeobD3873+4oIM/DRySIw7+QsPPw==
 
-"@tauri-apps/api@^1.5.3":
+"@tauri-apps/api@1.5.3", "@tauri-apps/api@^1.5.3":
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-1.5.3.tgz#f7b362b1f30aadb0a8bbeb7ae111755c0ed33d73"
   integrity sha512-zxnDjHHKjOsrIzZm6nO5Xapb/BxqUq1tc7cGkFXsFkGTsSWgCPH1D8mm0XS9weJY2OaR73I3k3S+b7eSzJDfqA==
@@ -5780,6 +5780,12 @@ tailwindcss@^3.4.1:
     postcss-selector-parser "^6.0.11"
     resolve "^1.22.2"
     sucrase "^3.32.0"
+
+"tauri-plugin-sql-api@https://github.com/tauri-apps/tauri-plugin-sql#v1":
+  version "0.0.0"
+  resolved "https://github.com/tauri-apps/tauri-plugin-sql#fe26880383d97d28ab0cc339773e75ce80730ced"
+  dependencies:
+    "@tauri-apps/api" "1.5.3"
 
 text-extensions@^2.0.0:
   version "2.4.0"

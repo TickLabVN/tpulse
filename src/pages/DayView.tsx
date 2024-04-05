@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { TextInput, Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
 import { Resizable } from 're-resizable';
 import { TaskDialog } from './TaskDialog';
+import Database from 'tauri-plugin-sql-api';
+
 import {
   CalendarIcon,
   PinIcon,
@@ -14,16 +16,37 @@ import moment from 'moment';
 import { formatTime, convertTimeToNumber, convertNumberToTime } from '@utils';
 //import { useZoom } from '@hooks';
 
-export function DayView() {
-  // const zoomRef = useRef<HTMLDivElement>(null);
-  // const dimensions = useZoom(zoomRef as React.MutableRefObject<HTMLDivElement>);
+interface activity {
+  title: string;
+  priority: string;
+  start: string;
+  end: string;
+  color: string;
+}
 
-  interface Item {
-    title: string;
-    start: string;
-    end: string;
-    color: string;
-  }
+interface Item {
+  title: string;
+  start: string;
+  end: string;
+  color: string;
+}
+export function DayView() {
+  const [items, setItems] = useState<activity[]>([]);
+  // const [error, isError] = useState<string>('');
+  useEffect(() => {
+    const initDatabase = async () => {
+      try {
+        const dbPath = '/home/tan17112003/.ticklabvn.tpulse/tpulse.sqlite3';
+        const db = await Database.load(`sqlite:${dbPath}`);
+        const result = await db.select('SELECT title, priority, type, start, end, color FROM activity_log');
+        setItems(result as activity[]);
+      } catch (error) {
+        alert(error);
+      }
+    };
+    initDatabase();
+  }, []);
+
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
 
@@ -249,20 +272,7 @@ export function DayView() {
     violet: 'rgb(142, 36, 170)',
     red: 'rgb(213, 0, 0)'
   };
-  const items = [
-    {
-      title: 'Youtube',
-      start: '13:00:00.000',
-      end: '14:00:00.000',
-      color: colors.gray
-    },
-    {
-      title: 'Facebook',
-      start: '07:00:00.000',
-      end: '12:00:00.000',
-      color: colors.orange
-    }
-  ];
+
   const [planData, setPlanData] = useState([
     {
       id: 1,
@@ -324,6 +334,11 @@ export function DayView() {
 
   return (
     <>
+      {items.map((item, index) => (
+        <Text key={index}>
+          {item.start} - {item.end}
+        </Text>
+      ))}
       <Box
         sx={{
           position: 'absolute',
