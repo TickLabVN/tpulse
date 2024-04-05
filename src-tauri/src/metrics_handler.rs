@@ -20,7 +20,10 @@ pub fn handle_metrics() {
     };
     loop {
         match read_from_pipe(&pipe_name) {
-            Ok(data) => process_data(&data),
+            Ok(data) => {
+                process_data(&data);
+                println!("Data read from the pipe: {}", data);
+            }
             Err(err) => eprintln!("Error: {}", err),
         }
     }

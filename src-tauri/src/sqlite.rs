@@ -7,7 +7,7 @@ use rusqlite::{params, Connection};
 
 // Initialize the database
 lazy_static! {
-    static ref DB_PATH: String = "test".to_string();
+    static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
 }
 
 /// Insert a new afk log entry
@@ -54,8 +54,8 @@ pub fn insert_browser_log(browser_log: &BrowserInformation) {
     let title = browser_log.title.clone();
 
     match conn.execute(
-        "INSERT INTO browser_log (start_time, end_time, title) VALUES (?1, ?2, ?3)",
-        params![start_time, end_time, title],
+        "INSERT INTO browser_log (activity_id, start_time, end_time, title) VALUES (?1, ?2, ?3, ?4)",
+        params![1, start_time, end_time, title],
     ) {
         Ok(_) => println!("Successfully inserted into browser_log"),
         Err(err) => eprintln!("Failed to insert into browser_log: {}", err),
