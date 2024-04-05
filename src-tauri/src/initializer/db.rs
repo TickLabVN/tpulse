@@ -16,10 +16,10 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
 
     // Insert mock data into activity_log table
     conn.execute(
-        "INSERT INTO activity_log (title, priority, type, start, end, color, task_id) VALUES
-            ('Activity 1', 'High', 'Work', '7:00', '10:00', 'red', 1),
-            ('Activity 2', 'Low', 'Work', '12:00', '16:00',  'blue', 2),
-            ('Activity 3', 'Medium', 'Work', '18:00', '22:00', 'green', 3)",
+        "INSERT INTO activity_log (name, start_time, end_time, category_tag, task_id) VALUES
+            ('Activity 1', 3600, 7200, 'Category X', 1),
+            ('Activity 2', 7200, 10800, 'Category Y', 2),
+            ('Activity 3', 10800, 14400, 'Category Z', 3)",
         [],
     )?;
 
@@ -55,6 +55,7 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
 
 pub fn initialize_db() {
     let db_path = format!("{}/tpulse.sqlite3", get_data_directory());
+
     if path::Path::new(&db_path).exists() {
         fs::remove_file(&db_path).expect("Failed to remove existing database file");
     }
@@ -83,12 +84,10 @@ pub fn initialize_db() {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS activity_log (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            priority TEXT NOT NULL,
-            type TEXT NOT NULL,
-            start TEXT NOT NULL,
-            end TEXT,
-            color TEXT NOT NULL,
+            name TEXT NOT NULL,
+            start_time INTEGER NOT NULL,
+            end_time INTEGER,
+            category_tag TEXT,
             task_id INTEGER,
             FOREIGN KEY(task_id) REFERENCES tasks(id)
         )",

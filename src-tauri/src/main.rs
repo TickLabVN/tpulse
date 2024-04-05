@@ -13,6 +13,7 @@ use tpulse::{
     setting::{handle_setting_error, Setting},
     watcher::{watch_afk, watch_window},
 };
+
 fn main() {
     let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
         .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
@@ -27,11 +28,10 @@ fn main() {
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
-    // let initialize_db = thread::spawn(move || initialize_db());
-    // let open_pipe_server = thread::spawn(move || handle_metrics());
-    // let afk_watcher = thread::spawn(move || watch_afk(5000, 50000, afk_tx));
-    // let window_watcher = thread::spawn(move || watch_window(1000, window_tx));
-    // let event_handler = thread::spawn(move || handle_events(rx));
+    let open_pipe_server = thread::spawn(move || handle_metrics());
+    let afk_watcher = thread::spawn(move || watch_afk(poll_time, time_out, afk_tx));
+    let window_watcher = thread::spawn(move || watch_window(poll_time, window_tx));
+    let event_handler = thread::spawn(move || handle_events(rx));
 
     tauri::Builder::default()
         // We cannot see log when running in bundled app.
@@ -43,13 +43,12 @@ fn main() {
                 .build(),
         )
         // This plugin support us access sqlite database directly from Frontend-side
-        // .invoke_handler(tauri::generate_handler![get_db_path])
         .plugin(tauri_plugin_sql::Builder::default().build())
         .run(tauri::generate_context!())
         .expect("Error while running tauri application");
-    // initialize_db.join().unwrap();
-    // afk_watcher.join().unwrap();
-    // window_watcher.join().unwrap();
-    // event_handler.join().unwrap();
-    // open_pipe_server.join().unwrap();
+
+    afk_watcher.join().unwrap();
+    window_watcher.join().unwrap();
+    event_handler.join().unwrap();
+    open_pipe_server.join().unwrap();
 }
