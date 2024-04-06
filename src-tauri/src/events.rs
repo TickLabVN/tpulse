@@ -21,7 +21,7 @@ pub struct WindowInformation {
 
 #[derive(Debug)]
 pub struct BrowserInformation {
-    pub start_time: u64,
+    pub start_time: String,
     pub title: Option<String>,
 }
 
@@ -37,13 +37,14 @@ pub struct BrowserData {
     pub title: String,
     #[serde(default)]
     pub url: Option<String>,
-    #[serde(default)]
+    #[serde(rename = "windowId")]
     pub window_id: Option<u32>,
-    #[serde(default)]
+    #[serde(rename = "time")]
     pub start_time: u64,
-    pub tabid: u32,
+    #[serde(rename = "tabId")]
+    pub tab_id: Option<u32>,
     #[serde(default)]
-    pub paused: bool,
+    pub paused: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]

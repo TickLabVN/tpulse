@@ -16,10 +16,10 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
 
     // Insert mock data into activity_log table
     conn.execute(
-        "INSERT INTO activity_log (name, start_time, end_time, category_tag, task_id) VALUES
-            ('Activity 1', 3600, 7200, 'Category X', 1),
-            ('Activity 2', 7200, 10800, 'Category Y', 2),
-            ('Activity 3', 10800, 14400, 'Category Z', 3)",
+        "INSERT INTO activity_log (title, start, end, category_tag, task_id) VALUES
+            ('Activity 1', '7:00', '8:00', 'Category X', 1),
+            ('Activity 2', '10:00', '14:00', 'Category Y', 2),
+            ('Activity 3', '12:00', '18:00', 'Category Z', 3)",
         [],
     )?;
 
@@ -84,9 +84,9 @@ pub fn initialize_db() {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS activity_log (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            start_time INTEGER NOT NULL,
-            end_time INTEGER,
+            title TEXT NOT NULL,
+            start TEXT NOT NULL,
+            end TEXT,
             category_tag TEXT,
             task_id INTEGER,
             FOREIGN KEY(task_id) REFERENCES tasks(id)
@@ -124,8 +124,8 @@ pub fn initialize_db() {
         "CREATE TABLE IF NOT EXISTS browser_log (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             activity_id INTEGER,
-            start_time INTEGER NOT NULL,
-            end_time INTEGER,
+            start_time TEXT NOT NULL,
+            end_time TEXT,
             title TEXT NOT NULL,
             FOREIGN KEY(activity_id) REFERENCES activity_log(id)
         )",

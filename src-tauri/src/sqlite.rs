@@ -49,15 +49,20 @@ pub fn insert_window_log(window_log: &WindowInformation) {
 pub fn insert_browser_log(browser_log: &BrowserInformation) {
     let conn = Connection::open(&*DB_PATH).unwrap();
 
-    let start_time = browser_log.start_time as i64;
-    let end_time = start_time + 5 * 60;
+    println!("Inserting browser log: {:?}", browser_log);
+    println!("DB_PATH: {:?}", &*DB_PATH);
+
+    let start_time = &browser_log.start_time;
+    let end_time = &browser_log.start_time;
     let title = browser_log.title.clone();
 
+    let params = params![1, start_time, end_time, title];
+
     match conn.execute(
-        "INSERT INTO browser_log (start_time, end_time, title) VALUES (?1, ?2, ?3)",
-        params![start_time, end_time, title],
+        "INSERT INTO browser_log (activity_id, start_time, end_time, title) VALUES (?1, ?2, ?3, ?4)",
+        params,
     ) {
-        Ok(_) => println!("Successfully inserted into browser_log"),
+        Ok(x) => println!("Successfully inserted into browser_log: {:?}", x),
         Err(err) => eprintln!("Failed to insert into browser_log: {}", err),
     }
 }

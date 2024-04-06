@@ -1,3 +1,4 @@
+#[tauri::command]
 pub fn get_data_directory() -> String {
     #[cfg(target_os = "linux")]
     {

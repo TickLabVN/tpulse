@@ -14,6 +14,13 @@ use tpulse::{
     watcher::{watch_afk, watch_window},
 };
 
+#[tauri::command]
+fn get_home_dir() -> String {
+    dirs::home_dir()
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_else(|| "".to_string())
+}
+
 fn main() {
     let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
         .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
@@ -29,15 +36,19 @@ fn main() {
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
     let browser_tx = tx.clone();
-    let open_pipe_server = thread::spawn(move || handle_metrics(browser_tx));
-    let afk_watcher = thread::spawn(move || watch_afk(poll_time, time_out, afk_tx));
-    let window_watcher = thread::spawn(move || watch_window(poll_time, window_tx));
-    let event_handler = thread::spawn(move || handle_events(rx));
+
+    let workers = vec![
+        thread::spawn(move || handle_metrics(browser_tx)),
+        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
+        thread::spawn(move || watch_window(poll_time, window_tx)),
+        thread::spawn(move || handle_events(rx)),
+    ];
 
     tauri::Builder::default()
         // We cannot see log when running in bundled app.
         // This is a workaround to print log to stdout in production.
         // Can use other log targets
+        .invoke_handler(tauri::generate_handler![get_home_dir])
         .plugin(
             tauri_plugin_log::Builder::default()
                 .targets([LogTarget::Stdout])
@@ -48,8 +59,7 @@ fn main() {
         .run(tauri::generate_context!())
         .expect("Error while running tauri application");
 
-    afk_watcher.join().unwrap();
-    window_watcher.join().unwrap();
-    event_handler.join().unwrap();
-    open_pipe_server.join().unwrap();
+    for worker in workers {
+        worker.join().unwrap();
+    }
 }

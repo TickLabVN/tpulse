@@ -8,6 +8,7 @@ use log::info;
 
 #[cfg(any(target_os = "linux", target = "macos"))]
 use {
+    chrono::DateTime,
     libc::{mkfifo, open, read, O_RDONLY},
     std::ffi::CString,
     std::io::Error,
@@ -29,7 +30,9 @@ pub fn handle_metrics(tx: mpsc::Sender<UserMetric>) {
     };
     loop {
         match read_from_pipe(&pipe_name) {
-            Ok(data) => process_data(&data, &tx),
+            Ok(data) => {
+                process_data(&data, &tx);
+            }
             Err(err) => eprintln!("Error: {}", err),
         }
     }
@@ -48,7 +51,7 @@ fn process_data(data: &str, tx: &mpsc::Sender<UserMetric>) {
                 }
             }
             BrowserDataType::VideoStatus => {
-                if parsed_data.paused {
+                if parsed_data.paused.unwrap() {
                     let parsed_data = Arc::new(parsed_data);
                     let tx = tx.clone();
                     info!("Video status: {:?}", parsed_data);
@@ -60,7 +63,7 @@ fn process_data(data: &str, tx: &mpsc::Sender<UserMetric>) {
                         loop {
                             thread::sleep(Duration::from_secs(5));
 
-                            if !parsed_data.paused {
+                            if !parsed_data.paused.unwrap() {
                                 break;
                             }
 
@@ -83,7 +86,6 @@ fn process_data(data: &str, tx: &mpsc::Sender<UserMetric>) {
         }
     }
 }
-
 fn parse_data(data: &str) -> Result<BrowserData, serde_json::Error> {
     match serde_json::from_str(data) {
         Ok(parsed_data) => Ok(parsed_data),
@@ -93,9 +95,15 @@ fn parse_data(data: &str) -> Result<BrowserData, serde_json::Error> {
 
 fn extract_browser_info(data: &BrowserData) -> Option<BrowserInformation> {
     Some(BrowserInformation {
-        start_time: data.start_time,
+        start_time: handle_start_time(data.start_time),
         title: Some(data.title.clone()),
     })
+}
+
+fn handle_start_time(time: u64) -> String {
+    let date = DateTime::from_timestamp(time as i64, 0);
+    let time_string = date.expect("REASON").format("%H:%M").to_string();
+    time_string
 }
 
 #[cfg(any(target_os = "linux", target = "macos"))]
