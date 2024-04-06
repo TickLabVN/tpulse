@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { TextInput, Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
 import { Resizable } from 're-resizable';
 import { TaskDialog } from './TaskDialog';
+// import { homeDir } from '@tauri-apps/api/path';
+// import { getRandomColor } from '@utils';
 import Database from 'tauri-plugin-sql-api';
 
 import {
@@ -18,9 +20,9 @@ import { formatTime, convertTimeToNumber, convertNumberToTime } from '@utils';
 
 interface activity {
   title: string;
-  priority: string;
   start: string;
   end: string;
+  category_tag: string;
   color: string;
 }
 
@@ -32,13 +34,12 @@ interface Item {
 }
 export function DayView() {
   const [items, setItems] = useState<activity[]>([]);
-  // const [error, isError] = useState<string>('');
   useEffect(() => {
     const initDatabase = async () => {
       try {
         const dbPath = '/home/tan17112003/.ticklabvn.tpulse/tpulse.sqlite3';
         const db = await Database.load(`sqlite:${dbPath}`);
-        const result = await db.select('SELECT title, priority, type, start, end, color FROM activity_log');
+        const result = await db.select('SELECT title, start, end, category_tag FROM activity_log');
         setItems(result as activity[]);
       } catch (error) {
         alert(error);
@@ -331,14 +332,9 @@ export function DayView() {
     });
     setHours(newHour);
   };
-
   return (
     <>
-      {items.map((item, index) => (
-        <Text key={index}>
-          {item.start} - {item.end}
-        </Text>
-      ))}
+      {/* <Text>{homeDirectory}</Text> */}
       <Box
         sx={{
           position: 'absolute',
@@ -646,7 +642,7 @@ export function DayView() {
                               height='100%'
                               sx={{
                                 padding: '5px',
-                                backgroundColor: item.color,
+                                backgroundColor: header.name === 'Planning' ? item.color : 'red',
                                 pointerEvents: header.name === 'Planning' ? 'auto' : 'none'
                               }}
                               draggable={header.name === 'Planning' ? true : false}
@@ -663,6 +659,9 @@ export function DayView() {
                                 }}
                               >
                                 <Text>{item.title}</Text>
+                                {header.name === 'Planning' && 'type' in item && (
+                                  <Text>{`Type: ${item.type}`}</Text>
+                                )}
                                 <Text>
                                   {item.start.split(':')[0] + ':' + item.start.split(':')[1]} -{' '}
                                   {item.end.split(':')[0] + ':' + item.end.split(':')[1]}
