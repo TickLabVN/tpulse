@@ -28,10 +28,13 @@ fn main() {
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
-    let open_pipe_server = thread::spawn(move || handle_metrics());
-    let afk_watcher = thread::spawn(move || watch_afk(poll_time, time_out, afk_tx));
-    let window_watcher = thread::spawn(move || watch_window(poll_time, window_tx));
-    let event_handler = thread::spawn(move || handle_events(rx));
+
+    let workers = vec![
+        thread::spawn(move || handle_metrics()),
+        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
+        thread::spawn(move || watch_window(poll_time, window_tx)),
+        thread::spawn(move || handle_events(rx)),
+    ];
 
     tauri::Builder::default()
         // We cannot see log when running in bundled app.
@@ -47,8 +50,7 @@ fn main() {
         .run(tauri::generate_context!())
         .expect("Error while running tauri application");
 
-    afk_watcher.join().unwrap();
-    window_watcher.join().unwrap();
-    event_handler.join().unwrap();
-    open_pipe_server.join().unwrap();
+    for worker in workers {
+        worker.join().unwrap();
+    }
 }
