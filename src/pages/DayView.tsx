@@ -5,6 +5,7 @@ import { TaskDialog } from './TaskDialog';
 // import { homeDir } from '@tauri-apps/api/path';
 // import { getRandomColor } from '@utils';
 import Database from 'tauri-plugin-sql-api';
+import { invoke } from '@tauri-apps/api/tauri';
 
 import {
   CalendarIcon,
@@ -37,7 +38,8 @@ export function DayView() {
   useEffect(() => {
     const initDatabase = async () => {
       try {
-        const dbPath = '/home/tan17112003/.ticklabvn.tpulse/tpulse.sqlite3';
+        const homedirectory = await invoke('get_home_dir');
+        const dbPath = `${homedirectory}/.ticklabvn.tpulse/tpulse.sqlite3`;
         const db = await Database.load(`sqlite:${dbPath}`);
         const result = await db.select('SELECT title, start, end, category_tag FROM activity_log');
         setItems(result as activity[]);
@@ -390,6 +392,9 @@ export function DayView() {
             >
               Time Tracking
             </Text>
+            {/* <Text sx={{
+      fontZize: '20px',
+    }}>{homedirectory}</Text> */}
             <Box
               sx={{
                 display: 'flex',

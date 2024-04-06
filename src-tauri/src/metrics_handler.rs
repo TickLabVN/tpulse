@@ -1,5 +1,6 @@
 #[cfg(any(target_os = "linux", target = "macos"))]
 use {
+    chrono::DateTime,
     libc::{mkfifo, open, read, O_RDONLY},
     serde_json::{Error as JsonError, Result as JsonResult},
     std::ffi::CString,
@@ -22,18 +23,25 @@ pub fn handle_metrics() {
         match read_from_pipe(&pipe_name) {
             Ok(data) => {
                 process_data(&data);
-                println!("Data read from the pipe: {}", data);
             }
             Err(err) => eprintln!("Error: {}", err),
         }
     }
 }
 fn process_data(data: &str) {
-    if let Ok(parsed_data) = parse_data(&data) {
-        if parsed_data.data_type == "Tab" {
-            if let Some(browser_info) = extract_browser_info(&parsed_data) {
-                insert_browser_log(&browser_info);
+    println!("Processing data: {}", data);
+    match parse_data(&data) {
+        Ok(parsed_data) => {
+            println!("Parsed data: {:?}", parsed_data);
+            if parsed_data.data_type == "BrowserTab" {
+                if let Some(browser_info) = extract_browser_info(&parsed_data) {
+                    println!("Browser info: {:?}", browser_info);
+                    insert_browser_log(&browser_info);
+                }
             }
+        }
+        Err(err) => {
+            println!("Failed to parse data: {}", err);
         }
     }
 }
@@ -47,9 +55,15 @@ fn parse_data(data: &str) -> Result<BrowserData, serde_json::Error> {
 
 fn extract_browser_info(data: &BrowserData) -> Option<BrowserInformation> {
     Some(BrowserInformation {
-        start_time: data.start_time,
+        start_time: handle_start_time(data.start_time),
         title: Some(data.title.clone()),
     })
+}
+
+fn handle_start_time(time: u64) -> String {
+    let date = DateTime::from_timestamp(time as i64, 0);
+    let time_string = date.expect("REASON").format("%H:%M").to_string();
+    time_string
 }
 
 #[cfg(any(target_os = "linux", target = "macos"))]

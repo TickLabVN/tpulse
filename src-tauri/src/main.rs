@@ -14,6 +14,13 @@ use tpulse::{
     watcher::{watch_afk, watch_window},
 };
 
+#[tauri::command]
+fn get_home_dir() -> String {
+    dirs::home_dir()
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_else(|| "".to_string())
+}
+
 fn main() {
     let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
         .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
@@ -37,6 +44,7 @@ fn main() {
         // We cannot see log when running in bundled app.
         // This is a workaround to print log to stdout in production.
         // Can use other log targets
+        .invoke_handler(tauri::generate_handler![get_home_dir])
         .plugin(
             tauri_plugin_log::Builder::default()
                 .targets([LogTarget::Stdout])

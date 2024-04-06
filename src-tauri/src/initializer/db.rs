@@ -124,8 +124,8 @@ pub fn initialize_db() {
         "CREATE TABLE IF NOT EXISTS browser_log (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             activity_id INTEGER,
-            start_time INTEGER NOT NULL,
-            end_time INTEGER,
+            start_time TEXT NOT NULL,
+            end_time TEXT,
             title TEXT NOT NULL,
             FOREIGN KEY(activity_id) REFERENCES activity_log(id)
         )",
