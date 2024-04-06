@@ -334,7 +334,6 @@ export function DayView() {
   };
   return (
     <>
-      {/* <Text>{homeDirectory}</Text> */}
       <Box
         sx={{
           position: 'absolute',
