@@ -1,18 +1,27 @@
+use std::{
+    sync::Arc,
+    thread,
+    time::{Duration, Instant, SystemTime},
+};
+
+use log::info;
+
 #[cfg(any(target_os = "linux", target = "macos"))]
 use {
     libc::{mkfifo, open, read, O_RDONLY},
-    serde_json::{Error as JsonError, Result as JsonResult},
     std::ffi::CString,
     std::io::Error,
+    std::sync::mpsc,
 };
 
 use crate::{
-    events::{BrowserData, BrowserInformation},
+    events::{AFKEvent, AFKStatus, BrowserData, BrowserDataType, BrowserInformation, UserMetric},
+    setting::{handle_setting_error, read_setting, Setting},
     sqlite::insert_browser_log,
 };
 
 #[cfg(any(target_os = "linux", target = "macos"))]
-pub fn handle_metrics() {
+pub fn handle_metrics(tx: mpsc::Sender<UserMetric>) {
     let pipe_name = "/tmp/tpulse";
     match create_named_pipe(&pipe_name) {
         Ok(_) => println!("Creating named pipe successfully"),
@@ -20,16 +29,56 @@ pub fn handle_metrics() {
     };
     loop {
         match read_from_pipe(&pipe_name) {
-            Ok(data) => process_data(&data),
+            Ok(data) => process_data(&data, &tx),
             Err(err) => eprintln!("Error: {}", err),
         }
     }
 }
-fn process_data(data: &str) {
+fn process_data(data: &str, tx: &mpsc::Sender<UserMetric>) {
+    let time_out: u64 = read_setting::<u64>(Setting::Timeout)
+        .unwrap_or_else(|err| Some(handle_setting_error(Setting::Timeout, &err, 100)))
+        .unwrap_or_default();
+
     if let Ok(parsed_data) = parse_data(&data) {
-        if parsed_data.data_type == "Tab" {
-            if let Some(browser_info) = extract_browser_info(&parsed_data) {
-                insert_browser_log(&browser_info);
+        match parsed_data.data_type {
+            BrowserDataType::Tab => {
+                if let Some(browser_info) = extract_browser_info(&parsed_data) {
+                    info!("Browser tab: {:?}", browser_info);
+                    insert_browser_log(&browser_info);
+                }
+            }
+            BrowserDataType::VideoStatus => {
+                if parsed_data.paused {
+                    let parsed_data = Arc::new(parsed_data);
+                    let tx = tx.clone();
+                    info!("Video status: {:?}", parsed_data);
+
+                    thread::spawn(move || {
+                        let start_time = Instant::now();
+                        let mut afk = false;
+
+                        loop {
+                            thread::sleep(Duration::from_secs(5));
+
+                            if !parsed_data.paused {
+                                break;
+                            }
+
+                            if start_time.elapsed().as_secs() > time_out && !afk {
+                                let unix_ts = SystemTime::now()
+                                    .duration_since(SystemTime::UNIX_EPOCH)
+                                    .unwrap()
+                                    .as_secs() as u64;
+
+                                let _ = tx.send(UserMetric::AFK(AFKEvent {
+                                    status: AFKStatus::OFFLINE as u8,
+                                    start_time_unix: unix_ts,
+                                }));
+                                afk = true;
+                            }
+                        }
+                    });
+                }
             }
         }
     }

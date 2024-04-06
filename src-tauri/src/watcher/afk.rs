@@ -57,7 +57,7 @@ pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
                     .unwrap();
 
                 tx.send(UserMetric::AFK(AFKEvent {
-                    time: unix_ts.as_secs() as u64,
+                    start_time_unix: unix_ts.as_secs() as u64,
                     status: AFKStatus::ONLINE as u8,
                 }))
                 .unwrap();
@@ -71,7 +71,7 @@ pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
                 tx.send(UserMetric::AFK(AFKEvent {
-                    time: unix_ts.as_secs() as u64,
+                    start_time_unix: unix_ts.as_secs() as u64,
                     status: AFKStatus::OFFLINE as u8,
                 }))
                 .unwrap();

@@ -28,7 +28,8 @@ fn main() {
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
-    let open_pipe_server = thread::spawn(move || handle_metrics());
+    let browser_tx = tx.clone();
+    let open_pipe_server = thread::spawn(move || handle_metrics(browser_tx));
     let afk_watcher = thread::spawn(move || watch_afk(poll_time, time_out, afk_tx));
     let window_watcher = thread::spawn(move || watch_window(poll_time, window_tx));
     let event_handler = thread::spawn(move || handle_events(rx));

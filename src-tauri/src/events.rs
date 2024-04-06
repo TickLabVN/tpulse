@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 pub enum AFKStatus {
     ONLINE = 1,
@@ -8,7 +8,7 @@ pub enum AFKStatus {
 #[derive(Debug)]
 pub struct AFKEvent {
     pub status: u8,
-    pub time: u64,
+    pub start_time_unix: u64,
 }
 
 #[derive(Debug)]
@@ -30,10 +30,10 @@ pub enum UserMetric {
     Window(WindowInformation),
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize)]
 pub struct BrowserData {
     #[serde(rename = "type")]
-    pub data_type: String,
+    pub data_type: BrowserDataType,
     pub title: String,
     #[serde(default)]
     pub url: Option<String>,
@@ -44,4 +44,10 @@ pub struct BrowserData {
     pub tabid: u32,
     #[serde(default)]
     pub paused: bool,
+}
+
+#[derive(Debug, Deserialize)]
+pub enum BrowserDataType {
+    Tab,
+    VideoStatus,
 }

@@ -13,7 +13,7 @@ lazy_static! {
 /// Insert a new afk log entry
 pub fn insert_afk_log(afk_log: &AFKEvent) {
     let conn = Connection::open(&*DB_PATH).unwrap();
-    let start_time = afk_log.time as i64;
+    let start_time = afk_log.start_time_unix as i64;
     //TODO: add logic to handle end_time
     let end_time = start_time + 5 * 60;
     conn.execute(
