@@ -1,4 +1,5 @@
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router';
+import { SideBar } from '@components';
+import { Outlet, createRootRoute } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
   component: RootComponent
@@ -6,28 +7,13 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <>
-      <div className='p-2 flex gap-2 text-lg'>
-        <Link
-          to='/'
-          activeProps={{
-            className: 'font-bold'
-          }}
-          activeOptions={{ exact: true }}
-        >
-          Home
-        </Link>{' '}
-        <Link
-          to={'/page'}
-          activeProps={{
-            className: 'font-bold'
-          }}
-        >
-          Page
-        </Link>
+    <main className='w-full h-full'>
+      <div className='fixed left-0 w-[108px] h-full z-50'>
+        <SideBar />
       </div>
-      <hr />
-      <Outlet />
-    </>
+      <div className='h-full ms-[108px]'>
+        <Outlet />
+      </div>
+    </main>
   );
 }
