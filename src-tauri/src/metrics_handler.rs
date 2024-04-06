@@ -87,7 +87,7 @@ pub fn handle_metrics() {
                     Err(err) => eprint!("Failed to get data from client: {}", err),
                 }
                 unsafe {
-                    DisconnectNamedPipe(pipe_handle);
+                    DisconnectNamedPipe(pipe_handle as *mut c_void);
                 }
             }
         }
