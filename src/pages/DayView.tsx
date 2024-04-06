@@ -603,8 +603,8 @@ export function DayView() {
                             // zIndex: 3
                           }}
                           onClick={handleMouseClick}
-                          onMouseUp={!isResizing && handleMouseUp(header.name, hour)}
-                          onMouseMove={isResizing && handleMouseMove}
+                          onMouseUp={!isResizing ? handleMouseUp(header.name, hour) : undefined}
+                          onMouseMove={isResizing ? handleMouseMove : undefined}
                           onMouseDown={handleMouseDown(header.name)}
                         ></Box>
                       ))}
@@ -650,9 +650,11 @@ export function DayView() {
                                 pointerEvents: header.name === 'Planning' ? 'auto' : 'none'
                               }}
                               draggable={header.name === 'Planning' ? true : false}
-                              onDragStart={header.name === 'Planning' && handleDragStart}
+                              onDragStart={header.name === 'Planning' ? handleDragStart : undefined}
                               onDragEnd={
-                                header.name === 'Planning' && handleDragEnd(item.start, item.end, index)
+                                header.name === 'Planning'
+                                  ? handleDragEnd(item.start, item.end, index)
+                                  : undefined
                               }
                             >
                               <Box
