@@ -4582,6 +4582,7 @@ dependencies = [
  "log",
  "oauth2",
  "objc",
+ "once_cell",
  "regex",
  "reqwest",
  "rusqlite",

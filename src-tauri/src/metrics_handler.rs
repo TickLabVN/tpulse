@@ -44,7 +44,7 @@ fn process_data(data: &str, tx: &mpsc::Sender<UserMetric>) {
 
     if let Ok(parsed_data) = parse_data(&data) {
         match parsed_data.data_type {
-            BrowserDataType::Tab => {
+            BrowserDataType::BrowserTab => {
                 if let Some(browser_info) = extract_browser_info(&parsed_data) {
                     info!("Browser tab: {:?}", browser_info);
                     insert_browser_log(&browser_info);

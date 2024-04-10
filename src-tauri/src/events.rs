@@ -49,6 +49,6 @@ pub struct BrowserData {
 
 #[derive(Debug, Deserialize)]
 pub enum BrowserDataType {
-    Tab,
+    BrowserTab,
     VideoStatus,
 }

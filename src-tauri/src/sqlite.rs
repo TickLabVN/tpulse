@@ -52,14 +52,23 @@ pub fn insert_browser_log(browser_log: &BrowserInformation) {
     println!("Inserting browser log: {:?}", browser_log);
     println!("DB_PATH: {:?}", &*DB_PATH);
 
-    let start_time = &browser_log.start_time;
-    let end_time = &browser_log.start_time;
+    let start = &browser_log.start_time;
+    let end = browser_log.start_time.clone();
     let title = browser_log.title.clone();
 
-    let params = params![1, start_time, end_time, title];
-
+    // Update the end time of the last row
     match conn.execute(
-        "INSERT INTO browser_log (activity_id, start_time, end_time, title) VALUES (?1, ?2, ?3, ?4)",
+        "UPDATE browser_log SET end = ?1 WHERE rowid = (SELECT MAX(rowid) FROM browser_log)",
+        params![start],
+    ) {
+        Ok(x) => println!("Successfully updated end time of last row: {:?}", x),
+        Err(err) => eprintln!("Failed to update end time of last row: {}", err),
+    }
+
+    // Insert the new row
+    let params = params![1, start, end, title];
+    match conn.execute(
+        "INSERT INTO browser_log (activity_id, start, end, title) VALUES (?1, ?2, ?3, ?4)",
         params,
     ) {
         Ok(x) => println!("Successfully inserted into browser_log: {:?}", x),
