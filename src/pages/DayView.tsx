@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from 'react';
 import { TextInput, Text, Box, Button, ButtonGroup, Radio } from '@primer/react';
 import { Resizable } from 're-resizable';
@@ -12,7 +13,6 @@ import {
 } from '@primer/octicons-react';
 import moment from 'moment';
 import { formatTime, convertTimeToNumber, convertNumberToTime } from '@utils';
-//import { useZoom } from '@hooks';
 
 export function DayView() {
   interface Item {
@@ -323,21 +323,7 @@ export function DayView() {
     <>
       <Box
         sx={{
-          position: 'absolute',
-          top: `${divTop + window.scrollY}px`,
-          left: `${divLeft}px`,
-          width: `${divWidth}px`,
-          height: `${divHeight}px`,
-          backgroundColor: 'black',
-          zIndex: 100,
-          opacity: 0.5,
-          pointerEvents: 'none'
-        }}
-      ></Box>
-      <Box
-        sx={{
           padding: '50px',
-          backgroundColor: '#E5E5E5',
           display: 'flex',
           gap: 4
         }}

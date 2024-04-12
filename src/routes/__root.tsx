@@ -11,7 +11,7 @@ function RootComponent() {
       <div className='fixed left-0 w-[108px] h-full z-50'>
         <SideBar />
       </div>
-      <div className='h-full ms-[108px]'>
+      <div className='h-full ms-[108px] p-[30px]'>
         <Outlet />
       </div>
     </main>

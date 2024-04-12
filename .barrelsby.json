@@ -2,7 +2,6 @@
     "directory": [
         "./src/hooks",
         "./src/interfaces",
-        "./src/pages",
         "./src/utils",
         "./src/components"
     ],

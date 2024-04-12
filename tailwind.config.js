@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -6,9 +7,12 @@ export default {
       sans: ['Inter', 'sans-serif'],
     },
     colors: {
+      background: "#071A29",
       white: "#FFFFFF",
       primary: "#11834F",
       secondary: "#BDFBBA",
+      navy: "#012F2F",
+      green: "#2A9665",
       "accent-light": "#BDEBFB",
       "accent-blue": "#1DB1F7",
       "accent-purple": "#907BFD",

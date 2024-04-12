@@ -31,6 +31,7 @@
       "@hooks": ["src/hooks"],
       "@interfaces": ["src/interfaces"],
       "@pages": ["src/pages"],
+      "@pages/*": ["src/pages/*"],
       "@utils": ["src/utils"],
       "@components": ["src/components"],
     },
