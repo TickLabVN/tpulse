@@ -42,7 +42,7 @@ export function TodayTask() {
         {items.map((item) => (
           <div
             key={item.id}
-            className='p-[18px] rounded-2xl bg-white border-[1px] border-light-gray flex justify-between items-center'
+            className='p-[18px] rounded-2xl bg-white border border-light-gray flex justify-between items-center'
           >
             <div className='w-fit flex items-center gap-4'>
               <Checkbox className='bg-white checked:!bg-green !w-6 !h-6 !border-1 !border-light-gray !rounded-full !p-2' />

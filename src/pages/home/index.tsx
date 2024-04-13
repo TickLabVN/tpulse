@@ -2,6 +2,7 @@ import { ChevronDownIcon, FileDirectoryIcon } from '@primer/octicons-react';
 import { Timer } from './Timer';
 import { Avatar } from '@primer/react';
 import { TodayTask } from './TodayTask';
+import { Timeline } from './timeline';
 
 // TODO: Replace this with user's name
 const userName = 'Nguyen Phuc Vinh';
@@ -15,16 +16,18 @@ export function HomePage() {
             <FileDirectoryIcon size={18} />
             <span>Dashboard</span>
           </div>
-          <div className='font-bold text-navy text-[40px] leading-[48px] mt-2'>Welcome back, Amyra 👋🏻</div>
+          <div className='font-bold text-navy text-[40px] leading-[48px] mt-2'>Welcome back, TickLab 👋🏻</div>
         </div>
         <div className='flex items-center rounded-full bg-[#DBEDEC] gap-2 p-[6px] pe-[12px] text-dark-gray h-fit font-bold cursor-pointer'>
-          <Avatar src='/sample_avatar.png' alt='avatar' size={38} />
+          <Avatar src='/home/sample_avatar.png' alt='avatar' size={38} />
           <span className='text-[16px] leading-[20px]'>{userName}</span>
           <ChevronDownIcon size={24} />
         </div>
       </div>
-      <div className='w-full mt-[30px] grid grid-cols-4'>
-        <div className='col-span-3'>Hello</div>
+      <div className='w-full mt-[30px] grid grid-cols-4 gap-[30px]'>
+        <div className='col-span-3'>
+          <Timeline />
+        </div>
         <div className='col-span-1'>
           <Timer />
           <TodayTask />

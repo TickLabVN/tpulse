@@ -32,7 +32,7 @@ export function SideBar() {
   return (
     <div
       style={{ boxShadow: '0px 0px 30px 0px #0000000D' }}
-      className='w-full h-[calc(100%-40px)] my-[20px] rounded-tr-[50px] rounded-br-[50px] flex flex-col items-center justify-between bg-white border-[1px] border-s-none border-light-gray p-5'
+      className='w-full h-[calc(100%-40px)] my-[20px] rounded-tr-[50px] rounded-br-[50px] flex flex-col items-center justify-between bg-white border border-s-none border-light-gray p-5'
     >
       <div className='flex flex-col items-center w-[68px] h-fit'>
         <Link to='/'>
@@ -56,7 +56,7 @@ export function SideBar() {
         onClick={() => window.open('https://github.com/TickLabVN')}
         className='font-bold text-[#1F2328] text-center w-full h-[68px] flex flex-col items-center justify-center rounded-full cursor-pointer'
       >
-        <InfoIcon size={24} className='font-bold' />
+        <InfoIcon size={24} className='font-bold stroke-2' />
       </div>
     </div>
   );

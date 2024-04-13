@@ -9,7 +9,7 @@ export function Timer() {
   const [tab, setTab] = useState<'focus' | 'elapse'>('focus');
 
   return (
-    <div className='p-[10px] border-[1px] rounded-[15px] border-light-gray w-full shadow-sm bg-white'>
+    <div className='p-[10px] border rounded-[15px] border-light-gray w-full shadow-sm bg-white'>
       <div className='flex gap-0 justify-between items-center rounded-[10px] bg-[#EFEFEF] p-[6px]'>
         <div
           className={`${tabHeaderStyle}${tab === 'focus' ? ' bg-white' : ''}`}
@@ -39,7 +39,7 @@ export function Timer() {
         >
           <div className='bg-[#F2E7FF] w-[139px] h-[139px] rounded-full'>
             <img
-              src='/timer_play.svg'
+              src='/home/timer_play.svg'
               alt='play'
               className='rounded-full cursor-pointer relative top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'
             />
@@ -48,7 +48,7 @@ export function Timer() {
       </div>
 
       <div className='p-[14px] rounded-2xl bg-[#F6F7F8] flex flex-col items-center gap-1 mt-10 h-fit'>
-        <div className='rounded-full text-green border-green border-[1px] py-[2px] px-1 font-bold text-[12px] leading-5'>
+        <div className='rounded-full text-green border-green border py-[2px] px-1 font-bold text-[12px] leading-5'>
           WORKING
         </div>
         <div className='text-[#1F2328] font-bold text-[36px] leading-[43px]'>01:20:02</div>
