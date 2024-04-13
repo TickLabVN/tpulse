@@ -13,6 +13,8 @@ export default {
       secondary: "#BDFBBA",
       navy: "#012F2F",
       green: "#2A9665",
+      "dark-gray": "#404040",
+      "light-gray": "#D0D7DE",
       "accent-light": "#BDEBFB",
       "accent-blue": "#1DB1F7",
       "accent-purple": "#907BFD",

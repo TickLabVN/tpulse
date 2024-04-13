@@ -6,6 +6,17 @@ export const formatTime = (time: number) => {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
+export const prettyHour = (time: number) => {
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time % 3600) / 60);
+
+  let str = `${hours}h`;
+  if (minutes > 0) {
+    str += `${minutes}m`;
+  }
+  return str;
+};
+
 export const convertTimeToNumber = (time: string) => {
   const timeComponents = time.split(':').map((component) => parseInt(component, 10) || 0);
   return (

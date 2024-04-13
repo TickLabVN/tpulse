@@ -16,7 +16,8 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'eqeqeq': 'error',
-    'no-console': 'error'
+    'no-console': 'error',
+    '@typescript-eslint/consistent-type-definitions': 'off'
   },
   parserOptions: {
     ecmaVersion: 'latest',

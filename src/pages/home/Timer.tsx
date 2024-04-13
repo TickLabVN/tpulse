@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 
 const tabHeaderStyle =
-  'cursor-pointer py-[14px] rounded-lg flex-1 font-[500] leading-4 flex items-center justify-center gap-2 text-[#404040]';
+  'cursor-pointer py-[14px] rounded-lg flex-1 font-[500] leading-4 flex items-center justify-center gap-2 text-dark-gray';
 
 export function Timer() {
   const [tab, setTab] = useState<'focus' | 'elapse'>('focus');
 
   return (
-    <div className='p-[10px] border-[1px] rounded-[15px] border-[#D0D7DE] w-full shadow-sm bg-white'>
+    <div className='p-[10px] border-[1px] rounded-[15px] border-light-gray w-full shadow-sm bg-white'>
       <div className='flex gap-0 justify-between items-center rounded-[10px] bg-[#EFEFEF] p-[6px]'>
         <div
           className={`${tabHeaderStyle}${tab === 'focus' ? ' bg-white' : ''}`}
