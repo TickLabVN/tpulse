@@ -1,4 +1,4 @@
-import { ChevronRightIcon, PlusCircleIcon } from '@primer/octicons-react';
+import { ChevronRightIcon, FeedPlusIcon } from '@primer/octicons-react';
 import { Checkbox, Label } from '@primer/react';
 import { prettyHour } from '@utils';
 import moment from 'moment';
@@ -22,7 +22,7 @@ const items: TaskItem[] = [
     status: 'done'
   },
   {
-    id: '1',
+    id: '2',
     name: 'Developer meeting',
     start: moment().startOf('day').add(8, 'hours').unix(),
     stop: moment().startOf('day').add(10, 'hours').unix(),
@@ -36,7 +36,7 @@ export function TodayTask() {
     <div className='mt-[30px]'>
       <div className='flex items-center justify-between'>
         <span className='font-bold text-navy text-[26px] leading-8'>Today Tasks</span>
-        <PlusCircleIcon size={36} className='cursor-pointer text-green' />
+        <FeedPlusIcon size={32} className='cursor-pointer text-green stroke-1' />
       </div>
       <div className='mt-3 w-full flex flex-col gap-3'>
         {items.map((item) => (

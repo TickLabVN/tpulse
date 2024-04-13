@@ -1,17 +1,25 @@
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
 
-const maxCol = 12;
+const maxCol = 24;
 const arr = Array.from({ length: maxCol }, (_, i) => i);
+
+function getCurrentTz() {
+  const date = new Date();
+  const offset = date.getTimezoneOffset();
+  const offsetInHours = -offset / 60;
+
+  return `GMT-${offsetInHours}`;
+}
 
 export function TimeTable() {
   return (
-    <div className='rounded-2xl bg-white p-0 border-light-gray border mt-4 overflow-hidden'>
+    <div className='rounded-2xl bg-white p-0 border-light-gray border mt-4 max-h-[80vh] no-scrollbar overflow-y-scroll'>
       <table className='w-full border-collapse'>
-        <thead>
+        <thead className='sticky top-0 z-10 bg-white'>
           <tr>
             <th className='px-[15px] text-end w-20 shadow-sm border-b border-light-gray'>
               <div>EST</div>
-              <div>GMT-7</div>
+              <div>{getCurrentTz()}</div>
             </th>
             <th className='py-5 ps-8 border-x border-b border-light-gray shadow-sm'>
               <div className='flex items-center gap-[14px]'>
@@ -37,7 +45,7 @@ export function TimeTable() {
             </th>
             <th className='px-[15px] text-start w-20 shadow-sm border-b border-light-gray'>
               <div>EST</div>
-              <div>GMT-7</div>
+              <div>{getCurrentTz()}</div>
             </th>
           </tr>
         </thead>
@@ -51,19 +59,15 @@ export function TimeTable() {
               <tr key={i}>
                 <td className='font-bold px-[15px] align-bottom'>
                   {!isLastRow ? (
-                    <div className='text-sm text-end text-gray translate-y-1/2'>{i} AM</div>
-                  ) : (
-                    <td></td>
-                  )}
+                    <div className='text-sm text-end text-gray translate-y-1/2'>{i + 1} AM</div>
+                  ) : null}
                 </td>
                 <td className={rowStyle}></td>
                 <td className={rowStyle}></td>
                 <td className='font-bold px-[15px] align-bottom'>
                   {!isLastRow ? (
-                    <div className='text-sm text-start text-gray translate-y-1/2'>{i} AM</div>
-                  ) : (
-                    <td></td>
-                  )}
+                    <div className='text-sm text-start text-gray translate-y-1/2'>{i + 1} AM</div>
+                  ) : null}
                 </td>
               </tr>
             );
