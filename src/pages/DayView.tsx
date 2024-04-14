@@ -6,6 +6,7 @@ import { TaskDialog } from './TaskDialog';
 // import { getRandomColor } from '@utils';
 import Database from 'tauri-plugin-sql-api';
 import { invoke } from '@tauri-apps/api/tauri';
+// import { listen } from '@tauri-apps/api/event';
 
 import {
   CalendarIcon,
@@ -19,11 +20,11 @@ import moment from 'moment';
 import { formatTime, convertTimeToNumber, convertNumberToTime } from '@utils';
 //import { useZoom } from '@hooks';
 
-interface activity {
-  title: string;
+interface browserActivity {
+  activity_id: number;
   start: string;
   end: string;
-  category_tag: string;
+  title: string;
   color: string;
 }
 
@@ -34,20 +35,31 @@ interface Item {
   color: string;
 }
 export function DayView() {
-  const [items, setItems] = useState<activity[]>([]);
+  const [items, setItems] = useState<browserActivity[]>([]);
   useEffect(() => {
+    let isMounted = true;
+    let prevItems: browserActivity[] = [];
     const initDatabase = async () => {
+      if (!isMounted) return;
       try {
         const homedirectory = await invoke('get_home_dir');
         const dbPath = `${homedirectory}/.ticklabvn.tpulse/tpulse.sqlite3`;
         const db = await Database.load(`sqlite:${dbPath}`);
-        const result = await db.select('SELECT title, start, end, category_tag FROM activity_log');
-        setItems(result as activity[]);
+        const result = await db.select('SELECT title, start, end FROM browser_log');
+        if (isMounted && JSON.stringify(result) !== JSON.stringify(prevItems)) {
+          prevItems = result as browserActivity[];
+          setItems(prevItems);
+        }
       } catch (error) {
         alert(error);
       }
     };
     initDatabase();
+    const intervalId = setInterval(initDatabase, 5000);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
   }, []);
 
   const [isRunning, setIsRunning] = useState<boolean>(false);

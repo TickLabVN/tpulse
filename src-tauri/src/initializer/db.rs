@@ -42,13 +42,13 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
     )?;
 
     // Insert mock data into browser_log table
-    conn.execute(
-        "INSERT INTO browser_log (activity_id, start_time, end_time, title) VALUES
-            (1, 3600, 7200, 'Page 1'),
-            (2, 7200, 10800, 'Page 2'),
-            (3, 10800, 14400, 'Page 3')",
-        [],
-    )?;
+    // conn.execute(
+    //     "INSERT INTO browser_log (activity_id, start, end, title) VALUES
+    //         (1, '7:00', '8:00', 'Page 1'),
+    //         (2, '10:00', '12:00', 'Page 2'),
+    //         (3, '13:00', '15:00', 'Page 3')",
+    //     [],
+    // )?;
 
     Ok(())
 }
@@ -126,8 +126,8 @@ pub fn initialize_db() {
         "CREATE TABLE IF NOT EXISTS browser_log (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             activity_id INTEGER,
-            start_time TEXT NOT NULL,
-            end_time TEXT,
+            start TEXT NOT NULL,
+            end TEXT,
             title TEXT NOT NULL,
             FOREIGN KEY(activity_id) REFERENCES activity_log(id)
         )",
@@ -145,7 +145,7 @@ pub fn initialize_db() {
     check_mock_data(&conn, "activity_log").expect("No mock data in activity_log table");
     check_mock_data(&conn, "afk_log").expect("No mock data in afk_log table");
     check_mock_data(&conn, "window_log").expect("No mock data in window_log table");
-    check_mock_data(&conn, "browser_log").expect("No mock data in browser_log table");
+    // check_mock_data(&conn, "browser_log").expect("No mock data in browser_log table");
 }
 fn activity_log_is_empty(conn: &Connection) -> Result<bool> {
     let mut stmt = conn.prepare("SELECT COUNT(*) FROM activity_log")?;
