@@ -1,6 +1,6 @@
 import { ChevronRightIcon, FeedPlusIcon } from '@primer/octicons-react';
 import { Checkbox, Label } from '@primer/react';
-import { prettyHour } from '@utils';
+import { prettyHour } from '@/utils';
 import moment from 'moment';
 
 type TaskItem = {

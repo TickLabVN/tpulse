@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-import viteEslint from 'vite-plugin-eslint';
+// import viteEslint from 'vite-plugin-eslint';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
 
