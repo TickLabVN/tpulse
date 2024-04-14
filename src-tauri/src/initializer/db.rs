@@ -87,6 +87,8 @@ pub fn initialize_db() {
             title TEXT NOT NULL,
             start TEXT NOT NULL,
             end TEXT,
+            class TEXT,
+            execPath TEXT,
             category_tag TEXT,
             task_id INTEGER,
             FOREIGN KEY(task_id) REFERENCES tasks(id)

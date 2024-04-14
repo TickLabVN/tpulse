@@ -10,10 +10,15 @@ use {
 };
 
 #[cfg(target_os = "linux")]
-pub fn get_current_window_information() -> Result<WindowInformation> {
+pub fn get_current_window_information() -> Option<Result<WindowInformation>> {
     let window_raw_id = get_window_id().unwrap();
-    let window_info = get_window_information_by_id(window_raw_id)?;
-    Ok(window_info)
+    if window_raw_id == 0 {
+        return None; // Or some other error type
+    }
+
+    let window_info = get_window_information_by_id(window_raw_id);
+    println!("{:?}", window_info);
+    Some(window_info)
 }
 
 #[cfg(target_os = "linux")]

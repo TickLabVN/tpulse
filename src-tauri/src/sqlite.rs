@@ -12,15 +12,10 @@ lazy_static! {
 
 /// Insert a new afk log entry
 pub fn insert_afk_log(afk_log: &AFKEvent) {
-    let conn = Connection::open(&*DB_PATH).unwrap();
-    let start_time = afk_log.start_time_unix as i64;
-    //TODO: add logic to handle end_time
-    let end_time = start_time + 5 * 60;
-    conn.execute(
-        "INSERT INTO afk_log (start_time, end_time, status) VALUES (?1, ?2, ?3)",
-        params![start_time, end_time, afk_log.status as i64],
+    println!(
+        "INSERT INTO afk_log (start_time, end_time, status) VALUES ({}, {}, {})",
+        afk_log.start_time_unix as i64, 9999, afk_log.status as i64
     )
-    .expect("Failed to insert into afk_log");
 }
 
 pub fn insert_window_log(window_log: &WindowInformation) {
@@ -48,9 +43,6 @@ pub fn insert_window_log(window_log: &WindowInformation) {
 
 pub fn insert_browser_log(browser_log: &BrowserInformation) {
     let conn = Connection::open(&*DB_PATH).unwrap();
-
-    println!("Inserting browser log: {:?}", browser_log);
-    println!("DB_PATH: {:?}", &*DB_PATH);
 
     let start_time = &browser_log.start_time;
     let end_time = &browser_log.start_time;
