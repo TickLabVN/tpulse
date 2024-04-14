@@ -1,8 +1,8 @@
 import { ChevronDownIcon, FileDirectoryIcon } from '@primer/octicons-react';
 import { Timer } from './Timer';
-import { Avatar } from '@primer/react';
 import { TodayTask } from './TodayTask';
 import { Timeline } from './timeline';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // TODO: Replace this with user's name
 const userName = 'Nguyen Phuc Vinh';
@@ -19,7 +19,10 @@ export function HomePage() {
           <div className='font-bold text-navy text-[40px] leading-[48px] mt-2'>Welcome back, TickLab 👋🏻</div>
         </div>
         <div className='flex items-center rounded-full bg-[#DBEDEC] gap-2 p-[6px] pe-[12px] text-dark-gray h-fit font-bold cursor-pointer'>
-          <Avatar src='/home/sample_avatar.png' alt='avatar' size={38} />
+          <Avatar>
+            <AvatarFallback>PV</AvatarFallback>
+            <AvatarImage src='/home/sample_avatar.png' alt='avatar' sizes='38px' />
+          </Avatar>
           <span className='text-[16px] leading-[20px]'>{userName}</span>
           <ChevronDownIcon size={24} />
         </div>

@@ -1,7 +1,8 @@
 import { ChevronRightIcon, FeedPlusIcon } from '@primer/octicons-react';
-import { Checkbox, Label } from '@primer/react';
 import { prettyHour } from '@/utils';
 import moment from 'moment';
+import { Badge } from '@/components';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type TaskItem = {
   id: string;
@@ -49,9 +50,9 @@ export function TodayTask() {
               <div className='flex flex-col justify-between gap-3'>
                 <div className='flex items-center gap-3'>
                   <span className='font-semibold text-[18px] leading-5'>{item.name}</span>
-                  <Label className='!bg-accent-blue !text-sm !font-bold !rounded-[5px] !px-2 !py-1 text-white !leading-5 !border-none'>
+                  <Badge className='!bg-accent-blue !text-sm !font-bold !rounded-[5px] !px-2 !py-1 text-white !leading-5 !border-none'>
                     {prettyHour(item.stop - item.start)}
-                  </Label>
+                  </Badge>
                 </div>
                 <div className='flex items-center text-background font-semibold text-sm'>
                   <span className='mr-5'>Today,&nbsp;{moment.unix(item.start).format('HH:mm')}</span>
