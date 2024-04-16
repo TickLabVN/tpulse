@@ -4,6 +4,7 @@ pub mod google_oauth;
 pub mod initializer;
 pub mod metrics;
 pub mod models;
+pub mod raw_metric_processor;
 pub mod setting;
 pub mod sqlite;
 pub mod utils;
