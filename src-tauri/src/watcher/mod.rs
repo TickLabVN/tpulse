@@ -1,5 +1,6 @@
 mod afk;
+mod browser;
 mod window;
-mod window_query;
 pub use afk::watch_afk;
+pub use browser::watch_browser;
 pub use window::watch_window;

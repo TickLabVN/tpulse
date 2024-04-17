@@ -1,25 +1,15 @@
+// The browser tpulse extension sends read data to a named pipe
+// Our app reads data from this named pipe to retrieve data from browser tabs
+
 #[cfg(any(target_os = "linux", target = "macos"))]
 use {
     libc::{mkfifo, open, read, O_RDONLY},
     std::ffi::CString,
     std::io::Error,
 };
+
 #[cfg(any(target_os = "linux", target = "macos"))]
-pub fn handle_metrics() {
-    let pipe_name = "/tmp/tpulse";
-    match create_named_pipe(&pipe_name) {
-        Ok(_) => println!("Creating named pipe successfully"),
-        Err(err) => eprintln!("Error: {}", err),
-    };
-    loop {
-        match read_from_pipe(&pipe_name) {
-            Ok(data) => println!("Data read from the pipe: {}", data),
-            Err(err) => eprintln!("Error: {}", err),
-        }
-    }
-}
-#[cfg(any(target_os = "linux", target = "macos"))]
-fn create_named_pipe(pipe_name: &str) -> Result<(), &'static str> {
+pub fn create_named_pipe(pipe_name: &str) -> Result<(), &'static str> {
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
     let result = unsafe { mkfifo(c_pipe_name.as_ptr(), 0o666) };
 
@@ -29,8 +19,9 @@ fn create_named_pipe(pipe_name: &str) -> Result<(), &'static str> {
         Err("Failed to create named pipe")
     }
 }
+
 #[cfg(any(target_os = "linux", target = "macos"))]
-fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
+pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
 
     let fd = unsafe { open(c_pipe_name.as_ptr(), O_RDONLY) };
@@ -71,34 +62,7 @@ use {
 };
 
 #[cfg(target_os = "windows")]
-pub fn handle_metrics() {
-    let pipe_name = "\\\\.\\pipe\\tpulse";
-    match create_named_pipe(&pipe_name) {
-        Ok(pipe_handle) => {
-            println!("Waiting for client to connect...");
-            loop {
-                let connected =
-                    unsafe { ConnectNamedPipe(pipe_handle as *mut c_void, ptr::null_mut()) };
-                if connected == 0 {
-                    eprint!("Couldn't connect to named pipe")
-                }
-                match read_from_pipe(pipe_handle) {
-                    Ok(data) => eprint!("Data from client: {}", data),
-                    Err(err) => eprint!("Failed to get data from client: {}", err),
-                }
-                unsafe {
-                    DisconnectNamedPipe(pipe_handle as *mut c_void);
-                }
-            }
-        }
-        Err(err) => {
-            eprintln!("Error creating named pipe: {}", err);
-        }
-    }
-}
-
-#[cfg(target_os = "windows")]
-fn create_named_pipe(pipe_name: &str) -> Result<i32, Error> {
+pub fn create_named_pipe(pipe_name: &str) -> Result<i32, Error> {
     let pipename = OsStr::new(pipe_name)
         .encode_wide()
         .chain(Some(0).into_iter())
@@ -123,7 +87,7 @@ fn create_named_pipe(pipe_name: &str) -> Result<i32, Error> {
 }
 
 #[cfg(target_os = "windows")]
-fn read_from_pipe(pipe_handle: i32) -> Result<String, Error> {
+pub fn read_from_pipe(pipe_handle: i32) -> Result<String, Error> {
     const BUFFER_SIZE: usize = 1024;
     let mut buffer = Vec::with_capacity(BUFFER_SIZE);
     buffer.resize(BUFFER_SIZE, 0);
