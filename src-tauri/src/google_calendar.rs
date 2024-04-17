@@ -23,7 +23,7 @@ use crate::setting::{handle_setting_error, read_setting, write_setting, Setting}
 pub struct CalendarInfo {
     pub id: String,
     pub summary: String,
-    pub backgroundColor: String,
+    pub background_color: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -34,15 +34,15 @@ struct CalendarInfoResponse {
 #[derive(Debug, Deserialize)]
 pub struct EventDateTime {
     pub date: Option<String>,
-    pub dateTime: Option<String>,
-    pub timeZone: Option<String>,
+    pub date_time: Option<String>,
+    pub time_zone: Option<String>,
 }
 
 impl fmt::Display for EventDateTime {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match (&self.date, &self.dateTime) {
+        match (&self.date, &self.date_time) {
             (Some(date), _) => write!(f, "{}", date),
-            (_, Some(dateTime)) => write!(f, "{}", dateTime),
+            (_, Some(date_time)) => write!(f, "{}", date_time),
             _ => write!(f, "No date or datetime specified"),
         }
     }
@@ -54,7 +54,7 @@ pub struct EventInfo {
     pub summary: String,
     pub start: EventDateTime,
     pub end: EventDateTime,
-    pub colorId: Option<String>,
+    pub color_id: Option<String>,
     pub color: Option<String>,
     pub location: Option<String>,
 }
@@ -441,7 +441,7 @@ impl GoogleCalendar {
 
             // Iterate over each event in the event_list
             for event in &mut event_list.items {
-                if let Some(color_id) = event.colorId.clone() {
+                if let Some(color_id) = event.color_id.clone() {
                     // Get the color code for the color_id
                     if let Some(color_code) = get_color_code(&color_id) {
                         event.color = Some(color_code.to_string());
