@@ -146,6 +146,7 @@ pub fn get_current_window_information() -> Result<WindowInformation> {
     }
     Ok(window_info)
 }
+
 #[cfg(target_os = "windows")]
 fn get_process_path_and_name(phlde: HANDLE) -> (String, String) {
     // Allocate a buffer to store the path on stack
@@ -214,12 +215,15 @@ use {
     std::ffi::c_void,
     std::result::Result::Ok,
 };
+
 #[cfg(target_os = "macos")]
 #[allow(non_upper_case_globals)]
 pub const kCFNumberSInt32Type: CFNumberType = 3;
+
 #[cfg(target_os = "macos")]
 #[allow(non_upper_case_globals)]
 pub const kCFNumberSInt64Type: CFNumberType = 4;
+
 #[cfg(target_os = "macos")]
 #[derive(Debug)]
 enum DictEntryValue {
@@ -227,12 +231,14 @@ enum DictEntryValue {
     _String(String),
     _Unknown,
 }
+
 #[cfg(target_os = "macos")]
 pub fn get_current_window_information() -> Result<WindowInformation> {
     let app_active = get_active_app().unwrap();
     let window_info = get_window_information_by_apid(app_active)?;
     Ok(window_info)
 }
+
 #[cfg(target_os = "macos")]
 fn get_active_app() -> Result<NSRunningApplication> {
     let app_active = unsafe {
@@ -241,6 +247,7 @@ fn get_active_app() -> Result<NSRunningApplication> {
     };
     return Ok(app_active);
 }
+
 #[cfg(target_os = "macos")]
 fn get_window_information_by_apid(app_active: NSRunningApplication) -> Result<WindowInformation> {
     const OPTIONS: CGWindowListOption =
@@ -287,11 +294,13 @@ fn get_window_information_by_apid(app_active: NSRunningApplication) -> Result<Wi
     unsafe { CFRelease(list_window_info as CFTypeRef) }
     Err(anyhow!("There's an error"))
 }
+
 #[cfg(target_os = "macos")]
 fn get_application_pid(app_active: NSRunningApplication) -> Result<i64> {
     let app_pid = unsafe { app_active.processIdentifier() as i64 };
     return Ok(app_pid);
 }
+
 #[cfg(target_os = "macos")]
 #[allow(non_upper_case_globals)]
 fn get_dictionary_info(dict: CFDictionaryRef, key: &str) -> DictEntryValue {
