@@ -5,7 +5,6 @@ use rusqlite::{Connection, Error, Result};
 use crate::utils::get_data_directory;
 
 fn create_mock_data(conn: &Connection) -> Result<()> {
-    // Insert mock data into tasks table
     conn.execute(
         "INSERT INTO tasks (day, start_time, end_time, task_name, category_tag, priority_tag) VALUES
             ('2024-03-21', 3600, 7200, 'Task 1', 'Category A', 'high'),
@@ -14,41 +13,24 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
         [],
     )?;
 
-    // Insert mock data into activity_log table
     conn.execute(
-        "INSERT INTO activity_log (title, start, end, category_tag, task_id) VALUES
-            ('Activity 1', '7:00', '8:00', 'Category X', 1),
-            ('Activity 2', '10:00', '14:00', 'Category Y', 2),
-            ('Activity 3', '12:00', '18:00', 'Category Z', 3)",
+        "INSERT INTO activity (identifier, category_tag) VALUES
+            ('tpulse - Visual Studio Code', 'Category X'),
+            ('Spotify', 'Category Y'),
+            ('youtube.com/watch?v=bS9em7Bg0iU', 'Category Z'),
+            ('stackoverflow.com', 'Category X')",
         [],
     )?;
 
-    // Insert mock data into afk_log table
     conn.execute(
-        "INSERT INTO afk_log (start_time, end_time, status) VALUES
-            (100, 200, 1),
-            (300, 400, 0),
-            (500, 600, 1)",
+        "INSERT INTO log (start_time, end_time, activity_identifier, task_id) VALUES
+            (3600, 7200, 'tpulse - Visual Studio Code', '1'),
+            (7200, 10800, 'Spotify', NULL),
+            (10800, 14400, 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
+            (14400, 16200, 'Spotify', NULL),
+            (18000, NULL, 'tpulse - Visual Studio Code', '1')",
         [],
     )?;
-
-    // Insert mock data into window_log table
-    conn.execute(
-        "INSERT INTO window_log (activity_id, start_time, end_time, title, class, execPath) VALUES
-            (1, 3600, 7200, 'Window 1', 'Class A', '/path/to/executable'),
-            (2, 7200, 10800, 'Window 2', 'Class B', '/path/to/executable'),
-            (3, 10800, 14400, 'Window 3', 'Class C', '/path/to/executable')",
-        [],
-    )?;
-
-    // Insert mock data into browser_log table
-    // conn.execute(
-    //     "INSERT INTO browser_log (activity_id, start, end, title) VALUES
-    //         (1, '7:00', '8:00', 'Page 1'),
-    //         (2, '10:00', '12:00', 'Page 2'),
-    //         (3, '13:00', '15:00', 'Page 3')",
-    //     [],
-    // )?;
 
     Ok(())
 }
@@ -82,73 +64,51 @@ pub fn initialize_db() {
     .expect("Failed to create tasks table");
 
     conn.execute(
-        "CREATE TABLE IF NOT EXISTS activity_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            start TEXT NOT NULL,
-            end TEXT,
-            class TEXT,
-            execPath TEXT,
-            category_tag TEXT,
+        "CREATE TABLE IF NOT EXISTS activity (
+            identifier TEXT PRIMARY KEY,
+            category_tag TEXT
+        )",
+        [],
+    )
+    .expect("Failed to create activity table");
+
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS log (
+            start_time TEXT PRIMARY KEY,
+            end_time TEXT,
+            activity_identifier TEXT NOT NULL,
             task_id INTEGER,
             FOREIGN KEY(task_id) REFERENCES tasks(id)
+            FOREIGN KEY(activity_identifier) REFERENCES activity(identifier)
         )",
         [],
     )
-    .expect("Failed to create activity_log table");
+    .expect("Failed to create log table");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS afk_log (
-            start_time INTEGER PRIMARY KEY,
-            end_time INTEGER,
-            status INTEGER NOT NULL
-        )",
-        [],
-    )
-    .expect("Failed to create afk_log table");
-
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS window_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            activity_id INTEGER,
-            start_time INTEGER NOT NULL,
-            end_time INTEGER,
-            title TEXT,
-            class TEXT,
-            execPath TEXT,
-            FOREIGN KEY(activity_id) REFERENCES activity_log(id)
-        )",
-        [],
-    )
-    .expect("Failed to create window_log table");
-
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS browser_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            activity_id INTEGER,
-            start TEXT NOT NULL,
-            end TEXT,
-            title TEXT NOT NULL,
-            FOREIGN KEY(activity_id) REFERENCES activity_log(id)
-        )",
-        [],
-    )
-    .expect("Failed to create browser_log table");
-
-    // Create mock data
-    if activity_log_is_empty(&conn).expect("Failed to check activity_log table") {
-        // Create mock data only if activity log is empty
+    if activity_is_empty(&conn).expect("Failed to check activity_log table") {
         let _ = create_mock_data(&conn).expect("Failed to create mock data");
     }
 
-    check_mock_data(&conn, "tasks").expect("No mock data in tasks table");
-    check_mock_data(&conn, "activity_log").expect("No mock data in activity_log table");
-    check_mock_data(&conn, "afk_log").expect("No mock data in afk_log table");
-    check_mock_data(&conn, "window_log").expect("No mock data in window_log table");
-    // check_mock_data(&conn, "browser_log").expect("No mock data in browser_log table");
+    check_mock_data(&conn, "tasks").expect("No mock data in 'tasks' table");
+    check_mock_data(&conn, "activity").expect("No mock data in 'activity' table");
+    check_mock_data(&conn, "log").expect("No mock data in 'activity' table");
+
+    conn.execute(
+        "CREATE VIEW IF NOT EXISTS activity_log AS
+    SELECT activity.identifier AS name, 
+           log.start_time, 
+           log.end_time, 
+           activity.category_tag, 
+           log.task_id
+    FROM activity 
+    JOIN log ON activity.identifier = log.activity_identifier",
+        [],
+    )
+    .expect("Failed to create activity_log view");
 }
-fn activity_log_is_empty(conn: &Connection) -> Result<bool> {
-    let mut stmt = conn.prepare("SELECT COUNT(*) FROM activity_log")?;
+
+fn activity_is_empty(conn: &Connection) -> Result<bool> {
+    let mut stmt = conn.prepare("SELECT COUNT(*) FROM activity")?;
     let count: i64 = stmt.query_row([], |row| row.get(0))?;
     Ok(count == 0)
 }

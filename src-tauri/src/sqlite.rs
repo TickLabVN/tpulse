@@ -11,14 +11,19 @@ lazy_static! {
     static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
 }
 
-/// Insert a new afk log entry
+/// # Deprecated
+///
+/// This function is deprecated and may be removed in future versions.
 pub fn insert_afk_log(afk_log: &AFKMetric) {
     println!(
         "INSERT INTO afk_log (start_time, end_time, status) VALUES ({}, {}, {})",
         afk_log.start_time_unix as i64, 9999, afk_log.status as i64
-    )
+    );
 }
 
+/// # Deprecated
+///
+/// This function is deprecated and may be removed in future versions.
 pub fn insert_window_log(window_log: &WindowLogModel) {
     let conn = Connection::open(&*DB_PATH).unwrap();
 
@@ -42,6 +47,9 @@ pub fn insert_window_log(window_log: &WindowLogModel) {
     .expect("Failed to insert into window_log");
 }
 
+/// # Deprecated
+///
+/// This function is deprecated and may be removed in future versions.
 pub fn insert_browser_log(browser_log: &BrowserLogModel) {
     let conn = Connection::open(&*DB_PATH).unwrap();
 
