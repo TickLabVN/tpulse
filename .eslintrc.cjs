@@ -14,9 +14,11 @@ module.exports = {
   plugins: ['react-refresh', 'react', '@typescript-eslint'],
   rules: {
     '@typescript-eslint/no-unused-vars': 'error',
-    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    'react-refresh/only-export-components': 'off',
     'eqeqeq': 'error',
-    'no-console': 'error'
+    'no-console': 'warn',
+    '@typescript-eslint/consistent-type-definitions': 'off',
+    'react/prop-types': 'off'
   },
   parserOptions: {
     ecmaVersion: 'latest',

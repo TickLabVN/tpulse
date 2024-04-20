@@ -3,3 +3,4 @@ coverage
 node_modules
 src-tauri/target
 vite.config.ts
+tailwind.config.js

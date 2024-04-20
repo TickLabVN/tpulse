@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { BasicTarget } from '@interfaces';
-import { getTargetElement } from '@utils';
+import type { BasicTarget } from '@/interfaces';
+import { getTargetElement } from '@/utils';
 import { useEventListener } from './useEventListener';
 
 export interface CursorState {

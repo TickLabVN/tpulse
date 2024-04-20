@@ -5,11 +5,11 @@ use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
 use tauri_plugin_log::LogTarget;
 use tpulse::setting::read_setting;
+use tpulse::watcher::watch_browser;
 use tpulse::{
     event_handler::handle_events,
     events::UserMetric,
     initializer::initialize_db,
-    metrics_handler::handle_metrics,
     setting::{handle_setting_error, Setting},
     watcher::{watch_afk, watch_window},
 };
@@ -33,13 +33,13 @@ fn main() {
     initialize_db();
 
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
-    // let afk_tx = tx.clone();
+    let afk_tx = tx.clone();
     let window_tx = tx.clone();
     // let browser_tx = tx.clone();
 
     let workers = vec![
-        // thread::spawn(move || handle_metrics(browser_tx)),
-        // thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
+        thread::spawn(move || watch_browser()),
+        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
         thread::spawn(move || watch_window(poll_time, window_tx)),
         thread::spawn(move || handle_events(rx)),
     ];
