@@ -1,5 +1,5 @@
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 const MAX_ROW = 24;
 const RENDER_ARR = Object.freeze(Array.from({ length: MAX_ROW }, (_, i) => i));
@@ -49,22 +49,36 @@ export function TimeTable() {
     });
   }, []);
 
-  function getScrollWidth() {
+  useEffect(() => {
     const table = document.getElementById('timeline-table');
     if (!table) return;
 
-    console.log({
-      clientHeight: table.clientHeight,
-      scrollHeight: table.scrollHeight,
-      scrollTop: table.scrollTop
-    });
-  }
+    function handleWheel(e: WheelEvent) {
+      const isPressingCtrl = e.ctrlKey;
+      if (isPressingCtrl) {
+        e.preventDefault();
+        const diffPixel = e.deltaY;
+        console.log('zoom', diffPixel > 0 ? 'out' : 'in', diffPixel);
+      } else {
+        // console.log({
+        //   clientHeight: table?.clientHeight,
+        //   scrollHeight: table?.scrollHeight,
+        //   scrollTop: table?.scrollTop
+        // });
+      }
+    }
+
+    table.addEventListener('wheel', handleWheel);
+
+    return () => {
+      table.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
 
   return (
     <div
       className='rounded-2xl bg-white p-0 border-light-gray border mt-4 max-h-[80vh] no-scrollbar overflow-y-scroll'
       id='timeline-table'
-      onScrollCapture={getScrollWidth}
     >
       <table className='w-full border-collapse'>
         <thead className='sticky top-0 z-10 bg-white'>
