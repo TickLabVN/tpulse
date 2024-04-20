@@ -20,6 +20,7 @@ use serde::Deserialize;
 use crate::setting::{handle_setting_error, read_setting, write_setting, Setting};
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CalendarInfo {
     pub id: String,
     pub summary: String,
