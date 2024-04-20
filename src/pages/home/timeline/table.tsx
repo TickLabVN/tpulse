@@ -29,32 +29,28 @@ const TableRow: IComponent<{ isLastRow: boolean; title: string }> = ({ isLastRow
   );
 };
 
-// type QueryRange = {
-//   from: number;
-//   to: number;
-// }
-const ZOOM_UNIT_PX = 2;
-const NUM_SECS_PER_HOUR = 3600;
+const ZOOM_SCALE = 100;
 const NUM_SECS_PER_DAY = 86400;
+const TIME_UNITS = Object.freeze(
+  [1, 2, 5, 6, 10, 12, 15, 20, 25, 30, 40, 45, 50, 60].map((unit) => unit * 60)
+);
+const MAX_ZOOM_FACTOR = (TIME_UNITS.length - 1) * ZOOM_SCALE;
 
 /**
  * Implementation description is in `docs/timetable.md`
  */
 export function TimeTable() {
-  // const [queryRange, setQueryRange] = useState<QueryRange>();
-  const [zoomFactor, setZoomFactor] = useState<number>(1);
+  const [zoomFactor, setZoomFactor] = useState<number>(MAX_ZOOM_FACTOR);
   const [scrollHeight, setScrollHeight] = useState<number>(0);
   const [scrollTop, setScrollTop] = useState<number>(0);
   const [clientHeight, setClientHeight] = useState<number>(0);
 
-  const timeUnit = useMemo(() => NUM_SECS_PER_HOUR / zoomFactor, [zoomFactor]);
+  const timeUnit = useMemo(() => {
+    const idx = Math.floor(zoomFactor / ZOOM_SCALE);
+    return TIME_UNITS[idx];
+  }, [zoomFactor]);
 
   const queryRange = useMemo(() => {
-    // console.log({
-    //   scrollHeight,
-    //   scrollTop,
-    //   clientHeight,
-    // });
     const startOfDay = moment().startOf('day').unix();
     return {
       from: startOfDay + Math.floor((NUM_SECS_PER_DAY * scrollTop) / scrollHeight),
@@ -62,10 +58,7 @@ export function TimeTable() {
     };
   }, [clientHeight, scrollHeight, scrollTop]);
 
-  useEffect(() => {
-    console.log(queryRange);
-    // TODO: fetch eve
-  }, [queryRange]);
+  useEffect(() => console.log(queryRange), [queryRange]);
 
   useEffect(() => {
     const table = document.getElementById('timeline-table');
@@ -79,10 +72,16 @@ export function TimeTable() {
       if (isPressingCtrl) {
         e.preventDefault();
         const diffPixel = e.deltaY;
-        let diffFactor = Math.floor(Math.abs(diffPixel) / ZOOM_UNIT_PX);
+        let diffFactor = Math.floor(Math.abs(diffPixel));
         if (diffPixel < 0) diffFactor *= -1;
 
-        setZoomFactor((prev) => Math.max(1, prev + diffFactor / 100));
+        setZoomFactor((prev) => {
+          const newZoomFactor = prev + diffFactor;
+          if (newZoomFactor < 0) return 0;
+          if (newZoomFactor > MAX_ZOOM_FACTOR) return MAX_ZOOM_FACTOR;
+
+          return newZoomFactor;
+        });
       } else {
         if (!table) return;
         setScrollTop(table.scrollTop);
@@ -92,7 +91,6 @@ export function TimeTable() {
     }
 
     table.addEventListener('wheel', handleWheel);
-
     return () => {
       table.removeEventListener('wheel', handleWheel);
     };
@@ -104,7 +102,7 @@ export function TimeTable() {
     const rows = [];
     for (let i = 0; i < numOfRows; i++) {
       const isLastRow = i === numOfRows - 1;
-      const time = formatTime(Math.floor(i * timeUnit));
+      const time = formatTime(Math.floor((i + 1) * timeUnit));
       rows.push(<TableRow key={i} isLastRow={isLastRow} title={time} />);
     }
     return rows;

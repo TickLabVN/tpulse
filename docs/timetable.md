@@ -31,11 +31,11 @@ tu = 3600 / z
 Start time t1:
 
 ```python
-t1 = (86400 /cu) * st
+t1 = (86400 /tu) * st
 ```
 
 End time t2:
 
 ```python
-t2 = (86400 / cu) * (st + ch)
+t2 = (86400 / tu) * (st + ch)
 ```

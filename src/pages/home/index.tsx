@@ -16,7 +16,7 @@ export function HomePage() {
             <FileDirectoryIcon size={18} />
             <span>Dashboard</span>
           </div>
-          <div className='font-bold text-navy text-[40px] leading-[48px] mt-2'>Welcome back, TickLab 👋🏻</div>
+          <div className='font-bold text-navy text-[40px] leading-[48px] mt-2'>Welcome back, Vinh 👋🏻</div>
         </div>
         <div className='flex items-center rounded-full bg-[#DBEDEC] gap-2 p-[6px] pe-[12px] text-dark-gray h-fit font-bold cursor-pointer'>
           <Avatar>
