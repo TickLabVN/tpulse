@@ -22,10 +22,10 @@ When a user zooms in/out, the unit of time display on y-axis changes. For exampl
 
 Now we need to calculate the new timerange [`t1`, `t2`] when a user scrolls or zooms in/out.
 
-Current time unit of the y-axis `cu`:
+Current time unit of the y-axis `tu`:
 
 ```python
-cu = 3600 / z
+tu = 3600 / z
 ```
 
 Start time t1:

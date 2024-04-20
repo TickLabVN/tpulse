@@ -1,5 +1,5 @@
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const MAX_ROW = 24;
 const RENDER_ARR = Object.freeze(Array.from({ length: MAX_ROW }, (_, i) => i));
@@ -34,14 +34,31 @@ const TableRow: IComponent<{ isLastRow: boolean; title: string }> = ({ isLastRow
 //   from: number;
 //   to: number;
 // }
+const ZOOM_UNIT_PX = 2;
+const NUM_SECS_PER_HOUR = 3600;
+const NUM_SECS_PER_DAY = 24 * NUM_SECS_PER_HOUR;
 
+/**
+ * Implementation description is in `docs/timetable.md`
+ */
 export function TimeTable() {
   // const [queryRange, setQueryRange] = useState<QueryRange>();
+  const [zoomFactor, setZoomFactor] = useState<number>(1);
+  const [scrollHeight, setScrollHeight] = useState<number>(0);
+  const [scrollTop, setScrollTop] = useState<number>(0);
+  const [clientHeight, setClientHeight] = useState<number>(0);
 
-  // const yAxisWidth = queryRange ? queryRange.to - queryRange.from : 0;
+  const timeUnit = useMemo(() => NUM_SECS_PER_DAY / zoomFactor, [zoomFactor]);
+  const queryRange = useMemo(
+    () => ({
+      from: Math.floor(((NUM_SECS_PER_DAY / timeUnit) * scrollTop) / scrollHeight),
+      to: Math.floor(((NUM_SECS_PER_DAY / timeUnit) * (scrollTop + clientHeight)) / scrollHeight)
+    }),
+    [clientHeight, scrollHeight, scrollTop, timeUnit]
+  );
 
-  // When scroll, query range change
-  // When zoom in/out, query range change
+  useEffect(() => console.log(queryRange), [queryRange]);
+
   const renderRows = useCallback(() => {
     return RENDER_ARR.map((_, i) => {
       const isLastRow = i === RENDER_ARR.length - 1;
@@ -58,13 +75,15 @@ export function TimeTable() {
       if (isPressingCtrl) {
         e.preventDefault();
         const diffPixel = e.deltaY;
-        console.log('zoom', diffPixel > 0 ? 'out' : 'in', diffPixel);
+        let diffFactor = Math.floor(Math.abs(diffPixel) / ZOOM_UNIT_PX);
+        if (diffPixel < 0) diffFactor *= -1;
+
+        setZoomFactor((prev) => Math.max(1, prev + diffFactor / 100));
       } else {
-        // console.log({
-        //   clientHeight: table?.clientHeight,
-        //   scrollHeight: table?.scrollHeight,
-        //   scrollTop: table?.scrollTop
-        // });
+        if (!table) return;
+        setScrollTop(table.scrollTop);
+        setScrollHeight(table.scrollHeight);
+        setClientHeight(table.clientHeight);
       }
     }
 
