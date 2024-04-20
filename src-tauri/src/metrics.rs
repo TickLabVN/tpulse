@@ -1,39 +1,29 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
 pub enum AFKStatus {
     ONLINE = 1,
     OFFLINE = 0,
 }
 
-#[derive(Debug)]
-pub struct AFKEvent {
-    pub status: u8,
+#[derive(Debug, Deserialize, Serialize)]
+pub struct AFKMetric {
+    pub status: AFKStatus,
     pub start_time_unix: u64,
 }
 
 #[derive(Debug)]
-pub struct WindowInformation {
+pub struct WindowMetric {
     pub time: u64,
     pub title: Option<String>,
     pub class: Option<Vec<String>>,
     pub exec_path: Option<String>,
 }
 
-#[derive(Debug)]
-pub struct BrowserInformation {
-    pub start_time: String,
-    pub title: Option<String>,
-}
-
-pub enum UserMetric {
-    AFK(AFKEvent),
-    Window(WindowInformation),
-}
-
 #[derive(Debug, Deserialize)]
-pub struct BrowserData {
+pub struct BrowserMetric {
     #[serde(rename = "type")]
-    pub data_type: BrowserDataType,
+    pub data_type: BrowserTabType,
     pub title: String,
     #[serde(default)]
     pub url: Option<String>,
@@ -48,7 +38,13 @@ pub struct BrowserData {
 }
 
 #[derive(Debug, Deserialize)]
-pub enum BrowserDataType {
-    BrowserTab,
+pub enum BrowserTabType {
     VideoStatus,
+    Default,
+}
+
+pub enum UserMetric {
+    AFK(AFKMetric),
+    Window(WindowMetric),
+    Browser(BrowserMetric),
 }
