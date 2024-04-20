@@ -23,7 +23,7 @@ pub struct WindowMetric {
 #[derive(Debug, Deserialize)]
 pub struct BrowserMetric {
     #[serde(rename = "type")]
-    pub data_type: BrowserTabType,
+    pub data_type: BrowserMetricType,
     pub title: String,
     #[serde(default)]
     pub url: Option<String>,
@@ -38,9 +38,9 @@ pub struct BrowserMetric {
 }
 
 #[derive(Debug, Deserialize)]
-pub enum BrowserTabType {
+pub enum BrowserMetricType {
     VideoStatus,
-    Default,
+    BrowserTab,
 }
 
 pub enum UserMetric {
