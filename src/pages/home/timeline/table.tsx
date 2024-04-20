@@ -1,4 +1,3 @@
-import { formatTime } from '@/utils';
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -102,8 +101,11 @@ export function TimeTable() {
     const rows = [];
     for (let i = 0; i < numOfRows; i++) {
       const isLastRow = i === numOfRows - 1;
-      const time = formatTime(Math.floor((i + 1) * timeUnit));
-      rows.push(<TableRow key={i} isLastRow={isLastRow} title={time} />);
+      const unixTs = moment()
+        .startOf('day')
+        .add((i + 1) * timeUnit, 'seconds');
+
+      rows.push(<TableRow key={i} isLastRow={isLastRow} title={unixTs.format('HH:mm')} />);
     }
     return rows;
   }, [timeUnit]);
