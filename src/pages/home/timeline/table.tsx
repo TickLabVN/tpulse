@@ -1,8 +1,7 @@
+import { formatTime } from '@/utils';
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
+import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
-const MAX_ROW = 24;
-const RENDER_ARR = Object.freeze(Array.from({ length: MAX_ROW }, (_, i) => i));
 
 function getCurrentTz() {
   const date = new Date();
@@ -36,7 +35,7 @@ const TableRow: IComponent<{ isLastRow: boolean; title: string }> = ({ isLastRow
 // }
 const ZOOM_UNIT_PX = 2;
 const NUM_SECS_PER_HOUR = 3600;
-const NUM_SECS_PER_DAY = 24 * NUM_SECS_PER_HOUR;
+const NUM_SECS_PER_DAY = 86400;
 
 /**
  * Implementation description is in `docs/timetable.md`
@@ -48,27 +47,32 @@ export function TimeTable() {
   const [scrollTop, setScrollTop] = useState<number>(0);
   const [clientHeight, setClientHeight] = useState<number>(0);
 
-  const timeUnit = useMemo(() => NUM_SECS_PER_DAY / zoomFactor, [zoomFactor]);
-  const queryRange = useMemo(
-    () => ({
-      from: Math.floor(((NUM_SECS_PER_DAY / timeUnit) * scrollTop) / scrollHeight),
-      to: Math.floor(((NUM_SECS_PER_DAY / timeUnit) * (scrollTop + clientHeight)) / scrollHeight)
-    }),
-    [clientHeight, scrollHeight, scrollTop, timeUnit]
-  );
+  const timeUnit = useMemo(() => NUM_SECS_PER_HOUR / zoomFactor, [zoomFactor]);
 
-  useEffect(() => console.log(queryRange), [queryRange]);
+  const queryRange = useMemo(() => {
+    // console.log({
+    //   scrollHeight,
+    //   scrollTop,
+    //   clientHeight,
+    // });
+    const startOfDay = moment().startOf('day').unix();
+    return {
+      from: startOfDay + Math.floor((NUM_SECS_PER_DAY * scrollTop) / scrollHeight),
+      to: startOfDay + Math.ceil((NUM_SECS_PER_DAY * (scrollTop + clientHeight)) / scrollHeight)
+    };
+  }, [clientHeight, scrollHeight, scrollTop]);
 
-  const renderRows = useCallback(() => {
-    return RENDER_ARR.map((_, i) => {
-      const isLastRow = i === RENDER_ARR.length - 1;
-      return <TableRow key={i} isLastRow={isLastRow} title={`${i + 1}h`} />;
-    });
-  }, []);
+  useEffect(() => {
+    console.log(queryRange);
+    // TODO: fetch eve
+  }, [queryRange]);
 
   useEffect(() => {
     const table = document.getElementById('timeline-table');
     if (!table) return;
+    setScrollTop(table.scrollTop);
+    setScrollHeight(table.scrollHeight);
+    setClientHeight(table.clientHeight);
 
     function handleWheel(e: WheelEvent) {
       const isPressingCtrl = e.ctrlKey;
@@ -93,6 +97,18 @@ export function TimeTable() {
       table.removeEventListener('wheel', handleWheel);
     };
   }, []);
+
+  const renderRows = useCallback(() => {
+    const numOfRows = Math.ceil(NUM_SECS_PER_DAY / timeUnit);
+
+    const rows = [];
+    for (let i = 0; i < numOfRows; i++) {
+      const isLastRow = i === numOfRows - 1;
+      const time = formatTime(Math.floor(i * timeUnit));
+      rows.push(<TableRow key={i} isLastRow={isLastRow} title={time} />);
+    }
+    return rows;
+  }, [timeUnit]);
 
   return (
     <div
