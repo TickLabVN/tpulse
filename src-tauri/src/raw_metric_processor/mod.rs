@@ -1,3 +1,5 @@
+pub mod processors;
+
 use std::{future::Future, pin::Pin};
 
 use crate::{metrics::UserMetric, models::LogModel};
