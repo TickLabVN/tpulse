@@ -3,7 +3,7 @@ mod window_query;
 use log::{error, info};
 use std::{sync::mpsc, thread::sleep, time::Duration};
 
-use crate::{events::UserMetric, watcher::window::window_query::get_current_window_information};
+use crate::{metrics::UserMetric, watcher::window::window_query::get_current_window_information};
 
 /// Watches the current window and sends window information through a channel.
 ///

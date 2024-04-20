@@ -8,8 +8,8 @@ use tpulse::setting::read_setting;
 use tpulse::watcher::watch_browser;
 use tpulse::{
     event_handler::handle_events,
-    events::UserMetric,
     initializer::initialize_db,
+    metrics::UserMetric,
     setting::{handle_setting_error, Setting},
     watcher::{watch_afk, watch_window},
 };

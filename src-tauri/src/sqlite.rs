@@ -1,5 +1,6 @@
 use crate::{
-    events::{AFKEvent, BrowserInformation, WindowInformation},
+    metrics::AFKMetric,
+    models::{BrowserLogModel, WindowLogModel},
     utils::get_data_directory,
 };
 use lazy_static::lazy_static;
@@ -11,14 +12,14 @@ lazy_static! {
 }
 
 /// Insert a new afk log entry
-pub fn insert_afk_log(afk_log: &AFKEvent) {
+pub fn insert_afk_log(afk_log: &AFKMetric) {
     println!(
         "INSERT INTO afk_log (start_time, end_time, status) VALUES ({}, {}, {})",
         afk_log.start_time_unix as i64, 9999, afk_log.status as i64
     )
 }
 
-pub fn insert_window_log(window_log: &WindowInformation) {
+pub fn insert_window_log(window_log: &WindowLogModel) {
     let conn = Connection::open(&*DB_PATH).unwrap();
 
     let start_time = window_log.time as i64;
@@ -41,7 +42,7 @@ pub fn insert_window_log(window_log: &WindowInformation) {
     .expect("Failed to insert into window_log");
 }
 
-pub fn insert_browser_log(browser_log: &BrowserInformation) {
+pub fn insert_browser_log(browser_log: &BrowserLogModel) {
     let conn = Connection::open(&*DB_PATH).unwrap();
 
     let start = &browser_log.start_time;
