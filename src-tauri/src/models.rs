@@ -8,7 +8,8 @@ pub struct BrowserLogModel {
     pub title: Option<String>,
 }
 
-pub struct StartLogModel {
+#[derive(Debug, Clone)]
+pub struct LogModel {
     pub start_time: String,
     pub activity_identifier: String,
 }
