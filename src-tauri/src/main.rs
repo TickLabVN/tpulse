@@ -8,11 +8,18 @@ use tpulse::setting::read_setting;
 use tpulse::watcher::watch_browser;
 use tpulse::{
     event_handler::handle_events,
-    events::UserMetric,
     initializer::initialize_db,
+    metrics::UserMetric,
     setting::{handle_setting_error, Setting},
     watcher::{watch_afk, watch_window},
 };
+
+#[tauri::command]
+fn get_home_dir() -> String {
+    dirs::home_dir()
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_else(|| "".to_string())
+}
 
 fn main() {
     let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
@@ -28,6 +35,7 @@ fn main() {
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
+    // let browser_tx = tx.clone();
 
     let workers = vec![
         thread::spawn(move || watch_browser()),
@@ -40,6 +48,7 @@ fn main() {
         // We cannot see log when running in bundled app.
         // This is a workaround to print log to stdout in production.
         // Can use other log targets
+        .invoke_handler(tauri::generate_handler![get_home_dir])
         .plugin(
             tauri_plugin_log::Builder::default()
                 .targets([LogTarget::Stdout])

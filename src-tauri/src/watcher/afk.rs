@@ -1,4 +1,4 @@
-use crate::events::{AFKEvent, AFKStatus, UserMetric};
+use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
 use device_query::{DeviceQuery, DeviceState};
 use log::info;
 use std::sync::mpsc;
@@ -56,9 +56,9 @@ pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
 
-                tx.send(UserMetric::AFK(AFKEvent {
-                    time: unix_ts.as_secs() as u64,
-                    status: AFKStatus::ONLINE as u8,
+                tx.send(UserMetric::AFK(AFKMetric {
+                    start_time_unix: unix_ts.as_secs() as u64,
+                    status: AFKStatus::ONLINE,
                 }))
                 .unwrap();
             }
@@ -70,9 +70,9 @@ pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
                 let unix_ts = SystemTime::now()
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
-                tx.send(UserMetric::AFK(AFKEvent {
-                    time: unix_ts.as_secs() as u64,
-                    status: AFKStatus::OFFLINE as u8,
+                tx.send(UserMetric::AFK(AFKMetric {
+                    start_time_unix: unix_ts.as_secs() as u64,
+                    status: AFKStatus::OFFLINE,
                 }))
                 .unwrap();
             }

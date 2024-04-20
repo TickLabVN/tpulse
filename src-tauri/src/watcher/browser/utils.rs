@@ -45,7 +45,6 @@ pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
     };
     Ok(buffer)
 }
-
 #[cfg(target_os = "windows")]
 use {
     std::ffi::OsStr,

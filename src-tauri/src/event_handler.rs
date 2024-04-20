@@ -1,7 +1,7 @@
 use std::sync::mpsc::Receiver;
 
 use crate::{
-    events::UserMetric,
+    metrics::UserMetric,
     sqlite::{insert_afk_log, insert_window_log},
 };
 
@@ -14,6 +14,9 @@ pub fn handle_events(rx: Receiver<UserMetric>) {
             }
             UserMetric::Window(window_event) => {
                 insert_window_log(&window_event);
+            }
+            UserMetric::Browser(_) => {
+                // TODO: Add handler code here
             }
         }
     }

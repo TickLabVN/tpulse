@@ -1,4 +1,4 @@
-use crate::events::WindowInformation;
+use crate::metrics::WindowMetric;
 use std::time::SystemTime;
 
 #[cfg(target_os = "linux")]
@@ -10,10 +10,15 @@ use {
 };
 
 #[cfg(target_os = "linux")]
-pub fn get_current_window_information() -> Result<WindowInformation> {
+pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
     let window_raw_id = get_window_id().unwrap();
-    let window_info = get_window_information_by_id(window_raw_id)?;
-    Ok(window_info)
+    if window_raw_id == 0 {
+        return None; // Or some other error type
+    }
+
+    let window_info = get_window_information_by_id(window_raw_id);
+    println!("{:?}", window_info);
+    Some(window_info)
 }
 
 #[cfg(target_os = "linux")]
@@ -41,7 +46,7 @@ fn get_window_id() -> Result<i64> {
 }
 
 #[cfg(target_os = "linux")]
-fn get_window_information_by_id(window_id: i64) -> Result<WindowInformation> {
+fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
     let bin = "xprop";
     let window_raw_infor = Command::new(bin)
         .env("LC_ALL", "C.utf8")
@@ -64,8 +69,8 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowInformation> {
     let unix_ts = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap();
-    let mut window_info = WindowInformation {
-        time: unix_ts.as_secs() as u128,
+    let mut window_info = WindowMetric {
+        time: unix_ts.as_secs(),
         title: None,
         class: None,
         exec_path: None,
@@ -119,8 +124,8 @@ use {
 };
 
 #[cfg(target_os = "windows")]
-pub fn get_current_window_information() -> Result<WindowInformation> {
-    let mut window_info = WindowInformation {
+pub fn get_current_window_information() -> Result<WindowMetric> {
+    let mut window_info = WindowMetric {
         time: 0,
         title: None,
         class: None,
@@ -233,7 +238,7 @@ enum DictEntryValue {
 }
 
 #[cfg(target_os = "macos")]
-pub fn get_current_window_information() -> Result<WindowInformation> {
+pub fn get_current_window_information() -> Result<WindowMetric> {
     let app_active = get_active_app().unwrap();
     let window_info = get_window_information_by_apid(app_active)?;
     Ok(window_info)
@@ -249,7 +254,7 @@ fn get_active_app() -> Result<NSRunningApplication> {
 }
 
 #[cfg(target_os = "macos")]
-fn get_window_information_by_apid(app_active: NSRunningApplication) -> Result<WindowInformation> {
+fn get_window_information_by_apid(app_active: NSRunningApplication) -> Result<WindowMetric> {
     const OPTIONS: CGWindowListOption =
         kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
     let list_window_info = unsafe { CGWindowListCopyWindowInfo(OPTIONS, kCGNullWindowID) };
@@ -257,7 +262,7 @@ fn get_window_information_by_apid(app_active: NSRunningApplication) -> Result<Wi
     if window_counts <= 0 {
         return Err(anyhow!("No windows found !"));
     }
-    let mut window_info = WindowInformation {
+    let mut window_info = WindowMetric {
         title: None,
         class: None,
         exec_path: None,
