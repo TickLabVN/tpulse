@@ -1,6 +1,9 @@
 mod utils;
+use std::ptr;
 use utils::{create_named_pipe, read_from_pipe};
-
+use winapi::ctypes::c_void;
+use winapi::um::namedpipeapi::ConnectNamedPipe;
+use winapi::um::namedpipeapi::DisconnectNamedPipe;
 #[cfg(any(target_os = "linux", target = "macos"))]
 pub fn watch_browser() {
     let pipe_name = "/tmp/tpulse";
