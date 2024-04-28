@@ -18,7 +18,8 @@ module.exports = {
     'eqeqeq': 'error',
     'no-console': 'warn',
     '@typescript-eslint/consistent-type-definitions': 'off',
-    'react/prop-types': 'off'
+    'react/prop-types': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
   },
   parserOptions: {
     ecmaVersion: 'latest',
