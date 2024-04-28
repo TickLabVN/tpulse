@@ -37,7 +37,8 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "tauri-plugin-sql-api": "https://github.com/tauri-apps/tauri-plugin-sql#v1",
-    "usehooks-ts": "^3.1.0"
+    "usehooks-ts": "^3.1.0",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@tanstack/router-vite-plugin": "^1.18.1",
