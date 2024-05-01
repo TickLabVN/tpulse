@@ -4594,6 +4594,7 @@ dependencies = [
  "tauri-plugin-sql",
  "tokio",
  "webbrowser",
+ "winapi",
  "windows 0.52.0",
 ]
 

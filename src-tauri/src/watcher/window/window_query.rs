@@ -70,7 +70,7 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap();
     let mut window_info = WindowMetric {
-        time: unix_ts.as_secs(),
+        time: unix_ts.as_secs() as u128,
         title: None,
         class: None,
         exec_path: None,

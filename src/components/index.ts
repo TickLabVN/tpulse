@@ -3,4 +3,8 @@
  */
 
 export * from './sidebar';
+export * from './ui/avatar';
 export * from './ui/badge';
+export * from './ui/checkbox';
+export * from './ui/datepicker';
+export * from './ui/timepicker';
