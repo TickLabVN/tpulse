@@ -3,8 +3,7 @@ import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Event } from './event';
 import { filterEvent } from '@/utils';
-import { EventData } from '@/interfaces';
-import { useTaskStore } from '@/states';
+import { useTaskStore, useEventStore } from '@/states';
 function getCurrentTz() {
   const date = new Date();
   const offset = date.getTimezoneOffset();
@@ -12,31 +11,24 @@ function getCurrentTz() {
 
   return `GMT-${offsetInHours}`;
 }
-const ActivityData: EventData[] = [
-  {
-    id: '1',
-    title: 'Youtube',
-    start: moment().startOf('day').add(12, 'hours').unix(),
-    end: moment().startOf('day').add(14, 'hours').unix(),
-    icon: '/icons/youtube-icon.jpg'
-  },
-  {
-    id: '2',
-    title: 'VsCode',
-    start: moment().startOf('day').hours(14).minutes(30).unix(),
-    end: moment().startOf('day').hours(20).minutes(15).unix(),
-    icon: '/icons/vsc-icon.jpg'
-  }
-];
+
 const TableRow: IComponent<{ isLastRow: boolean; title: string; timeUnit: number }> = ({
   isLastRow,
   title,
   timeUnit
 }) => {
   const { taskList } = useTaskStore();
+  const fetchEvents = useEventStore((state) => state.fetchEvents);
+  const eventList = useEventStore((state) => state.eventList);
+
+  useEffect(() => {
+    fetchEvents();
+    const intervalId = setInterval(fetchEvents, 7000);
+    return () => clearInterval(intervalId);
+  }, [fetchEvents]);
+
   let rowStyle = 'relative border-x border-light-gray h-10';
   if (!isLastRow) rowStyle += ' border-b';
-  const filteredEventData = filterEvent(ActivityData, title, timeUnit);
   const filteredTaskData = filterEvent(taskList, title, timeUnit);
   return (
     <tr id={title}>
@@ -44,7 +36,7 @@ const TableRow: IComponent<{ isLastRow: boolean; title: string; timeUnit: number
         {!isLastRow ? <div className='text-sm translate-y-1/2 text-end text-gray'>{title}</div> : null}
       </td>
       <td className={rowStyle}>
-        {filteredEventData.map((data, index) => (
+        {filterEvent(eventList, title, timeUnit).map((data, index) => (
           <Event
             key={index}
             event={data}

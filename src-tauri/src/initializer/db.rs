@@ -1,9 +1,63 @@
-use std::{fs, path};
-
-use rusqlite::{Connection, Error, Result};
+use regex::Regex;
+use rusqlite::{params, Connection, Error, Result};
+use serde_json::Value;
+use std::{fs, path, str, thread, time::Duration};
 
 use crate::utils::get_data_directory;
 
+fn handle_parse_data(mock_data: &str) -> Result<Value, serde_json::Error> {
+    let re_url = Regex::new(r"(http[s]?:)").unwrap();
+    let placeholder_data = re_url.replace_all(mock_data, "$1PLACEHOLDER");
+    let re_key = Regex::new(r"([^ ,]+):").unwrap();
+    let replaced_data = re_key.replace_all(&placeholder_data, "\"$1\":");
+    let final_data = replaced_data.replace("PLACEHOLDER", ":");
+    let parsed_data: Value = serde_json::from_str(&final_data)?;
+    println!("{}", parsed_data);
+    Ok(parsed_data)
+}
+
+fn insert_parsed_data_into_db(
+    conn: &Connection,
+    parsed_data: &Value,
+) -> Result<(), rusqlite::Error> {
+    let time = parsed_data["time"].as_i64().unwrap();
+    let title = parsed_data["title"].as_str().unwrap();
+    let mut class: Option<Vec<Value>> = None;
+    let mut typ: Option<&str> = None;
+
+    if parsed_data["class"].is_array() {
+        class = parsed_data["class"].as_array().cloned();
+    }
+    if parsed_data["type"].is_string() {
+        typ = parsed_data["type"].as_str();
+    }
+
+    if let Some(class) = class {
+        conn.execute(
+            "INSERT INTO activity (identifier, category_tag) VALUES (?1, ?2)",
+            params![title, class[0].as_str().unwrap()],
+        )?;
+    } else if let Some(typ) = typ {
+        conn.execute(
+            "INSERT INTO activity (identifier, category_tag) VALUES (?1, ?2)",
+            params![title, typ],
+        )?;
+    }
+    // Update the end time of the last row in the log table
+    match conn.execute(
+        "UPDATE log SET end_time = ?1 WHERE rowid = (SELECT MAX(rowid) FROM log)",
+        params![time],
+    ) {
+        Ok(x) => println!("Successfully updated end time of last row: {:?}", x),
+        Err(err) => eprintln!("Failed to update end time of last row: {}", err),
+    }
+    // Insert the new row into the log table
+    conn.execute(
+        "INSERT INTO log (start_time, end_time, activity_identifier, task_id) VALUES (?1, NULL, ?2, NULL)",
+        params![time, title],
+    )?;
+    Ok(())
+}
 fn create_mock_data(conn: &Connection) -> Result<()> {
     conn.execute(
         "INSERT INTO tasks (day, start_time, end_time, task_name, category_tag, priority_tag) VALUES
@@ -12,25 +66,33 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
             ('2024-03-23', 10800, 14400, 'Task 3', 'Category C', 'low')",
         [],
     )?;
+    const mock_activity_data: &[&str] = &[
+        "{ time: 1714712400, title: \"TPulse\", class: [\"tpulse\", \"Tpulse\"], exec_path: \"/home/tan17112003/Desktop/tpulse/src-tauri/target/debug/tpulse\" }",
+        "{ time: 1714719600, title: \"routeTree.gen.ts - tpulse - Visual Studio Code\", class: [\"code\", \"Code\"], exec_path: \"/usr/share/code/code\" }",
+        "{ type: \"BrowserTab\", title: \"haha - TÃ¬m trÃªn Google\", url: \"https://www.google.com/search?q=haha&oq=haha&gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCDE0MDhqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8\", windowId: 952296832, time: 1714742100, tabId: 952296930 }"
+    ];
+    for &data in mock_activity_data {
+        let parsed_data = handle_parse_data(data).expect("dd");
+        insert_parsed_data_into_db(conn, &parsed_data)?;
+    }
+    // conn.execute(
+    //     "INSERT INTO activity (identifier, category_tag) VALUES
+    //         ('tpulse - Visual Studio Code', 'Category X'),
+    //         ('Spotify', 'Category Y'),
+    //         ('youtube.com/watch?v=bS9em7Bg0iU', 'Category Z'),
+    //         ('stackoverflow.com', 'Category X')",
+    //     [],
+    // )?;
 
-    conn.execute(
-        "INSERT INTO activity (identifier, category_tag) VALUES
-            ('tpulse - Visual Studio Code', 'Category X'),
-            ('Spotify', 'Category Y'),
-            ('youtube.com/watch?v=bS9em7Bg0iU', 'Category Z'),
-            ('stackoverflow.com', 'Category X')",
-        [],
-    )?;
-
-    conn.execute(
-        "INSERT INTO log (start_time, end_time, activity_identifier, task_id) VALUES
-            (3600, 7200, 'tpulse - Visual Studio Code', '1'),
-            (7200, 10800, 'Spotify', NULL),
-            (10800, 14400, 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
-            (14400, 16200, 'Spotify', NULL),
-            (18000, NULL, 'tpulse - Visual Studio Code', '1')",
-        [],
-    )?;
+    // conn.execute(
+    //     "INSERT INTO log (start_time, end_time, activity_identifier, task_id) VALUES
+    //         (3600, 7200, 'tpulse - Visual Studio Code', '1'),
+    //         (7200, 10800, 'Spotify', NULL),
+    //         (10800, 14400, 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
+    //         (14400, 16200, 'Spotify', NULL),
+    //         (18000, NULL, 'tpulse - Visual Studio Code', '1')",
+    //     [],
+    // )?;
 
     Ok(())
 }

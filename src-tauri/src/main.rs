@@ -9,7 +9,6 @@ use tpulse::setting::read_setting;
 use tpulse::watcher::watch_browser;
 
 use tpulse::{
-    event_handler::handle_events,
     google_calendar::handle_google_calendar,
     initializer::initialize_db,
     metrics::UserMetric,
@@ -42,9 +41,8 @@ fn main() {
 
     let workers = vec![
         thread::spawn(move || watch_browser()),
-        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
+        // thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
         thread::spawn(move || watch_window(poll_time, window_tx)),
-        thread::spawn(move || handle_events(rx)),
     ];
 
     tauri::Builder::default()

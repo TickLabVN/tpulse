@@ -20,6 +20,11 @@ pub struct WindowMetric {
     pub exec_path: Option<String>,
 }
 
+pub struct BrowserInformation {
+    pub start_time: String,
+    pub title: Option<String>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct BrowserMetric {
     #[serde(rename = "type")]

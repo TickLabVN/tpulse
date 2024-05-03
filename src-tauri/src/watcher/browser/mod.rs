@@ -10,7 +10,9 @@ pub fn watch_browser() {
     };
     loop {
         match read_from_pipe(&pipe_name) {
-            Ok(data) => println!("Data read from the pipe: {}", data),
+            Ok(data) => {
+                println!("Browser information sent: {}", data)
+            }
             Err(err) => eprintln!("Error: {}", err),
         }
     }
@@ -42,3 +44,15 @@ pub fn watch_browser() {
         }
     }
 }
+
+// This is my activity_log view
+// CREATE VIEW IF NOT EXISTS activity_log AS
+//     SELECT activity.identifier AS name,
+//            log.start_time,
+//            log.end_time,
+//            activity.category_tag,
+//            log.task_id
+//     FROM activity
+//     JOIN log ON activity.identifier = log.activity_identifier",
+//         [],
+//     )
