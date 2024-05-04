@@ -3,7 +3,7 @@ use crate::{
     sqlite::{insert_new_log, update_log},
 };
 
-pub async fn handle_events(events: Vec<ProcessedResult>) {
+pub fn handle_events(events: Vec<ProcessedResult>) {
     for event in events {
         match event {
             ProcessedResult::StartActivity(start_event) => {

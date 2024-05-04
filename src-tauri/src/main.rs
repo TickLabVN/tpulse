@@ -25,11 +25,17 @@ fn main() {
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
+    let browser_tx = tx.clone();
 
     let workers = vec![
-        thread::spawn(move || watch_browser()),
-        thread::spawn(move || watch_afk(setting.poll_time, setting.poll_time, afk_tx)),
-        thread::spawn(move || watch_window(setting.poll_time, window_tx)),
+        thread::spawn(move || watch_browser(browser_tx)),
+        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
+        thread::spawn(move || watch_window(poll_time, window_tx)),
+        thread::spawn(move || {
+            while let Ok(user_metric) = rx.recv() {
+                metric_processor_manager.handle_metric(user_metric);
+            }
+        }),
     ];
 
     tauri::Builder::default()
