@@ -1,10 +1,13 @@
 pub mod processors;
 
-use std::{future::Future, pin::Pin};
+use std::pin::Pin;
 
 use into_variant::{IntoVariant, VariantFrom};
 
-use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
+use crate::{
+    event_handler::EventHandler,
+    metrics::{AFKMetric, AFKStatus, UserMetric},
+};
 
 #[derive(Clone)]
 pub struct StartActivity {
@@ -31,8 +34,7 @@ pub trait MetricProcessor {
 pub struct RawMetricProcessorManager {
     processor_list: Vec<Box<dyn MetricProcessor>>,
     last_activity: Option<StartActivity>,
-    handler_list:
-        Vec<Box<dyn Fn(Vec<ProcessedResult>) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>>>,
+    handler_list: Vec<Box<EventHandler>>,
 }
 
 impl RawMetricProcessorManager {
@@ -48,12 +50,8 @@ impl RawMetricProcessorManager {
         self.processor_list.push(Box::new(processor));
     }
 
-    pub fn register_handler(
-        &mut self,
-        handler: impl Fn(Vec<ProcessedResult>) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>
-            + 'static,
-    ) {
-        self.handler_list.push(Box::new(handler));
+    pub fn register_handler(&mut self, handler: EventHandler) {
+        self.handler_list.push(handler.into());
     }
 
     pub async fn handle_metric(mut self: Pin<&mut Self>, metric: UserMetric) {
