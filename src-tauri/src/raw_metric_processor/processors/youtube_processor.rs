@@ -1,50 +1,58 @@
 use crate::{
-    metrics::{BrowserMetricType, UserMetric},
+    metrics::{BrowserMetric, BrowserMetricType, UserMetric},
     raw_metric_processor::{MetricProcessor, StartActivity},
 };
 pub struct YoutubeProcessor;
 
 impl MetricProcessor for YoutubeProcessor {
     fn process(&mut self, metric: &UserMetric) -> Option<StartActivity> {
-        match metric {
-            UserMetric::Browser(browser_metric) => match browser_metric.data_type {
-                BrowserMetricType::BrowserTab => {
-                    if let Some(url) = &browser_metric.url {
-                        if url.contains("youtube.com/watch") {
-                            if let Some(video_id) = extract_video_id_from_url(url) {
-                                return Some(StartActivity {
-                                    start_time: browser_metric.start_time,
-                                    activity_identifier: format!(
-                                        "youtube.com/watch?v={}",
-                                        video_id
-                                    ),
-                                });
-                            } else {
-                                return None;
-                            }
-                        }
-                    }
+        match metric.clone() {
+            UserMetric::Browser(BrowserMetric {
+                url,
+                data_type,
+                start_time,
+                ..
+            }) => {
+                if data_type != BrowserMetricType::BrowserTab
+                    || !url
+                        .as_ref()
+                        .is_some_and(|url| url.contains("youtube.com/watch"))
+                {
+                    return None;
                 }
-                _ => return None,
-            },
-            _ => return None,
+
+                if let Some(video_id) = extract_video_id_from_url(&url?) {
+                    return Some(StartActivity {
+                        start_time,
+                        activity_identifier: format!("youtube.com/watch?v={}", video_id),
+                    });
+                }
+
+                None
+            }
+            UserMetric::AFK(_) => {
+                println!("Warning: Metric processor should not receive AFK");
+                None
+            }
+            _ => None,
         }
-        None
     }
 }
 
 fn extract_video_id_from_url(url: &str) -> Option<String> {
     let query_params: Vec<&str> = url.split('?').collect();
-    if let Some(params) = query_params.get(1) {
-        let key_value_pairs: Vec<&str> = params.split('&').collect();
-        for pair in key_value_pairs {
-            let kv: Vec<&str> = pair.split('=').collect();
-            if kv.len() == 2 && kv[0] == "v" {
-                return Some(kv[1].to_string());
-            }
+
+    let params = query_params.get(1)?;
+    let key_value_pairs: Vec<&str> = params.split('&').collect();
+
+    for pair in key_value_pairs {
+        let kv: Vec<&str> = pair.split('=').collect();
+        if kv.len() == 2 && kv[0] == "v" {
+            return Some(kv[1].to_string());
         }
     }
-    return None;
+
+    None
 }
 
 #[cfg(test)]
