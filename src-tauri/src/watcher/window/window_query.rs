@@ -17,7 +17,7 @@ pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
     }
 
     let window_info = get_window_information_by_id(window_raw_id);
-    println!("{:?}", window_info);
+    // println!("{:?}", window_info);
     Some(window_info)
 }
 
