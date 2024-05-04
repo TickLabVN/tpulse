@@ -1,10 +1,11 @@
 pub mod processors;
 
-use std::{future::Future, pin::Pin};
+use std::{fmt::Debug, future::Future, pin::Pin};
 
+use chrono::DateTime;
 use into_variant::{IntoVariant, VariantFrom};
 
-use crate::metrics::{AFKMetric, UserMetric};
+use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
 
 #[derive(Clone)]
 pub struct StartActivity {
@@ -30,7 +31,7 @@ pub trait MetricProcessor {
 
 pub struct RawMetricProcessorManager {
     processor_list: Vec<Box<dyn MetricProcessor>>,
-    last_processor_id: Option<isize>,
+    last_activity: Option<StartActivity>,
     handler_list:
         Vec<Box<dyn Fn(Vec<ProcessedResult>) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>>>,
 }
@@ -39,15 +40,12 @@ impl RawMetricProcessorManager {
     pub fn new() -> Self {
         Self {
             processor_list: vec![],
-            last_processor_id: None,
+            last_activity: None,
             handler_list: vec![],
         }
     }
 
     pub fn register_processor(&mut self, processor: impl MetricProcessor + 'static) {
-        if self.last_processor_id.is_some() {
-            panic!("Processors can not be registered after the manager is frozen");
-        }
         self.processor_list.push(Box::new(processor));
     }
 
@@ -59,28 +57,23 @@ impl RawMetricProcessorManager {
         self.handler_list.push(Box::new(handler));
     }
 
-    pub fn frozen(&mut self) {
-        if self.last_processor_id.is_some() {
-            panic!("The manager is already frozen");
-        }
-        self.last_processor_id = Some(-1);
-    }
-
     pub async fn handle_metric(mut self: Pin<&mut Self>, metric: UserMetric) {
-        if self.last_processor_id.is_none() {
-            panic!("The manager must be fronzen before it's set to handle metric");
-        }
-
         let mut results = vec![];
 
-        let last_processor_id = self.last_processor_id.unwrap();
-
         if let UserMetric::AFK(afk_metric) = metric {
-            results.push(handle_afk_metric(afk_metric));
+            if self.last_activity.is_none() {
+                println!("Warning: AFK while there's no previous activity?");
+            } else {
+                results.push(handle_afk_metric(
+                    self.last_activity.as_ref().unwrap().clone(),
+                    afk_metric,
+                ));
+            }
         } else {
             for processor in &mut self.processor_list {
                 let res = processor.as_mut().process(&metric);
                 if let Some(model) = res {
+                    self.last_activity = Some(model.clone());
                     results.push(model.into_variant());
                     break;
                 }
@@ -96,15 +89,25 @@ impl RawMetricProcessorManager {
 }
 
 fn handle_afk_metric(
+    last_activity: StartActivity,
     AFKMetric {
         start_time_unix,
         status,
     }: AFKMetric,
 ) -> ProcessedResult {
-    // stub only
-    (UpdateEndActivity {
-        start_time: String::new(),
-        end_time: String::new(),
-    })
-    .into_variant()
+    let datetime = DateTime::from_timestamp_nanos(start_time_unix as i64);
+    let timestamp = datetime.format("%Y-%m-%dT%H:%M:%S").to_string();
+    if status == AFKStatus::ONLINE {
+        (StartActivity {
+            start_time: timestamp,
+            ..last_activity
+        })
+        .into_variant()
+    } else {
+        (UpdateEndActivity {
+            start_time: last_activity.start_time,
+            end_time: timestamp,
+        })
+        .into_variant()
+    }
 }

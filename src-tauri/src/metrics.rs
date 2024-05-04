@@ -1,7 +1,7 @@
 use into_variant::VariantFrom;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq)]
 pub enum AFKStatus {
     ONLINE = 1,
     OFFLINE = 0,
