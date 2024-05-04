@@ -1,7 +1,5 @@
 pub mod processors;
 
-use std::pin::Pin;
-
 use into_variant::{IntoVariant, VariantFrom};
 
 use crate::{
@@ -32,7 +30,7 @@ pub trait MetricProcessor {
 }
 
 pub struct RawMetricProcessorManager {
-    processor_list: Vec<Box<dyn MetricProcessor>>,
+    processor_list: Vec<Box<dyn MetricProcessor + Send>>,
     last_activity: Option<StartActivity>,
     handler_list: Vec<EventHandler>,
 }
@@ -46,7 +44,7 @@ impl RawMetricProcessorManager {
         }
     }
 
-    pub fn register_processor(&mut self, processor: impl MetricProcessor + 'static) {
+    pub fn register_processor(&mut self, processor: impl MetricProcessor + Send + 'static) {
         self.processor_list.push(Box::new(processor));
     }
 
@@ -54,7 +52,7 @@ impl RawMetricProcessorManager {
         self.handler_list.push(handler);
     }
 
-    pub async fn handle_metric(mut self: Pin<&mut Self>, metric: UserMetric) {
+    pub fn handle_metric(&mut self, metric: UserMetric) {
         let mut results = vec![];
 
         // handle AFK metrics specially
@@ -105,7 +103,7 @@ impl RawMetricProcessorManager {
 
         if results.len() > 0 {
             for handler in &mut self.handler_list {
-                tokio::spawn(handler(results.clone()));
+                handler(results.clone());
             }
         }
     }
