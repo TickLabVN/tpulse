@@ -34,7 +34,7 @@ pub trait MetricProcessor {
 pub struct RawMetricProcessorManager {
     processor_list: Vec<Box<dyn MetricProcessor>>,
     last_activity: Option<StartActivity>,
-    handler_list: Vec<Box<EventHandler>>,
+    handler_list: Vec<EventHandler>,
 }
 
 impl RawMetricProcessorManager {
@@ -51,7 +51,7 @@ impl RawMetricProcessorManager {
     }
 
     pub fn register_handler(&mut self, handler: EventHandler) {
-        self.handler_list.push(handler.into());
+        self.handler_list.push(handler);
     }
 
     pub async fn handle_metric(mut self: Pin<&mut Self>, metric: UserMetric) {

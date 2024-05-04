@@ -41,6 +41,7 @@ url = "2.5.0"
 into_variant = "0.3.0"
 =======
 into_variant = "0.3.0"
+futures = "0.3.30"
 
 >>>>>>> 7173b57 (feat: use into_variant crate to simplify handling of variants)
 
