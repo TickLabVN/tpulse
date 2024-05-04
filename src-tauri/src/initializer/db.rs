@@ -7,9 +7,9 @@ use crate::utils::get_data_directory;
 fn create_mock_data(conn: &Connection) -> Result<()> {
     conn.execute(
         "INSERT INTO tasks (day, start_time, end_time, task_name, category_tag, priority_tag) VALUES
-            ('2024-03-21', 3600, 7200, 'Task 1', 'Category A', 'high'),
-            ('2024-03-22', 7200, 10800, 'Task 2', 'Category B', 'medium'),
-            ('2024-03-23', 10800, 14400, 'Task 3', 'Category C', 'low')",
+            ('2024-03-21', 11111111, 22222222, 'Task 1', 'Category A', 'high'),
+            ('2024-03-22', 22222222, 33333333, 'Task 2', 'Category B', 'medium'),
+            ('2024-03-23', 33333333, 44444444, 'Task 3', 'Category C', 'low')",
         [],
     )?;
 
@@ -24,17 +24,16 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
 
     conn.execute(
         "INSERT INTO log (start_time, end_time, activity_identifier, task_id) VALUES
-            (3600, 7200, 'tpulse - Visual Studio Code', '1'),
-            (7200, 10800, 'Spotify', NULL),
-            (10800, 14400, 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
-            (14400, 16200, 'Spotify', NULL),
-            (18000, NULL, 'tpulse - Visual Studio Code', '1')",
+            (11111111, 22222222, 'tpulse - Visual Studio Code', '1'),
+            (22222222, 33333333, 'Spotify', NULL),
+            (33333333, 44444444, 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
+            (44444444, NULL, 'Spotify', NULL),
+            (55555555, NULL, 'tpulse - Visual Studio Code', '1')",
         [],
     )?;
 
     Ok(())
 }
-
 pub fn initialize_db() {
     let db_path = format!("{}/tpulse.sqlite3", get_data_directory());
 
@@ -74,8 +73,8 @@ pub fn initialize_db() {
 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS log (
-            start_time TEXT PRIMARY KEY,
-            end_time TEXT,
+            start_time INTEGER PRIMARY KEY,
+            end_time INTEGER,
             activity_identifier TEXT NOT NULL,
             task_id INTEGER,
             FOREIGN KEY(task_id) REFERENCES tasks(id)
