@@ -10,15 +10,20 @@ use {
 };
 
 #[cfg(target_os = "linux")]
-pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
+pub fn get_current_window_information() -> Option<WindowMetric> {
     let window_raw_id = get_window_id().unwrap();
     if window_raw_id == 0 {
         return None; // Or some other error type
     }
 
     let window_info = get_window_information_by_id(window_raw_id);
-    println!("{:?}", window_info);
-    Some(window_info)
+    match window_info {
+        std::result::Result::Ok(info) => Some(info),
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            None
+        }
+    }
 }
 
 #[cfg(target_os = "linux")]

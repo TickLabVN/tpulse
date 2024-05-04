@@ -14,7 +14,7 @@ pub struct AFKMetric {
 
 #[derive(Debug)]
 pub struct WindowMetric {
-    pub time: u128,
+    pub time: u64,
     pub title: Option<String>,
     pub class: Option<Vec<String>>,
     pub exec_path: Option<String>,

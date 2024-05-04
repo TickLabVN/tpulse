@@ -1,6 +1,6 @@
 mod window_query;
 
-use log::{error, info};
+use log::info;
 use std::{sync::mpsc, thread::sleep, time::Duration};
 
 use crate::{metrics::UserMetric, watcher::window::window_query::get_current_window_information};
@@ -20,15 +20,9 @@ pub fn watch_window(poll_time: u64, tx: mpsc::Sender<UserMetric>) {
     loop {
         sleep(Duration::from_millis(poll_time));
 
-        // If there is an active window
-        match get_current_window_information() {
-            Ok(window_info) => {
-                tx.send(UserMetric::Window(window_info))
-                    .expect("Failed to send window information");
-            }
-            Err(e) => {
-                error!("Window information error: {}", e);
-            }
+        if let Some(info) = get_current_window_information() {
+            tx.send(UserMetric::Window(info))
+                .expect("Failed to send window information");
         }
     }
 }
