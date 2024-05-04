@@ -5,7 +5,7 @@ use std::{fs, path, str, thread, time::Duration};
 
 use crate::utils::get_data_directory;
 
-fn handle_parse_data(mock_data: &str) -> Result<Value, serde_json::Error> {
+pub fn handle_parse_data(mock_data: &str) -> Result<Value, serde_json::Error> {
     let re_url = Regex::new(r"(http[s]?:)").unwrap();
     let placeholder_data = re_url.replace_all(mock_data, "$1PLACEHOLDER");
     let re_key = Regex::new(r"([^ ,]+):").unwrap();
@@ -16,7 +16,7 @@ fn handle_parse_data(mock_data: &str) -> Result<Value, serde_json::Error> {
     Ok(parsed_data)
 }
 
-fn insert_parsed_data_into_db(
+pub fn insert_parsed_data_into_db(
     conn: &Connection,
     parsed_data: &Value,
 ) -> Result<(), rusqlite::Error> {
