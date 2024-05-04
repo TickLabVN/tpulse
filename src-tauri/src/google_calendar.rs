@@ -6,7 +6,16 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use std::fmt;
 
-use crate::google_oauth::GoogleOAuth;
+use anyhow::Result;
+use oauth2::basic::BasicClient;
+use oauth2::reqwest::http_client;
+use oauth2::{
+    AuthUrl, AuthorizationCode, CsrfToken, PkceCodeChallenge, RedirectUrl, RefreshToken, Scope,
+    TokenResponse, TokenUrl,
+};
+use serde::Deserialize;
+
+use crate::setting::{handle_setting_error, read_setting, write_setting, Setting};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
