@@ -486,6 +486,7 @@ fn get_color_code(color_id: &str) -> Option<&str> {
 
     color_palette.get(color_id).copied()
 }
+
 #[tauri::command]
 pub fn handle_google_calendar(date: String) -> Result<String, String> {
     let mut google_calendar = GoogleCalendar::default();

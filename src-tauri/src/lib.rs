@@ -1,3 +1,4 @@
+pub mod config;
 pub mod event_handler;
 pub mod google_calendar;
 pub mod initializer;
