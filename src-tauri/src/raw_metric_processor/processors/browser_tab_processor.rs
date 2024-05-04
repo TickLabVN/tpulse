@@ -18,7 +18,7 @@ impl MetricProcessor for BrowserTabProcessor {
             {
                 Some(StartActivity {
                     start_time: browser_metric.start_time as u64,
-                    activity_identifier: get_base_url(&browser_metric.url.clone()?)?,
+                    activity_identifier: get_base_url(browser_metric.url.as_ref()?)?,
                 })
             }
             UserMetric::AFK(_) => {
