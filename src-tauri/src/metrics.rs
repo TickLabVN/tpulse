@@ -7,13 +7,13 @@ pub enum AFKStatus {
     OFFLINE = 0,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AFKMetric {
     pub status: AFKStatus,
     pub start_time_unix: u64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct WindowMetric {
     pub time: u64,
     pub title: Option<String>,
@@ -21,7 +21,7 @@ pub struct WindowMetric {
     pub exec_path: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct BrowserMetric {
     #[serde(rename = "type")]
     pub data_type: BrowserMetricType,
@@ -38,13 +38,13 @@ pub struct BrowserMetric {
     pub paused: Option<bool>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq, Clone)]
 pub enum BrowserMetricType {
     VideoStatus,
     BrowserTab,
 }
 
-#[derive(VariantFrom)]
+#[derive(VariantFrom, Clone)]
 pub enum UserMetric {
     AFK(AFKMetric),
     Window(WindowMetric),
