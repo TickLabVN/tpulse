@@ -22,7 +22,7 @@ fn main() {
     let setting = config::get_setting();
     initialize_db();
 
-    let (tx, _rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
+    let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
 
