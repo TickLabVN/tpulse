@@ -1,9 +1,15 @@
 mod utils;
-use utils::{create_named_pipe, read_from_pipe};
-
+use crate::metrics::{BrowserMetric, UserMetric};
+use crate::raw_metric_processor::processors::browser_tab_processor::BrowserTabProcessor;
+use crate::raw_metric_processor::MetricProcessor;
+use crate::raw_metric_processor::{StartActivity, UpdateEndActivity};
+use anyhow::Error;
+use utils::{convert_to_user_metric, create_named_pipe, read_from_pipe};
 #[cfg(any(target_os = "linux", target = "macos"))]
+
 pub fn watch_browser() {
     let pipe_name = "/tmp/tpulse";
+    let mut processor: Box<dyn MetricProcessor> = Box::new(BrowserTabProcessor);
     match create_named_pipe(&pipe_name) {
         Ok(_) => println!("Creating named pipe successfully"),
         Err(err) => eprintln!("Error: {}", err),
@@ -11,7 +17,29 @@ pub fn watch_browser() {
     loop {
         match read_from_pipe(&pipe_name) {
             Ok(data) => {
-                println!("Browser information sent: {}", data)
+                match convert_to_user_metric(data) {
+                    Ok(metric) => {
+                        let result = processor.process(&metric as &UserMetric);
+                        match result {
+                            Some(processed_result) => match processed_result {
+                                StartActivity {
+                                    start_time,
+                                    activity_identifier,
+                                } => {
+                                    println!(
+                                        "Start activity: {} at {}",
+                                        activity_identifier, start_time
+                                    );
+                                }
+                            },
+                            None => {
+                                println!("No processed result");
+                            }
+                        }
+                        // For handle insert into log
+                    }
+                    Err(err) => eprintln!("Failed to convert data to UserMetric: {}", err),
+                }
             }
             Err(err) => eprintln!("Error: {}", err),
         }
@@ -44,15 +72,3 @@ pub fn watch_browser() {
         }
     }
 }
-
-// This is my activity_log view
-// CREATE VIEW IF NOT EXISTS activity_log AS
-//     SELECT activity.identifier AS name,
-//            log.start_time,
-//            log.end_time,
-//            activity.category_tag,
-//            log.task_id
-//     FROM activity
-//     JOIN log ON activity.identifier = log.activity_identifier",
-//         [],
-//     )

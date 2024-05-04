@@ -4,12 +4,9 @@
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
 use tauri_plugin_log::LogTarget;
-use tpulse::google_calendar::__cmd__handle_google_calendar;
 use tpulse::setting::read_setting;
 use tpulse::watcher::watch_browser;
-
 use tpulse::{
-    google_calendar::handle_google_calendar,
     initializer::initialize_db,
     metrics::UserMetric,
     setting::{handle_setting_error, Setting},
@@ -41,7 +38,7 @@ fn main() {
 
     let workers = vec![
         thread::spawn(move || watch_browser()),
-        // thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
+        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
         thread::spawn(move || watch_window(poll_time, window_tx)),
     ];
 
@@ -49,10 +46,7 @@ fn main() {
         // We cannot see log when running in bundled app.
         // This is a workaround to print log to stdout in production.
         // Can use other log targets
-        .invoke_handler(tauri::generate_handler![
-            get_home_dir,
-            handle_google_calendar
-        ])
+        .invoke_handler(tauri::generate_handler![get_home_dir])
         .plugin(
             tauri_plugin_log::Builder::default()
                 .targets([LogTarget::Stdout])

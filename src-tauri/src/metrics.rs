@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq)]
 pub enum AFKStatus {
     ONLINE = 1,
     OFFLINE = 0,
@@ -12,7 +12,7 @@ pub struct AFKMetric {
     pub start_time_unix: u64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 pub struct WindowMetric {
     pub time: u128,
     pub title: Option<String>,
@@ -25,7 +25,7 @@ pub struct BrowserInformation {
     pub title: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub struct BrowserMetric {
     #[serde(rename = "type")]
     pub data_type: BrowserMetricType,
@@ -42,12 +42,13 @@ pub struct BrowserMetric {
     pub paused: Option<bool>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub enum BrowserMetricType {
     VideoStatus,
     BrowserTab,
 }
 
+#[derive(Debug, Deserialize)]
 pub enum UserMetric {
     AFK(AFKMetric),
     Window(WindowMetric),
