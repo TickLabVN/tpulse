@@ -14,10 +14,9 @@ use tpulse::{
 };
 
 #[tauri::command]
-fn get_home_dir() -> String {
-    dirs::home_dir()
-        .map(|p| p.to_string_lossy().to_string())
-        .unwrap_or_else(|| "".to_string())
+fn get_data_dir() -> String {
+    let user_cfg = config::user::user();
+    user_cfg.data_dir.clone()
 }
 
 fn main() {
@@ -46,7 +45,7 @@ fn main() {
         // This is a workaround to print log to stdout in production.
         // Can use other log targets
         .invoke_handler(tauri::generate_handler![
-            get_home_dir,
+            get_data_dir,
             handle_google_calendar
         ])
         .plugin(

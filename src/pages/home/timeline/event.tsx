@@ -10,26 +10,31 @@ interface EventProps {
 }
 
 export function Event({ event, timeUnit, top }: EventProps) {
+  const TEXT_COLOR = '#071A29';
   const eventColor = {
     backgroundColor: '#DAE2EB',
     textColor: '#6E7781',
     borderColor: '#6E7781'
   };
   let title = '';
-  const start = event.start;
-  const end = event.end;
+  let start = 0;
+  let end = 0;
   let icon = '';
   let taskName = '';
   let projectName = '';
-  if ('color' in event) {
-    eventColor.backgroundColor = event.color.backgroundColor;
-    eventColor.textColor = event.color.textColor;
-    eventColor.borderColor = event.color.borderColor;
-    taskName = event.taskName;
-    projectName = event.projectName;
+  if ('from' in event) {
+    start = event.from;
+    end = event.to;
+    taskName = event.name;
+    projectName = 'TPULSE ';
+    eventColor.backgroundColor = '#E9D8FC';
+    eventColor.borderColor = '#907BFD';
+    eventColor.textColor = TEXT_COLOR;
   } else {
     title = event.title;
     icon = event.icon;
+    start = event.start;
+    end = event.end;
   }
   const [height, setHeight] = useState(0);
   const getEventPlacement = () => {
@@ -100,7 +105,7 @@ export function Event({ event, timeUnit, top }: EventProps) {
         }}
       ></span>
       <div className='flex flex-col flex-1 py-1.5 px-3  gap-y-1 '>
-        {'color' in event ? (
+        {'from' in event ? (
           <>
             {secondContent()}
             {firstContent()}

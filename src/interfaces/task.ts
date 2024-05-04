@@ -4,14 +4,12 @@ interface TaskColor {
   borderColor: string;
 }
 interface TaskData {
-  id: string;
-  taskName: string;
-  projectName: string;
-  date: number;
-  start: number;
-  end: number;
-  color: TaskColor;
-  status?: 'done' | 'todo';
+  id: number;
+  name: string;
+  from: number;
+  to: number;
+  project_id: number | null;
+  color: string;
 }
 interface SyncTaskData {
   id: string;

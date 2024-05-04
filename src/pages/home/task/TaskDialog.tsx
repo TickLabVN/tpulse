@@ -1,102 +1,38 @@
 import DatePickerWithInputField from '@/components/ui/datepicker';
 import TimePickerWithInputField from '@/components/ui/timepicker';
-import { FeedPlusIcon } from '@primer/octicons-react';
 import { BriefcaseBusiness, Clock, PencilLine, Trash } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TaskData } from '@/interfaces';
-import { useTaskStore } from '@/states';
 import { useOutsideClick } from '@/hooks';
-import moment, { Moment } from 'moment';
-import { InputItem } from './InputItem';
+import moment from 'moment';
+import { useListenEvent } from '@/hooks';
 interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
-  taskData: TaskData | null;
 }
 
-export function TaskDialog({ open, onClose, taskData }: TaskDialogProps) {
+export function TaskDialog({ open, onClose }: TaskDialogProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [timeCount, setTimeCount] = useState(1);
   useOutsideClick(ref, () => {
     onClose();
-    setTimeCount(1);
   });
-  const { taskList, addTask, updateTask } = useTaskStore();
-  const [newTaskList, setNewTaskList] = useState<TaskData[]>([]);
-  const [task, setTask] = useState<TaskData>({
-    id: taskData?.id ?? (Math.floor(Math.random() * 10000) + 1).toString(),
-    taskName: taskData?.taskName ?? '',
-    projectName: taskData?.projectName ?? '',
-    date: taskData?.date ?? moment().unix(),
-    start: taskData?.start ?? NaN,
-    end: taskData?.end ?? NaN,
-    color: taskData?.color ?? { backgroundColor: '#D8E6FC', textColor: '#071A29', borderColor: '#7BAFFDFA' }
+  const [task, setTask] = useState<TaskData | null>(null);
+  useListenEvent('dialog:open:mutate-task', (task: TaskData) => {
+    setTask(task);
   });
+  const dialogName = task ? 'Edit Task' : 'Add Task';
   useEffect(() => {
-    setTask({
-      id: taskData?.id ?? (Math.floor(Math.random() * 10000) + 1).toString(),
-      taskName: taskData?.taskName ?? '',
-      projectName: taskData?.projectName ?? '',
-      date: taskData?.date ?? moment().unix(),
-      start: taskData?.start ?? NaN,
-      end: taskData?.end ?? NaN,
-      color: taskData?.color ?? { backgroundColor: '#D8E6FC', textColor: '#071A29', borderColor: '#7BAFFDFA' }
-    });
-  }, [taskData]);
-  const filteredTaskData = useMemo(() => {
-    return taskList.filter(
-      (task) =>
-        task.projectName === taskData?.projectName &&
-        task.taskName === taskData?.taskName &&
-        task.date === taskData?.date
-    );
-  }, [taskList, taskData]);
-  const handleAddTask = () => {
-    if (newTaskList.length !== 0) {
-      newTaskList.forEach((task) => {
-        addTask({
-          id: task.id,
-          taskName: task.taskName,
-          projectName: task.projectName,
-          date: task.date,
-          start: task.start,
-          end: task.end,
-          color: task.color
-        });
-      });
-    } else {
-      updateTask({
-        id: task.id,
-        taskName: task.taskName,
-        projectName: task.projectName,
-        date: task.date,
-        start: task.start,
-        end: task.end,
-        color: task.color
-      });
-    }
-    setNewTaskList([]);
-    setTimeCount(1);
-    onClose();
-  };
-  const handleAddTime = () => {
-    setTimeCount((prev) => prev + 1);
-    if (newTaskList.length !== 0) {
-      setTask((task) => ({ ...task, id: (Math.floor(Math.random() * 10000) + 1).toString() }));
-    }
-    setNewTaskList([...newTaskList, task]);
-  };
+    console.log(task);
+  }, [task]);
 
   return (
     open && (
       <div
         ref={ref}
-        className='absolute -top-1/2 transform -translate-x-1/2 bg-white rounded-[15px] left-0 w-[424px] border border-[#D3D3D3] -translate-y-1 z-[99] overflow-y-auto no-scrollbar max-h-[500px] '
+        className='absolute -top-1/2 transform -translate-x-1/2 bg-white rounded-[15px] left-0 w-[424px] border border-[#D3D3D3] -translate-y-[100px] z-[99] overflow-y-auto no-scrollbar max-h-[500px] '
       >
         <div className='flex items-center justify-center w-full h-[65px] shadow-sm'>
-          <span className='font-bold text-2xl leading-7 text-[#012F2F]'>
-            {taskData ? 'Edit Task' : 'Add Task'}
-          </span>
+          <span className='font-bold text-2xl leading-7 text-[#012F2F]'>{dialogName}</span>
         </div>
         <div className='flex flex-col items-center px-6 py-[18px] gap-y-[6px]'>
           <div className='relative w-full h-[50px]'>
@@ -104,8 +40,15 @@ export function TaskDialog({ open, onClose, taskData }: TaskDialogProps) {
               type='text'
               placeholder='Task Name'
               className='w-full h-full border border-[#D3D3D3] rounded-[5px] px-[14px] py-[10px] pl-[50px] placeholder:text-[#071A29] placeholder:font-[500] placeholder:text-md'
-              value={task.taskName}
-              onChange={(e) => setTask({ ...task, taskName: e.target.value })}
+              value={task?.name}
+              onChange={(e) => {
+                setTask((prevTask: TaskData | null) => {
+                  if (prevTask) {
+                    return { ...prevTask, name: e.target.value };
+                  }
+                  return null;
+                });
+              }}
             />
             <span className='absolute transform -translate-y-1/2 left-3 top-1/2 w-7 h-7 px-[5px] py-[6px] bg-[#E9D8FC] rounded-[5px] flex justify-center items-center'>
               <PencilLine strokeWidth={2.75} size={16} />
@@ -115,8 +58,6 @@ export function TaskDialog({ open, onClose, taskData }: TaskDialogProps) {
             <input
               type='text'
               placeholder='Project Name'
-              value={task.projectName}
-              onChange={(e) => setTask({ ...task, projectName: e.target.value })}
               className='w-full h-full border border-[#D3D3D3] rounded-[5px] px-[14px] py-[10px] pl-[50px] placeholder:text-[#071A29] placeholder:font-[500] placeholder:text-md'
             />
             <span className='absolute transform -translate-y-1/2 left-3 top-1/2 w-7 h-7 px-[5px] py-[6px] bg-[#D3FFD1] rounded-[5px] flex justify-center items-center'>
@@ -124,14 +65,12 @@ export function TaskDialog({ open, onClose, taskData }: TaskDialogProps) {
             </span>
           </div>
           <DatePickerWithInputField
-            value={moment.unix(taskData ? taskData.date : moment().unix())}
-            onChange={(newValue: Moment | null) => {
-              if (newValue) {
-                setTask({ ...task, date: newValue.unix() });
-              }
+            value={task?.from ? moment.unix(task.from) : moment()}
+            onChange={(val) => {
+              console.log(val);
             }}
           />
-          <div className='flex items-start pl-[10px] pt-[10px] w-full justify-between '>
+          {/* <div className='flex items-start pl-[10px] pt-[10px] w-full justify-between '>
             <div className='flex items-center'>
               <span className='w-7 h-7 px-[5px] py-[6px] bg-[#BDEBFB] rounded-[5px] flex justify-center items-center'>
                 <Clock size={16} strokeWidth={2.75} />
@@ -186,6 +125,43 @@ export function TaskDialog({ open, onClose, taskData }: TaskDialogProps) {
                 <span className='text-[#071A29] font-[500] text-md'>Add Time</span>
               </div>
             </div>
+          </div> */}
+          <div className='flex items-center justify-between w-full pl-[10px] pt-[10px]'>
+            <div className='flex items-center'>
+              <span className='w-7 h-7 px-[5px] py-[6px] bg-[#BDEBFB] rounded-[5px] flex justify-center items-center'>
+                <Clock size={16} strokeWidth={2.75} />
+              </span>
+              <span className='text-[#071A29] font-[500] text-md ml-3'>Time</span>
+            </div>
+            <div className='flex items-center gap-x-2'>
+              <div className='flex items-center gap-x-[8px]'>
+                <TimePickerWithInputField
+                  value={task?.from ? moment.unix(task.from) : null}
+                  onChange={(val) => {
+                    console.log(val);
+                  }}
+                />
+                <span className='text-[#071A29] font-[500] text-md '>-</span>
+                <TimePickerWithInputField
+                  value={task?.to ? moment.unix(task.to) : null}
+                  onChange={(val) => {
+                    console.log(val);
+                  }}
+                />
+              </div>
+              <div
+                onClick={() =>
+                  setTask((prevTask: TaskData | null) => {
+                    if (prevTask) {
+                      return { ...prevTask, from: NaN, to: NaN };
+                    }
+                    return null;
+                  })
+                }
+              >
+                <Trash className='cursor-pointer ' size={16} strokeWidth={2.75} />
+              </div>
+            </div>
           </div>
         </div>
         <div className='flex items-center justify-center w-full h-[65px] border-t border-t-[#D3D3D3] gap-x-2'>
@@ -200,7 +176,6 @@ export function TaskDialog({ open, onClose, taskData }: TaskDialogProps) {
           <button
             className='rounded-lg py-2 px-4 bg-[#1890FF] text-white hover:bg-[#40A9FF] active:bg-opacity-80'
             type='button'
-            onClick={() => handleAddTask()}
           >
             {' '}
             OK

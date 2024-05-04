@@ -4,33 +4,36 @@ import { Badge } from '@/components';
 import { Checkbox } from '@/components/ui/checkbox';
 import { TaskDialog } from '@/pages/home/task/TaskDialog';
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { taskSvc } from '@/services/task';
+import { useTaskData } from '@/hooks';
+import { openDialog } from '@/hooks';
 import moment from 'moment';
 
 export function TodayTask() {
-  const { data: tasks } = useQuery({
-    queryKey: ['tasks'],
-    queryFn: taskSvc.getInCurrentDay
-  });
-
+  const { tasks } = useTaskData();
   const [openTaskDialog, setOpenTaskDialog] = useState(false);
+  const showDialog = (index: number) => {
+    if (index === -1 || !tasks) {
+      openDialog('mutate-task', null);
+    } else {
+      openDialog('mutate-task', tasks[index]);
+    }
+  };
   return (
     <div className='mt-[30px]'>
       <div className='relative flex items-center justify-between'>
         <span className='font-bold text-navy text-[26px] leading-8'>Today Tasks</span>
         <div
           onClick={() => {
-            setOpenTaskDialog(true);
+            showDialog(-1), setOpenTaskDialog(true);
           }}
           className='flex items-center gap-3'
         >
           <FeedPlusIcon size={32} className='cursor-pointer stroke-1 text-green' />
         </div>
-        <TaskDialog open={openTaskDialog} onClose={() => setOpenTaskDialog(false)} taskData={null} />
+        <TaskDialog open={openTaskDialog} onClose={() => setOpenTaskDialog(false)} />
       </div>
       <div className='flex flex-col w-full gap-3 mt-3'>
-        {tasks?.map((item) => (
+        {tasks?.map((item, index) => (
           <div
             key={item.id}
             className='p-[18px] rounded-2xl bg-white border border-light-gray flex justify-between items-center'
@@ -54,7 +57,7 @@ export function TodayTask() {
             <div
               onClick={() => {
                 setOpenTaskDialog(true);
-                // setSelectedTask(item);
+                showDialog(index);
               }}
               className='flex items-center gap-3'
             >
