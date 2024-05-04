@@ -31,7 +31,7 @@ fn main() {
 
     initialize_db();
 
-    let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
+    let (tx, _rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
     // let browser_tx = tx.clone();
