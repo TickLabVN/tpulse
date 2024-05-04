@@ -1,22 +1,21 @@
 pub mod processors;
 
-use std::{fmt::Debug, future::Future, pin::Pin};
+use std::{future::Future, pin::Pin};
 
-use chrono::DateTime;
 use into_variant::{IntoVariant, VariantFrom};
 
 use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
 
 #[derive(Clone)]
 pub struct StartActivity {
-    pub start_time: String,
+    pub start_time: u64,
     pub activity_identifier: String,
 }
 
 #[derive(Clone)]
 pub struct UpdateEndActivity {
-    pub start_time: String,
-    pub end_time: String,
+    pub start_time: u64,
+    pub end_time: u64,
 }
 
 #[derive(Clone, VariantFrom)]
@@ -75,11 +74,30 @@ impl RawMetricProcessorManager {
             // TODO: Find a way to push this (at least partially) to a compile-time check
             for processor in &mut self.processor_list {
                 let res = processor.as_mut().process(&metric);
-                if let Some(model) = res {
-                    self.last_activity = Some(model.clone());
-                    results.push(model.into_variant());
-                    break;
+                if let None = res {
+                    continue;
                 }
+
+                let model = res.unwrap();
+
+                results.push(model.clone().into_variant());
+                let current_activity = model.clone();
+
+                if !self.last_activity.as_ref().is_some_and(|activity| {
+                    activity.activity_identifier == current_activity.activity_identifier
+                }) {
+                    let last_activity = self.last_activity.as_ref().unwrap().clone();
+                    results.push(
+                        (UpdateEndActivity {
+                            start_time: last_activity.start_time,
+                            end_time: current_activity.start_time,
+                        })
+                        .into_variant(),
+                    );
+                    self.last_activity = Some(current_activity);
+                }
+
+                break;
             }
         }
 
@@ -98,18 +116,16 @@ fn handle_afk_metric(
         status,
     }: AFKMetric,
 ) -> ProcessedResult {
-    let datetime = DateTime::from_timestamp_nanos(start_time_unix as i64);
-    let timestamp = datetime.format("%Y-%m-%dT%H:%M:%S").to_string();
     if status == AFKStatus::ONLINE {
         (StartActivity {
-            start_time: timestamp,
+            start_time: start_time_unix,
             ..last_activity
         })
         .into_variant()
     } else {
         (UpdateEndActivity {
             start_time: last_activity.start_time,
-            end_time: timestamp,
+            end_time: start_time_unix,
         })
         .into_variant()
     }
