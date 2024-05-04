@@ -3,7 +3,7 @@ use utils::{create_named_pipe, read_from_pipe};
 
 #[cfg(target_os = "windows")]
 use {
-    winapi::ctypes::c_void, winapi::um::namedpipeapi::ConnectNamedPipe,
+    std::ptr, winapi::ctypes::c_void, winapi::um::namedpipeapi::ConnectNamedPipe,
     winapi::um::namedpipeapi::DisconnectNamedPipe,
 };
 
