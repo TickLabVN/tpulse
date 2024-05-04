@@ -1,9 +1,9 @@
 mod utils;
-use crate::metrics::{BrowserMetric, UserMetric};
+use crate::metrics::UserMetric;
 use crate::raw_metric_processor::processors::browser_tab_processor::BrowserTabProcessor;
 use crate::raw_metric_processor::MetricProcessor;
-use crate::raw_metric_processor::{StartActivity, UpdateEndActivity};
-use anyhow::Error;
+use crate::raw_metric_processor::StartActivity;
+
 use utils::{convert_to_user_metric, create_named_pipe, read_from_pipe};
 #[cfg(any(target_os = "linux", target = "macos"))]
 

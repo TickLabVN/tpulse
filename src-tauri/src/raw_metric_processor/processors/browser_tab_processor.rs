@@ -3,13 +3,11 @@ use crate::raw_metric_processor::{MetricProcessor, StartActivity};
 use oauth2::url;
 
 pub struct BrowserTabProcessor;
-use std::error::Error;
 use url::Url;
 
-fn get_base_url(url: &str) -> String {
-    let parsed_url = Url::parse(url).unwrap();
-    let base_url = parsed_url.host_str().unwrap_or("").to_string();
-    base_url
+fn get_base_url(url: &str) -> Option<String> {
+    let parsed_url = Url::parse(url).ok()?;
+    parsed_url.host_str().map(|s| s.to_string())
 }
 
 impl MetricProcessor for BrowserTabProcessor {
@@ -20,11 +18,11 @@ impl MetricProcessor for BrowserTabProcessor {
             {
                 Some(StartActivity {
                     start_time: browser_metric.start_time as u64,
-                    activity_identifier: get_base_url(&browser_metric.url.clone()?),
+                    activity_identifier: get_base_url(&browser_metric.url.clone()?)?,
                 })
             }
-            UserMetric::AFK(afk_metric) => {
-                eprintln!("AFK metric detected");
+            UserMetric::AFK(_) => {
+                println!("Warning: Metric processor should not receive AFK");
                 None
             }
             _ => None,
