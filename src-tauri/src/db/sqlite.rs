@@ -1,15 +1,14 @@
+use rusqlite::{Connection, Error, Result};
 use std::{fs, path};
 
-use rusqlite::{Connection, Error, Result};
+use crate::config;
 
-use crate::utils::get_data_directory;
-
+// TODO: move seed data & migration script to a separate file
 fn create_mock_data(conn: &Connection) -> Result<()> {
     conn.execute(
-        "INSERT INTO tasks (day, start_time, end_time, task_name, category_tag, priority_tag) VALUES
-            ('2024-03-21', 3600, 7200, 'Task 1', 'Category A', 'high'),
-            ('2024-03-22', 7200, 10800, 'Task 2', 'Category B', 'medium'),
-            ('2024-03-23', 10800, 14400, 'Task 3', 'Category C', 'low')",
+        "INSERT INTO tasks VALUES
+        (1, 1714794000, 1714795000, 'Architecture Design', NULL),
+        (2, 1714796000, 1714799600, 'Learn Rust', NULL)",
         [],
     )?;
 
@@ -24,20 +23,19 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
 
     conn.execute(
         "INSERT INTO log (start_time, end_time, activity_identifier, task_id) VALUES
-            (3600, 7200, 'tpulse - Visual Studio Code', '1'),
+            (3600, 7200, 'tpulse - Visual Studio Code', NULL),
             (7200, 10800, 'Spotify', NULL),
-            (10800, 14400, 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
+            (10800, 14400, 'youtube.com/watch?v=bS9em7Bg0iU', NULL),
             (14400, 16200, 'Spotify', NULL),
-            (18000, NULL, 'tpulse - Visual Studio Code', '1')",
+            (18000, NULL, 'tpulse - Visual Studio Code', NULL)",
         [],
     )?;
 
     Ok(())
 }
 
-pub fn initialize_db() {
-    let db_path = format!("{}/tpulse.sqlite3", get_data_directory());
-
+pub fn init() {
+    let db_path = format!("{}/tpulse.sqlite3", config::user().data_dir);
     if path::Path::new(&db_path).exists() {
         fs::remove_file(&db_path).expect("Failed to remove existing database file");
     }
@@ -52,12 +50,10 @@ pub fn initialize_db() {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            day DATE NOT NULL,
-            start_time INTEGER,
-            end_time INTEGER,
-            task_name TEXT NOT NULL,
-            category_tag TEXT,
-            priority_tag TEXT CHECK(priority_tag IN ('high', 'medium', 'low'))
+            \"from\" INTEGER NOT NULL,
+            \"to\" INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            project_id INTEGER
         )",
         [],
     )
@@ -89,19 +85,18 @@ pub fn initialize_db() {
         let _ = create_mock_data(&conn).expect("Failed to create mock data");
     }
 
-    check_mock_data(&conn, "tasks").expect("No mock data in 'tasks' table");
     check_mock_data(&conn, "activity").expect("No mock data in 'activity' table");
-    check_mock_data(&conn, "log").expect("No mock data in 'activity' table");
+    check_mock_data(&conn, "log").expect("No mock data in 'log' table");
 
     conn.execute(
         "CREATE VIEW IF NOT EXISTS activity_log AS
-    SELECT activity.identifier AS name, 
-           log.start_time, 
-           log.end_time, 
-           activity.category_tag, 
-           log.task_id
-    FROM activity 
-    JOIN log ON activity.identifier = log.activity_identifier",
+        SELECT activity.identifier AS name, 
+            log.start_time, 
+            log.end_time, 
+            activity.category_tag, 
+            log.task_id
+        FROM activity 
+        JOIN log ON activity.identifier = log.activity_identifier",
         [],
     )
     .expect("Failed to create activity_log view");

@@ -1,14 +1,14 @@
 use crate::{
+    config,
     metrics::AFKMetric,
     models::{BrowserLogModel, WindowLogModel},
-    utils::get_data_directory,
 };
 use lazy_static::lazy_static;
 use rusqlite::{params, Connection};
 
 // Initialize the database
 lazy_static! {
-    static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
+    static ref DB_PATH: String = format!("{}/tpulse.sqlite3", config::user().data_dir);
 }
 
 /// # Deprecated

@@ -1,21 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::sync::mpsc::{self, Receiver, Sender};
-use std::thread;
 use tauri_plugin_log::LogTarget;
 use tpulse::google_calendar::__cmd__handle_google_calendar;
-use tpulse::setting::read_setting;
-use tpulse::watcher::watch_browser;
 
-use tpulse::{
-    event_handler::handle_events,
-    google_calendar::handle_google_calendar,
-    initializer::initialize_db,
-    metrics::UserMetric,
-    setting::{handle_setting_error, Setting},
-    watcher::{watch_afk, watch_window},
-};
+use tpulse::{db::sqlite, google_calendar::handle_google_calendar};
 
 #[tauri::command]
 fn get_home_dir() -> String {
@@ -25,27 +14,27 @@ fn get_home_dir() -> String {
 }
 
 fn main() {
-    let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
-        .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
-        .unwrap_or_default();
+    // let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
+    //     .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
+    //     .unwrap_or_default();
 
-    let time_out: u64 = read_setting::<u64>(Setting::Timeout)
-        .unwrap_or_else(|err| Some(handle_setting_error(Setting::Timeout, &err, 100)))
-        .unwrap_or_default();
+    // let time_out: u64 = read_setting::<u64>(Setting::Timeout)
+    //     .unwrap_or_else(|err| Some(handle_setting_error(Setting::Timeout, &err, 100)))
+    //     .unwrap_or_default();
 
-    initialize_db();
+    sqlite::init();
 
-    let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
-    let afk_tx = tx.clone();
-    let window_tx = tx.clone();
+    // let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
+    // let afk_tx = tx.clone();
+    // let window_tx = tx.clone();
     // let browser_tx = tx.clone();
 
-    let workers = vec![
-        thread::spawn(move || watch_browser()),
-        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
-        thread::spawn(move || watch_window(poll_time, window_tx)),
-        thread::spawn(move || handle_events(rx)),
-    ];
+    // let workers = vec![
+    //     thread::spawn(move || watch_browser()),
+    //     thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
+    //     thread::spawn(move || watch_window(poll_time, window_tx)),
+    //     thread::spawn(move || handle_events(rx)),
+    // ];
 
     tauri::Builder::default()
         // We cannot see log when running in bundled app.
@@ -65,7 +54,7 @@ fn main() {
         .run(tauri::generate_context!())
         .expect("Error while running tauri application");
 
-    for worker in workers {
-        worker.join().unwrap();
-    }
+    // for worker in workers {
+    //     worker.join().unwrap();
+    // }
 }

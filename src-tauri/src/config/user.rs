@@ -1,5 +1,26 @@
-#[tauri::command]
-pub fn get_data_directory() -> String {
+use lazy_static::lazy_static;
+
+pub struct UserConfig {
+    pub data_dir: String,
+}
+
+lazy_static! {
+    static ref USER_CONFIG: UserConfig = UserConfig::new();
+}
+
+pub fn user() -> &'static UserConfig {
+    &USER_CONFIG
+}
+
+impl UserConfig {
+    pub fn new() -> Self {
+        Self {
+            data_dir: get_data_directory(),
+        }
+    }
+}
+
+fn get_data_directory() -> String {
     #[cfg(target_os = "linux")]
     {
         let home_dir = dirs::home_dir().expect("Failed to get home directory");

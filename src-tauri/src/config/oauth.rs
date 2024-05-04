@@ -1,5 +1,4 @@
 use lazy_static::lazy_static;
-
 pub struct OAuthConfig {
     pub client_id: String,
     pub client_secret: String,
@@ -20,7 +19,7 @@ lazy_static! {
     );
 }
 
-pub fn get_oauth_config() -> &'static OAuthConfig {
+pub fn oauth() -> &'static OAuthConfig {
     &OAUTH_CONFIG
 }
 
