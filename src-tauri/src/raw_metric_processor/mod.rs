@@ -1,7 +1,8 @@
 pub mod processors;
 
-use std::{future::Future, pin::Pin};
+use std::{fmt::Debug, future::Future, pin::Pin};
 
+use chrono::DateTime;
 use into_variant::{IntoVariant, VariantFrom};
 
 use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
@@ -45,9 +46,6 @@ impl RawMetricProcessorManager {
     }
 
     pub fn register_processor(&mut self, processor: impl MetricProcessor + 'static) {
-        if self.last_processor_id.is_some() {
-            panic!("Processors can not be registered after the manager is frozen");
-        }
         self.processor_list.push(Box::new(processor));
     }
 
@@ -57,13 +55,6 @@ impl RawMetricProcessorManager {
             + 'static,
     ) {
         self.handler_list.push(Box::new(handler));
-    }
-
-    pub fn frozen(&mut self) {
-        if self.last_processor_id.is_some() {
-            panic!("The manager is already frozen");
-        }
-        self.last_processor_id = Some(-1);
     }
 
     pub async fn handle_metric(mut self: Pin<&mut Self>, metric: UserMetric) {
@@ -86,6 +77,10 @@ impl RawMetricProcessorManager {
                 let res = processor.as_mut().process(&metric);
                 if let None = res {
                     continue;
+                if let Some(model) = res {
+                    self.last_activity = Some(model.clone());
+                    results.push(model.into_variant());
+                    break;
                 }
 
                 let model = res.unwrap();
