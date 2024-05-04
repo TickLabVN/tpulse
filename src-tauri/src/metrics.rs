@@ -1,3 +1,4 @@
+use into_variant::VariantFrom;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy)]
@@ -43,6 +44,7 @@ pub enum BrowserMetricType {
     BrowserTab,
 }
 
+#[derive(VariantFrom)]
 pub enum UserMetric {
     AFK(AFKMetric),
     Window(WindowMetric),

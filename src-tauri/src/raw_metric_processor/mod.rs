@@ -2,22 +2,30 @@ pub mod processors;
 
 use std::{future::Future, pin::Pin};
 
-use crate::metrics::UserMetric;
+use into_variant::{IntoVariant, VariantFrom};
+
+use crate::metrics::{AFKMetric, UserMetric};
 
 #[derive(Clone)]
+pub struct StartActivity {
+    pub start_time: String,
+    pub activity_identifier: String,
+}
+
+#[derive(Clone)]
+pub struct UpdateEndActivity {
+    pub start_time: String,
+    pub end_time: String,
+}
+
+#[derive(Clone, VariantFrom)]
 pub enum ProcessedResult {
-    StartActivity {
-        start_time: String,
-        activity_identifier: String,
-    },
-    UpdateEndActivity {
-        start_time: String,
-        end_time: String,
-    },
+    StartActivity(StartActivity),
+    UpdateEndActivity(UpdateEndActivity),
 }
 
 pub trait MetricProcessor {
-    fn process(&mut self, metric: &UserMetric) -> Option<ProcessedResult>;
+    fn process(&mut self, metric: &UserMetric) -> Option<StartActivity>;
 }
 
 pub struct RawMetricProcessorManager {
@@ -63,19 +71,40 @@ impl RawMetricProcessorManager {
             panic!("The manager must be fronzen before it's set to handle metric");
         }
 
-        let mut result = None;
-        for processor in &mut self.processor_list {
-            let res = processor.as_mut().process(&metric);
-            if let Some(model) = res {
-                result = Some(model);
-                break;
+        let mut results = vec![];
+
+        let last_processor_id = self.last_processor_id.unwrap();
+
+        if let UserMetric::AFK(afk_metric) = metric {
+            results.push(handle_afk_metric(afk_metric));
+        } else {
+            for processor in &mut self.processor_list {
+                let res = processor.as_mut().process(&metric);
+                if let Some(model) = res {
+                    results.push(model.into_variant());
+                    break;
+                }
             }
         }
 
-        if let Some(inner) = result {
+        if results.len() > 0 {
             for handler in &mut self.handler_list {
-                tokio::spawn(handler(inner.clone()));
+                tokio::spawn(handler(results.clone()));
             }
         }
     }
+}
+
+fn handle_afk_metric(
+    AFKMetric {
+        start_time_unix,
+        status,
+    }: AFKMetric,
+) -> ProcessedResult {
+    // stub only
+    (UpdateEndActivity {
+        start_time: String::new(),
+        end_time: String::new(),
+    })
+    .into_variant()
 }
