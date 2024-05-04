@@ -1,8 +1,7 @@
 pub mod processors;
 
-use std::{fmt::Debug, future::Future, pin::Pin};
+use std::{future::Future, pin::Pin};
 
-use chrono::DateTime;
 use into_variant::{IntoVariant, VariantFrom};
 
 use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
