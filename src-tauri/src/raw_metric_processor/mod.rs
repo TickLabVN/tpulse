@@ -60,6 +60,7 @@ impl RawMetricProcessorManager {
     pub async fn handle_metric(mut self: Pin<&mut Self>, metric: UserMetric) {
         let mut results = vec![];
 
+        // handle AFK metrics specially
         if let UserMetric::AFK(afk_metric) = metric {
             if self.last_activity.is_none() {
                 println!("Warning: AFK while there's no previous activity?");
@@ -70,6 +71,8 @@ impl RawMetricProcessorManager {
                 ));
             }
         } else {
+            // only window and browser metrics are passed here
+            // TODO: Find a way to push this (at least partially) to a compile-time check
             for processor in &mut self.processor_list {
                 let res = processor.as_mut().process(&metric);
                 if let Some(model) = res {
