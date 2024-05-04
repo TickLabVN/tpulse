@@ -1,7 +1,5 @@
-use anyhow::Result;
 use reqwest::blocking::Client;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
-use serde::Deserialize;
 
 use std::collections::HashMap;
 use std::fmt;
@@ -109,75 +107,75 @@ struct EventInfoResponse {
 #[derive(Default)]
 pub struct GoogleCalendar {}
 
-impl GoogleCalendar {
-    // Function to get the calendar list using the access token
-    pub fn get_calendar_list(&mut self) -> Result<Vec<CalendarInfo>> {
-        let mut google_oauth = GoogleOAuth::default();
-        let api_url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?fields=items(id%2Csummary%2CbackgroundColor)";
-        let access_token = google_oauth.get_access_token()?;
+// impl GoogleCalendar {
+//     // Function to get the calendar list using the access token
+//     pub fn get_calendar_list(&mut self) -> Result<Vec<CalendarInfo>> {
+//         let mut google_oauth = GoogleOAuth::default();
+//         let api_url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?fields=items(id%2Csummary%2CbackgroundColor)";
+//         let access_token = google_oauth.get_access_token()?;
 
-        let mut headers = HeaderMap::new();
-        headers.insert(
-            AUTHORIZATION,
-            HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
-        );
+//         let mut headers = HeaderMap::new();
+//         headers.insert(
+//             AUTHORIZATION,
+//             HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
+//         );
 
-        let client = Client::new();
-        let response = client.get(api_url).headers(headers).send()?;
+//         let client = Client::new();
+//         let response = client.get(api_url).headers(headers).send()?;
 
-        if response.status().is_success() {
-            let calendar_list: CalendarInfoResponse = response.json()?;
-            Ok(calendar_list.items)
-        } else {
-            Err(anyhow::anyhow!("Error calling Google Calendar API"))
-        }
-    }
+//         if response.status().is_success() {
+//             let calendar_list: CalendarInfoResponse = response.json()?;
+//             Ok(calendar_list.items)
+//         } else {
+//             Err(anyhow::anyhow!("Error calling Google Calendar API"))
+//         }
+//     }
 
-    // Function to get events for a specific day for the provided calendar ID
-    pub fn get_events_for_day_selected_calendar(
-        &mut self,
-        calendar_id: &str,
-        date: &str,
-    ) -> Result<Vec<EventInfo>> {
-        let mut google_oauth = GoogleOAuth::default();
-        let sanitized_calendar_id = replace_hash_with_percent_23(calendar_id);
+//     // Function to get events for a specific day for the provided calendar ID
+//     pub fn get_events_for_day_selected_calendar(
+//         &mut self,
+//         calendar_id: &str,
+//         date: &str,
+//     ) -> Result<Vec<EventInfo>> {
+//         let mut google_oauth = GoogleOAuth::default();
+//         let sanitized_calendar_id = replace_hash_with_percent_23(calendar_id);
 
-        let api_url = format!(
-            "https://www.googleapis.com/calendar/v3/calendars/{}/events?timeMin={}T00:00:00Z&timeMax={}T23:59:59Z&fields=items(id,summary,start(date,dateTime,timeZone),end(date,dateTime,timeZone),colorId,location)",
-            sanitized_calendar_id, date, date
-        );
+//         let api_url = format!(
+//             "https://www.googleapis.com/calendar/v3/calendars/{}/events?timeMin={}T00:00:00Z&timeMax={}T23:59:59Z&fields=items(id,summary,start(date,dateTime,timeZone),end(date,dateTime,timeZone),colorId,location)",
+//             sanitized_calendar_id, date, date
+//         );
 
-        let access_token = google_oauth.get_access_token()?;
+//         let access_token = google_oauth.get_access_token()?;
 
-        let mut headers = HeaderMap::new();
-        headers.insert(
-            AUTHORIZATION,
-            HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
-        );
+//         let mut headers = HeaderMap::new();
+//         headers.insert(
+//             AUTHORIZATION,
+//             HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
+//         );
 
-        let client = Client::new();
-        let response = client.get(api_url).headers(headers).send()?;
+//         let client = Client::new();
+//         let response = client.get(api_url).headers(headers).send()?;
 
-        if response.status().is_success() {
-            let mut event_list: EventInfoResponse = response.json()?;
+//         if response.status().is_success() {
+//             let mut event_list: EventInfoResponse = response.json()?;
 
-            // Iterate over each event in the event_list
-            for event in &mut event_list.items {
-                if let Some(color_id) = event.color_id.clone() {
-                    // Get the color code for the color_id
-                    if let Some(color_code) = get_color_code(&color_id) {
-                        event.color = Some(color_code.to_string());
-                    } else {
-                        eprintln!("Color code not found for color_id: {}", color_id);
-                    }
-                }
-            }
-            Ok(event_list.items)
-        } else {
-            Err(anyhow::anyhow!("Error calling Google Calendar API"))
-        }
-    }
-}
+//             // Iterate over each event in the event_list
+//             for event in &mut event_list.items {
+//                 if let Some(color_id) = event.color_id.clone() {
+//                     // Get the color code for the color_id
+//                     if let Some(color_code) = get_color_code(&color_id) {
+//                         event.color = Some(color_code.to_string());
+//                     } else {
+//                         eprintln!("Color code not found for color_id: {}", color_id);
+//                     }
+//                 }
+//             }
+//             Ok(event_list.items)
+//         } else {
+//             Err(anyhow::anyhow!("Error calling Google Calendar API"))
+//         }
+//     }
+// }
 
 // Function to replace hash with percent_23 in a string
 fn replace_hash_with_percent_23(input_string: &str) -> String {
