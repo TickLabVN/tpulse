@@ -7,7 +7,6 @@ use tauri_plugin_log::LogTarget;
 use tpulse::setting::read_setting;
 use tpulse::watcher::watch_browser;
 use tpulse::{
-    event_handler::handle_events,
     initializer::initialize_db,
     metrics::UserMetric,
     setting::{handle_setting_error, Setting},
@@ -32,7 +31,7 @@ fn main() {
 
     initialize_db();
 
-    let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
+    let (tx, _rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
     // let browser_tx = tx.clone();
@@ -41,7 +40,6 @@ fn main() {
         thread::spawn(move || watch_browser()),
         thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
         thread::spawn(move || watch_window(poll_time, window_tx)),
-        thread::spawn(move || handle_events(rx)),
     ];
 
     tauri::Builder::default()

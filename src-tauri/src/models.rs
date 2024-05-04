@@ -8,12 +8,17 @@ pub struct BrowserLogModel {
     pub title: Option<String>,
 }
 
-pub struct StartLogModel {
+pub struct LogStartEvent {
     pub start_time: String,
     pub activity_identifier: String,
 }
 
-pub struct UpdateEndTimeForLogModel {
+pub struct LogEndEvent {
     pub start_time: String,
     pub end_time: String,
+}
+
+pub enum LogUpdate {
+    LogStart(LogStartEvent),
+    LogEnd(LogEndEvent),
 }

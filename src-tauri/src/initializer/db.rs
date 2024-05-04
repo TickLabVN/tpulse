@@ -7,9 +7,9 @@ use crate::utils::get_data_directory;
 fn create_mock_data(conn: &Connection) -> Result<()> {
     conn.execute(
         "INSERT INTO tasks (day, start_time, end_time, task_name, category_tag, priority_tag) VALUES
-            ('2024-03-21', 3600, 7200, 'Task 1', 'Category A', 'high'),
-            ('2024-03-22', 7200, 10800, 'Task 2', 'Category B', 'medium'),
-            ('2024-03-23', 10800, 14400, 'Task 3', 'Category C', 'low')",
+            ('2024-03-21', '1970-01-01 01:00:00', '1970-01-01 02:00:00', 'Task 1', 'Category A', 'high'),
+            ('2024-03-22', '1970-01-01 02:00:00', '1970-01-01 03:00:00', 'Task 2', 'Category B', 'medium'),
+            ('2024-03-23', '1970-01-01 03:00:00', '1970-01-01 04:00:00', 'Task 3', 'Category C', 'low')",
         [],
     )?;
 
@@ -24,17 +24,16 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
 
     conn.execute(
         "INSERT INTO log (start_time, end_time, activity_identifier, task_id) VALUES
-            (3600, 7200, 'tpulse - Visual Studio Code', '1'),
-            (7200, 10800, 'Spotify', NULL),
-            (10800, 14400, 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
-            (14400, 16200, 'Spotify', NULL),
-            (18000, NULL, 'tpulse - Visual Studio Code', '1')",
+            ('1970-01-01 01:00:00', '1970-01-01 02:00:00', 'tpulse - Visual Studio Code', '1'),
+            ('1970-01-01 02:00:00', '1970-01-01 03:00:00', 'Spotify', NULL),
+            ('1970-01-01 03:00:00', '1970-01-01 04:00:00', 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
+            ('1970-01-01 04:00:00', NULL, 'Spotify', NULL),
+            ('1970-01-01 05:00:00', NULL, 'tpulse - Visual Studio Code', '1')",
         [],
     )?;
 
     Ok(())
 }
-
 pub fn initialize_db() {
     let db_path = format!("{}/tpulse.sqlite3", get_data_directory());
 
@@ -53,8 +52,8 @@ pub fn initialize_db() {
         "CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             day DATE NOT NULL,
-            start_time INTEGER,
-            end_time INTEGER,
+            start_time TEXT,
+            end_time TEXT,
             task_name TEXT NOT NULL,
             category_tag TEXT,
             priority_tag TEXT CHECK(priority_tag IN ('high', 'medium', 'low'))
