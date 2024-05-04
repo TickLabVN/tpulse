@@ -34,6 +34,7 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
 
     Ok(())
 }
+
 pub fn initialize_db() {
     let db_path = format!("{}/tpulse.sqlite3", get_data_directory());
 
