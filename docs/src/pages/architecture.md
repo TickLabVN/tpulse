@@ -35,8 +35,4 @@ graph TB
   Logger --> DB
   Categorizer --> DB
   API --> DB
-
-  classDef inheritance stroke-width:2px;
-  class ArrowHead inheritance;
-  class EventHandler,Categorizer,Logger,3RD inheritance;
 ```
