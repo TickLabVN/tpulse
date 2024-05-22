@@ -32,6 +32,7 @@ graph TB
   API --> CalendarSynchronizer
 
   UI --> API
+  Logger --> DB
   Categorizer --> DB
   API --> DB
 
