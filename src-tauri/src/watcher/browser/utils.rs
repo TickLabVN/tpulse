@@ -58,7 +58,7 @@ use {
     std::ptr,
     winapi::ctypes::c_void,
     winapi::um::fileapi::ReadFile,
-    winapi::um::namedpipeapi::{ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe},
+    winapi::um::namedpipeapi::CreateNamedPipeW,
     winapi::um::winbase::{
         PIPE_ACCESS_INBOUND, PIPE_READMODE_MESSAGE, PIPE_TYPE_MESSAGE, PIPE_WAIT,
     },

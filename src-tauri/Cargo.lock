@@ -4616,6 +4616,7 @@ dependencies = [
  "tokio",
  "url",
  "webbrowser",
+ "winapi",
  "windows 0.52.0",
 ]
 
