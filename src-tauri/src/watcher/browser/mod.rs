@@ -17,6 +17,13 @@ pub fn watch_browser() {
 }
 
 #[cfg(target_os = "windows")]
+use {
+    std::ptr,
+    winapi::ctypes::c_void,
+    winapi::um::namedpipeapi::{ConnectNamedPipe, DisconnectNamedPipe},
+};
+
+#[cfg(target_os = "windows")]
 pub fn watch_browser() {
     let pipe_name = "\\\\.\\pipe\\tpulse";
     match create_named_pipe(&pipe_name) {
