@@ -1,3 +1,4 @@
+pub mod config;
 pub mod fetcher;
 pub mod google_calendar;
 pub mod google_oauth;
