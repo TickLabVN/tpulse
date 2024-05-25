@@ -41,7 +41,7 @@ fn extract_project_name_from_vscode_title(title: &str) -> Option<String> {
 
     let project_name = title_components.get(title_components.len() - 2);
 
-    return project_name.map(|name| name.to_string());
+    project_name.map(|name| name.to_string());
 }
 
 #[cfg(test)]
