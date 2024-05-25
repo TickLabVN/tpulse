@@ -7,9 +7,9 @@ use crate::utils::get_data_directory;
 fn create_mock_data(conn: &Connection) -> Result<()> {
     conn.execute(
         "INSERT INTO tasks (day, start_time, end_time, task_name, category_tag, priority_tag) VALUES
-            ('2024-03-21', '1970-01-01 01:00:00', '1970-01-01 02:00:00', 'Task 1', 'Category A', 'high'),
-            ('2024-03-22', '1970-01-01 02:00:00', '1970-01-01 03:00:00', 'Task 2', 'Category B', 'medium'),
-            ('2024-03-23', '1970-01-01 03:00:00', '1970-01-01 04:00:00', 'Task 3', 'Category C', 'low')",
+            ('2024-03-21', 11111111, 22222222, 'Task 1', 'Category A', 'high'),
+            ('2024-03-22', 22222222, 33333333, 'Task 2', 'Category B', 'medium'),
+            ('2024-03-23', 33333333, 44444444, 'Task 3', 'Category C', 'low')",
         [],
     )?;
 
@@ -24,17 +24,18 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
 
     conn.execute(
         "INSERT INTO log (start_time, end_time, activity_identifier, task_id) VALUES
-            ('1970-01-01 01:00:00', '1970-01-01 02:00:00', 'tpulse - Visual Studio Code', '1'),
-            ('1970-01-01 02:00:00', '1970-01-01 03:00:00', 'Spotify', NULL),
-            ('1970-01-01 03:00:00', '1970-01-01 04:00:00', 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
-            ('1970-01-01 04:00:00', NULL, 'Spotify', NULL),
-            ('1970-01-01 05:00:00', NULL, 'tpulse - Visual Studio Code', '1')",
+            (11111111, 22222222, 'tpulse - Visual Studio Code', '1'),
+            (22222222, 33333333, 'Spotify', NULL),
+            (33333333, 44444444, 'youtube.com/watch?v=bS9em7Bg0iU', '2'),
+            (44444444, NULL, 'Spotify', NULL),
+            (55555555, NULL, 'tpulse - Visual Studio Code', '1')",
         [],
     )?;
 
     Ok(())
 }
-pub fn initialize_db() {
+
+pub fn initialize() {
     let db_path = format!("{}/tpulse.sqlite3", get_data_directory());
 
     if path::Path::new(&db_path).exists() {
@@ -52,8 +53,8 @@ pub fn initialize_db() {
         "CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             day DATE NOT NULL,
-            start_time TEXT,
-            end_time TEXT,
+            start_time INTEGER,
+            end_time INTEGER,
             task_name TEXT NOT NULL,
             category_tag TEXT,
             priority_tag TEXT CHECK(priority_tag IN ('high', 'medium', 'low'))
@@ -73,8 +74,8 @@ pub fn initialize_db() {
 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS log (
-            start_time TEXT PRIMARY KEY,
-            end_time TEXT,
+            start_time INTEGER PRIMARY KEY,
+            end_time INTEGER,
             activity_identifier TEXT NOT NULL,
             task_id INTEGER,
             FOREIGN KEY(task_id) REFERENCES tasks(id)

@@ -1,18 +1,19 @@
+use into_variant::VariantFrom;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq)]
 pub enum AFKStatus {
     ONLINE = 1,
     OFFLINE = 0,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AFKMetric {
     pub status: AFKStatus,
     pub start_time_unix: u64,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct WindowMetric {
     pub time: u64,
     pub title: Option<String>,
@@ -20,7 +21,7 @@ pub struct WindowMetric {
     pub exec_path: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct BrowserMetric {
     #[serde(rename = "type")]
     pub data_type: BrowserMetricType,
@@ -37,12 +38,13 @@ pub struct BrowserMetric {
     pub paused: Option<bool>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub enum BrowserMetricType {
     VideoStatus,
     BrowserTab,
 }
 
+#[derive(VariantFrom, Debug, Deserialize, Clone)]
 pub enum UserMetric {
     AFK(AFKMetric),
     Window(WindowMetric),
