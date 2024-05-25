@@ -4,9 +4,10 @@
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
 use tauri_plugin_log::LogTarget;
+use tpulse::initializer::raw_metric_processor;
 use tpulse::{
     config,
-    initializer::initialize_db,
+    initializer::db,
     metrics::UserMetric,
     watcher::{watch_afk, watch_browser, watch_window},
 };
@@ -20,7 +21,8 @@ fn get_home_dir() -> String {
 
 fn main() {
     let setting = config::get_setting();
-    initialize_db();
+    db::initialize();
+    let mut metric_processor_manager = raw_metric_processor::initialize();
 
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
@@ -29,8 +31,8 @@ fn main() {
 
     let workers = vec![
         thread::spawn(move || watch_browser(browser_tx)),
-        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
-        thread::spawn(move || watch_window(poll_time, window_tx)),
+        thread::spawn(move || watch_afk(setting.poll_time, setting.time_out, afk_tx)),
+        thread::spawn(move || watch_window(setting.poll_time, window_tx)),
         thread::spawn(move || {
             while let Ok(user_metric) = rx.recv() {
                 metric_processor_manager.handle_metric(user_metric);
