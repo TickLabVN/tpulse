@@ -1,5 +1,5 @@
 use crate::{
-    event_handler::{logger, make_event_handler},
+    event_handler::{categorizer, logger, make_event_handler},
     raw_metric_processor::{
         processors::{
             browser_tab_processor::BrowserTabProcessor, default_processor::DefaultProcessor,
@@ -20,6 +20,7 @@ pub fn initialize() -> RawMetricProcessorManager {
 
     // Register event handlers here
     raw_metric_processor.register_handler(make_event_handler(logger::handle_events));
+    raw_metric_processor.register_handler(make_event_handler(categorizer::handle_events));
 
     raw_metric_processor
 }
