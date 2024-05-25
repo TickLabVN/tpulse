@@ -2,8 +2,8 @@ use crate::{
     event_handler::{logger, make_event_handler},
     raw_metric_processor::{
         processors::{
-            browser_tab_processor::BrowserTabProcessor, vscode_processor::VSCodeProcessor,
-            youtube_processor::YoutubeProcessor,
+            browser_tab_processor::BrowserTabProcessor, default_processor::DefaultProcessor,
+            vscode_processor::VSCodeProcessor, youtube_processor::YoutubeProcessor,
         },
         RawMetricProcessorManager,
     },
@@ -16,6 +16,7 @@ pub fn initialize() -> RawMetricProcessorManager {
     raw_metric_processor.register_processor(YoutubeProcessor);
     raw_metric_processor.register_processor(BrowserTabProcessor);
     raw_metric_processor.register_processor(VSCodeProcessor);
+    raw_metric_processor.register_processor(DefaultProcessor);
 
     // Register event handlers here
     raw_metric_processor.register_handler(make_event_handler(logger::handle_events));
