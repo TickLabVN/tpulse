@@ -18,8 +18,6 @@ use crate::{metrics::UserMetric, watcher::window::window_query::get_current_wind
 pub fn watch_window(poll_time: u64, tx: mpsc::Sender<UserMetric>) {
     info!("Window watcher started!");
     loop {
-        sleep(Duration::from_millis(poll_time));
-
         // If there is an active window
         let window_info_result = get_current_window_information();
         match window_info_result {
@@ -34,5 +32,6 @@ pub fn watch_window(poll_time: u64, tx: mpsc::Sender<UserMetric>) {
                 error!("Window information error: unknown");
             }
         }
+        sleep(Duration::from_millis(poll_time));
     }
 }

@@ -66,6 +66,7 @@ impl RawMetricProcessorManager {
     pub fn handle_metric(&mut self, metric: UserMetric) {
         let mut results = vec![];
 
+        println!("{:?}", metric);
         // handle AFK metrics specially
         if let UserMetric::AFK(afk_metric) = metric {
             if self.last_activity.is_none() {
