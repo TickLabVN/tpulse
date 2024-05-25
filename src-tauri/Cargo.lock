@@ -4590,11 +4590,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-log",
  "tauri-plugin-sql",
-<<<<<<< HEAD
- "tokio",
  "url",
-=======
->>>>>>> 70e4c83 (fix: make metric processor metric handling synchronous)
  "webbrowser",
  "winapi",
  "windows 0.52.0",
