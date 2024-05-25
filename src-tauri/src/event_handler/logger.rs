@@ -20,7 +20,7 @@ pub fn handle_events(events: Vec<ProcessedResult>) {
 mod tests {
     use crate::{
         initializer::db,
-        raw_metric_processor::{ProcessedResult, StartActivity, UpdateEndActivity},
+        raw_metric_processor::{ActivityTag, ProcessedResult, StartActivity, UpdateEndActivity},
         sqlite::{insert_new_log, update_log},
         utils::get_data_directory,
     };
@@ -37,6 +37,7 @@ mod tests {
         std::thread::spawn(move || {
             let start_event = StartActivity {
                 start_time: 682003,
+                tag: ActivityTag::BROWSER,
                 activity_identifier: "activity_id_1".to_string(),
             };
             let end_event = UpdateEndActivity {
@@ -79,6 +80,29 @@ mod tests {
         }
 
         let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
+
+        let log_entry = conn
+            .query_row(
+                "SELECT * FROM activity WHERE identifier = 'activity_id_1'",
+                [],
+                |row| {
+                    let identifier: String = row.get(0)?;
+                    let activity_tag: Option<String> = row.get(1)?;
+                    let category_tag: Option<String> = row.get(2)?;
+
+                    Ok((identifier, activity_tag, category_tag))
+                },
+            )
+            .unwrap();
+
+        debug_assert_eq!(
+            log_entry,
+            (
+                "activity_id_1".to_string(),
+                Some("browser".to_string()),
+                None
+            )
+        );
 
         let log_entry = conn
             .query_row("SELECT * FROM log WHERE start_time = 682003", [], |row| {

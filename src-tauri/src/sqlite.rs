@@ -15,6 +15,7 @@ pub fn insert_new_log(start_log_event: &StartActivity) {
 
     let start_time = &start_log_event.start_time;
     let activity_id = &start_log_event.activity_identifier;
+    let activity_tag: &String = &start_log_event.tag.to_string();
 
     let activity_exists: bool = conn
         .query_row(
@@ -26,8 +27,8 @@ pub fn insert_new_log(start_log_event: &StartActivity) {
 
     if !activity_exists {
         conn.execute(
-            "INSERT INTO activity (identifier) VALUES (?1)",
-            params![activity_id],
+            "INSERT INTO activity (identifier, activity_tag) VALUES (?1, ?2)",
+            params![activity_id, activity_tag],
         )
         .expect("Failed to create new activity");
     }

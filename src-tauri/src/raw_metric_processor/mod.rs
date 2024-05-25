@@ -1,5 +1,7 @@
 pub mod processors;
 
+use std::fmt;
+
 use into_variant::{IntoVariant, VariantFrom};
 use serde::{Deserialize, Serialize};
 
@@ -9,12 +11,22 @@ use crate::{
 };
 
 #[derive(Deserialize, Serialize, Clone)]
-#[serde(rename_all = "snake_case")]
+#[serde(rename_all = "lowercase")]
 pub enum ActivityTag {
     BROWSER,
     VSCODE,
     YOUTUBE,
     WINDOW,
+}
+
+impl fmt::Display for ActivityTag {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string(self).unwrap().trim_matches('"')
+        )
+    }
 }
 
 #[derive(Clone)]
