@@ -24,6 +24,7 @@ impl MetricProcessor for BrowserTabProcessor {
             UserMetric::AFK(_) => {
                 println!("Warning: Metric processor should not receive AFK");
                 None
+            }
             UserMetric::Browser(browser_metric) => {
                 if browser_metric.data_type == BrowserMetricType::BrowserTab {
                     Some(StartActivity {

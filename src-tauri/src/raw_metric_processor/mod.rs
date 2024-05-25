@@ -72,6 +72,7 @@ impl RawMetricProcessorManager {
                 let res = processor.as_mut().process(&metric);
                 if let None = res {
                     continue;
+                }
                 if let Some(model) = res {
                     self.last_activity = Some(model.clone());
                     results.push(model.into_variant());
