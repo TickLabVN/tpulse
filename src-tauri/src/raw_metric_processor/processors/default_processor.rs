@@ -8,7 +8,7 @@ impl MetricProcessor for DefaultProcessor {
     fn process(&mut self, metric: &UserMetric) -> Option<StartActivity> {
         match metric.clone() {
             UserMetric::Window(WindowMetric { title, time, .. }) => {
-                return title.map(|activity_identifier| StartActivity {
+                title.map(|activity_identifier| StartActivity {
                     activity_identifier,
                     start_time: time,
                 })
