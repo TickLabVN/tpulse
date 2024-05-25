@@ -14,11 +14,11 @@ fn create_mock_data(conn: &Connection) -> Result<()> {
     )?;
 
     conn.execute(
-        "INSERT INTO activity (identifier, category_tag) VALUES
-            ('tpulse - Visual Studio Code', 'Category X'),
-            ('Spotify', 'Category Y'),
-            ('youtube.com/watch?v=bS9em7Bg0iU', 'Category Z'),
-            ('stackoverflow.com', 'Category X')",
+        "INSERT INTO activity (identifier, activity_tag, category_tag) VALUES
+            ('tpulse - Visual Studio Code', 'vscode', 'Category X'),
+            ('Spotify', 'window', 'Category Y'),
+            ('youtube.com/watch?v=bS9em7Bg0iU', 'youtube', 'Category Z'),
+            ('stackoverflow.com', 'browser' , 'Category X')",
         [],
     )?;
 
@@ -66,6 +66,7 @@ pub fn initialize() {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS activity (
             identifier TEXT PRIMARY KEY,
+            activity_tag TEXT,
             category_tag TEXT
         )",
         [],
