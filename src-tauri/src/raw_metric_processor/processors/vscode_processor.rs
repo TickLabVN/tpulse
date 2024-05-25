@@ -20,12 +20,12 @@ impl MetricProcessor for VSCodeProcessor {
                     return None;
                 }
 
-                extract_project_name_from_vscode_title(&title?).map(
-                    |activity_identifier| StartActivity {
+                extract_project_name_from_vscode_title(&title?).map(|activity_identifier| {
+                    StartActivity {
                         activity_identifier,
                         start_time: time,
-                    },
-                );
+                    }
+                });
             }
             UserMetric::AFK(_) => {
                 println!("Warning: Metric processor should not receive AFK");
