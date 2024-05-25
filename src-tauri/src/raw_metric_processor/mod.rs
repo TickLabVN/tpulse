@@ -1,16 +1,27 @@
 pub mod processors;
 
 use into_variant::{IntoVariant, VariantFrom};
+use serde::{Deserialize, Serialize};
 
 use crate::{
     event_handler::EventHandler,
     metrics::{AFKMetric, AFKStatus, UserMetric},
 };
 
+#[derive(Deserialize, Serialize, Clone)]
+#[serde(rename_all = "snake_case")]
+pub enum ActivityTag {
+    BROWSER,
+    VSCODE,
+    YOUTUBE,
+    WINDOW,
+}
+
 #[derive(Clone)]
 pub struct StartActivity {
     pub start_time: u64,
     pub activity_identifier: String,
+    pub tag: ActivityTag,
 }
 
 #[derive(Clone)]

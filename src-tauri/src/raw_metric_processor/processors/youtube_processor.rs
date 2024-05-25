@@ -1,6 +1,6 @@
 use crate::{
     metrics::{BrowserMetric, BrowserMetricType, UserMetric},
-    raw_metric_processor::{MetricProcessor, StartActivity},
+    raw_metric_processor::{ActivityTag, MetricProcessor, StartActivity},
 };
 pub struct YoutubeProcessor;
 
@@ -25,6 +25,7 @@ impl MetricProcessor for YoutubeProcessor {
                     return Some(StartActivity {
                         start_time,
                         activity_identifier: format!("youtube.com/watch?v={}", video_id),
+                        tag: ActivityTag::YOUTUBE,
                     });
                 }
 

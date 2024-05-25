@@ -26,6 +26,7 @@ pub fn watch_browser(_tx: mpsc::Sender<UserMetric>) {
                                 StartActivity {
                                     start_time,
                                     activity_identifier,
+                                    tag,
                                 } => {
                                     println!(
                                         "Start activity: {} at {}",

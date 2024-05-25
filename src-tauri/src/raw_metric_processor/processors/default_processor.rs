@@ -1,6 +1,6 @@
 use crate::{
     metrics::{UserMetric, WindowMetric},
-    raw_metric_processor::{MetricProcessor, StartActivity},
+    raw_metric_processor::{ActivityTag, MetricProcessor, StartActivity},
 };
 pub struct DefaultProcessor;
 
@@ -11,6 +11,7 @@ impl MetricProcessor for DefaultProcessor {
                 title.map(|activity_identifier| StartActivity {
                     activity_identifier,
                     start_time: time,
+                    tag: ActivityTag::WINDOW,
                 })
             }
             UserMetric::AFK(_) => {

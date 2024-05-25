@@ -1,5 +1,5 @@
 use crate::metrics::{BrowserMetricType, UserMetric};
-use crate::raw_metric_processor::{MetricProcessor, StartActivity};
+use crate::raw_metric_processor::{ActivityTag, MetricProcessor, StartActivity};
 use oauth2::url;
 
 pub struct BrowserTabProcessor;
@@ -19,6 +19,7 @@ impl MetricProcessor for BrowserTabProcessor {
                 Some(StartActivity {
                     start_time: browser_metric.start_time as u64,
                     activity_identifier: get_base_url(browser_metric.url.as_ref()?)?,
+                    tag: ActivityTag::BROWSER,
                 })
             }
             UserMetric::AFK(_) => {
@@ -33,6 +34,7 @@ impl MetricProcessor for BrowserTabProcessor {
                             .url
                             .clone()
                             .unwrap_or_else(|| String::from("default")),
+                        tag: ActivityTag::BROWSER,
                     })
                 } else {
                     None

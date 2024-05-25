@@ -1,6 +1,6 @@
 use crate::{
     metrics::{UserMetric, WindowMetric},
-    raw_metric_processor::{MetricProcessor, StartActivity},
+    raw_metric_processor::{ActivityTag, MetricProcessor, StartActivity},
 };
 pub struct VSCodeProcessor;
 
@@ -24,6 +24,7 @@ impl MetricProcessor for VSCodeProcessor {
                     StartActivity {
                         activity_identifier,
                         start_time: time,
+                        tag: ActivityTag::VSCODE,
                     }
                 })
             }
