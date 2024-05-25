@@ -21,19 +21,18 @@ pub fn watch_window(poll_time: u64, tx: mpsc::Sender<UserMetric>) {
         sleep(Duration::from_millis(poll_time));
 
         // If there is an active window
-        if let Some(window_info_result) = get_current_window_information() {
-            match window_info_result {
-                Ok(window_info) => {
-                    tx.send(UserMetric::Window(window_info))
-                        .expect("Failed to send window information");
-                }
-                Err(e) => {
-                    error!("Window information error: {}", e);
-                }
+        let window_info_result = get_current_window_information();
+        match window_info_result {
+            Some(Ok(window_info)) => {
+                tx.send(UserMetric::Window(window_info))
+                    .expect("Failed to send window information");
             }
-        } else {
-            // No active window, continue looping
-            continue;
+            Some(Err(e)) => {
+                error!("Window information error: {}", e);
+            }
+            None => {
+                error!("Window information error: unknown");
+            }
         }
     }
 }

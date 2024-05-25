@@ -7,20 +7,24 @@ graph TB
   AFKWatcher(AFK Watcher)
   WindowWatcher(Window Watcher)
   BrowserWatcher(Browser Watcher)
-  Categorizer(Categorizer)
   CalendarSynchronizer(Calendar Synchronizer)
   GGCalendar[[Google Calendar]]
-  EventEmitter{{Event Emitter}}
   DB[(Storage)]
-  3RD[External Service]
+  RawMetricProcessor{{Raw Metric Processor}}
+  Categorizer(Categorizer)
+  Logger(Logger)
+  3RD[External Service Driver]
+  EventHandler{{Event Handler}}
 
-  AFKWatcher --push metrics--> EventEmitter
-  WindowWatcher --push metrics--> EventEmitter
-  BrowserWatcher --push metrics--> EventEmitter
+  AFKWatcher --raw metrics--> RawMetricProcessor
+  WindowWatcher --raw metrics--> RawMetricProcessor
+  BrowserWatcher --raw metrics--> RawMetricProcessor
 
-  EventEmitter --received metrics--> Categorizer
-  EventEmitter --save raw\n metrics--> DB
-  EventEmitter --send raw metrics--> 3RD
+  RawMetricProcessor --metrics--> EventHandler
+
+  EventHandler --includes--> Categorizer 
+  EventHandler --includes--> Logger
+  EventHandler --includes--> 3RD
 
   CalendarSynchronizer --> GGCalendar
   GGCalendar --> CalendarSynchronizer
@@ -28,6 +32,7 @@ graph TB
   API --> CalendarSynchronizer
 
   UI --> API
-  Categorizer --"Save online\n analytical data"--> DB
-  API --Get data--> DB
+  Logger --> DB
+  Categorizer --> DB
+  API --> DB
 ```

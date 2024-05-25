@@ -1,10 +1,11 @@
 pub mod processors;
 
-use std::{future::Future, pin::Pin};
-
 use into_variant::{IntoVariant, VariantFrom};
 
-use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
+use crate::{
+    event_handler::EventHandler,
+    metrics::{AFKMetric, AFKStatus, UserMetric},
+};
 
 #[derive(Clone)]
 pub struct StartActivity {
@@ -29,10 +30,9 @@ pub trait MetricProcessor {
 }
 
 pub struct RawMetricProcessorManager {
-    processor_list: Vec<Box<dyn MetricProcessor>>,
+    processor_list: Vec<Box<dyn MetricProcessor + Send>>,
     last_activity: Option<StartActivity>,
-    handler_list:
-        Vec<Box<dyn Fn(Vec<ProcessedResult>) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>>>,
+    handler_list: Vec<EventHandler>,
 }
 
 impl RawMetricProcessorManager {
@@ -44,19 +44,15 @@ impl RawMetricProcessorManager {
         }
     }
 
-    pub fn register_processor(&mut self, processor: impl MetricProcessor + 'static) {
+    pub fn register_processor(&mut self, processor: impl MetricProcessor + Send + 'static) {
         self.processor_list.push(Box::new(processor));
     }
 
-    pub fn register_handler(
-        &mut self,
-        handler: impl Fn(Vec<ProcessedResult>) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>
-            + 'static,
-    ) {
-        self.handler_list.push(Box::new(handler));
+    pub fn register_handler(&mut self, handler: EventHandler) {
+        self.handler_list.push(handler);
     }
 
-    pub async fn handle_metric(mut self: Pin<&mut Self>, metric: UserMetric) {
+    pub fn handle_metric(&mut self, metric: UserMetric) {
         let mut results = vec![];
 
         // handle AFK metrics specially
@@ -76,6 +72,11 @@ impl RawMetricProcessorManager {
                 let res = processor.as_mut().process(&metric);
                 if let None = res {
                     continue;
+                }
+                if let Some(model) = res {
+                    self.last_activity = Some(model.clone());
+                    results.push(model.into_variant());
+                    break;
                 }
 
                 let model = res.unwrap();
@@ -103,7 +104,7 @@ impl RawMetricProcessorManager {
 
         if results.len() > 0 {
             for handler in &mut self.handler_list {
-                tokio::spawn(handler(results.clone()));
+                handler(results.clone());
             }
         }
     }

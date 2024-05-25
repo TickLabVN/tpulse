@@ -4,13 +4,12 @@
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
 use tauri_plugin_log::LogTarget;
-use tpulse::setting::read_setting;
-use tpulse::watcher::watch_browser;
+use tpulse::initializer::raw_metric_processor;
 use tpulse::{
-    initializer::initialize_db,
+    config,
+    initializer::db,
     metrics::UserMetric,
-    setting::{handle_setting_error, Setting},
-    watcher::{watch_afk, watch_window},
+    watcher::{watch_afk, watch_browser, watch_window},
 };
 
 #[tauri::command]
@@ -21,25 +20,24 @@ fn get_home_dir() -> String {
 }
 
 fn main() {
-    let poll_time: u64 = read_setting::<u64>(Setting::PollTime)
-        .unwrap_or_else(|err| Some(handle_setting_error(Setting::PollTime, &err, 500)))
-        .unwrap_or_default();
+    let setting = config::get_setting();
+    db::initialize();
+    let mut metric_processor_manager = raw_metric_processor::initialize();
 
-    let time_out: u64 = read_setting::<u64>(Setting::Timeout)
-        .unwrap_or_else(|err| Some(handle_setting_error(Setting::Timeout, &err, 100)))
-        .unwrap_or_default();
-
-    initialize_db();
-
-    let (tx, _rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
+    let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
-    // let browser_tx = tx.clone();
+    let browser_tx = tx.clone();
 
     let workers = vec![
-        thread::spawn(move || watch_browser()),
-        thread::spawn(move || watch_afk(poll_time, time_out, afk_tx)),
-        thread::spawn(move || watch_window(poll_time, window_tx)),
+        thread::spawn(move || watch_browser(browser_tx)),
+        thread::spawn(move || watch_afk(setting.poll_time, setting.time_out, afk_tx)),
+        thread::spawn(move || watch_window(setting.poll_time, window_tx)),
+        thread::spawn(move || {
+            while let Ok(user_metric) = rx.recv() {
+                metric_processor_manager.handle_metric(user_metric);
+            }
+        }),
     ];
 
     tauri::Builder::default()

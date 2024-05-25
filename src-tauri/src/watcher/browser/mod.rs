@@ -3,11 +3,12 @@ use crate::metrics::UserMetric;
 use crate::raw_metric_processor::processors::browser_tab_processor::BrowserTabProcessor;
 use crate::raw_metric_processor::MetricProcessor;
 use crate::raw_metric_processor::StartActivity;
+use std::sync::mpsc;
 
 use utils::{convert_to_user_metric, create_named_pipe, read_from_pipe};
 #[cfg(any(target_os = "linux", target = "macos"))]
 
-pub fn watch_browser() {
+pub fn watch_browser(_tx: mpsc::Sender<UserMetric>) {
     let pipe_name = "/tmp/tpulse";
     let mut processor: Box<dyn MetricProcessor> = Box::new(BrowserTabProcessor);
     match create_named_pipe(&pipe_name) {
@@ -45,6 +46,13 @@ pub fn watch_browser() {
         }
     }
 }
+
+#[cfg(target_os = "windows")]
+use {
+    std::ptr,
+    winapi::ctypes::c_void,
+    winapi::um::namedpipeapi::{ConnectNamedPipe, DisconnectNamedPipe},
+};
 
 #[cfg(target_os = "windows")]
 pub fn watch_browser() {

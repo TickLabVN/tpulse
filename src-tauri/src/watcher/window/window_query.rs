@@ -144,7 +144,7 @@ pub fn get_current_window_information() -> Result<WindowMetric> {
             .duration_since(SystemTime::UNIX_EPOCH)
             .unwrap();
 
-        window_info.time = unix_ts.as_millis();
+        window_info.time = unix_ts.as_secs();
         window_info.title = Some(window_title);
         window_info.exec_path = Some(path);
         window_info.class = Some(vec![name]);
@@ -189,7 +189,7 @@ fn get_window_title(hwnd: HWND) -> Option<String> {
 
     let len = unsafe { GetWindowTextW(hwnd, &mut title_buf) };
     if len == 0 {
-        return None;
+        return Some("".to_string());
     }
 
     // Resize vector to actual length received from GetWindowTextW

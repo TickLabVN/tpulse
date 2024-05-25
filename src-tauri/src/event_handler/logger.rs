@@ -1,21 +1,16 @@
-use std::sync::mpsc::Receiver;
-
 use crate::{
     raw_metric_processor::ProcessedResult,
     sqlite::{insert_new_log, update_log},
 };
 
-pub fn handle_events(rx: Receiver<Vec<ProcessedResult>>) {
-    loop {
-        let events = rx.recv().unwrap();
-        for event in events {
-            match event {
-                ProcessedResult::StartActivity(start_event) => {
-                    insert_new_log(&start_event);
-                }
-                ProcessedResult::UpdateEndActivity(end_event) => {
-                    update_log(&end_event);
-                }
+pub fn handle_events(events: Vec<ProcessedResult>) {
+    for event in events {
+        match event {
+            ProcessedResult::StartActivity(start_event) => {
+                insert_new_log(&start_event);
+            }
+            ProcessedResult::UpdateEndActivity(end_event) => {
+                update_log(&end_event);
             }
         }
     }
@@ -24,7 +19,7 @@ pub fn handle_events(rx: Receiver<Vec<ProcessedResult>>) {
 #[cfg(test)]
 mod tests {
     use crate::{
-        initializer::initialize_db,
+        initializer::db,
         raw_metric_processor::{ProcessedResult, StartActivity, UpdateEndActivity},
         sqlite::{insert_new_log, update_log},
         utils::get_data_directory,
@@ -35,7 +30,7 @@ mod tests {
 
     #[test]
     fn test_handle_events() {
-        initialize_db();
+        db::initialize();
 
         let (tx, rx) = mpsc::channel();
 
