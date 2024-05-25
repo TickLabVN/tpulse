@@ -20,7 +20,7 @@ impl MetricProcessor for VSCodeProcessor {
                     return None;
                 }
 
-                return extract_project_name_from_vscode_title(&title?).map(
+                extract_project_name_from_vscode_title(&title?).map(
                     |activity_identifier| StartActivity {
                         activity_identifier,
                         start_time: time,
