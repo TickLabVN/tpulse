@@ -20,14 +20,12 @@ impl MetricProcessor for VSCodeProcessor {
                     return None;
                 }
 
-                if let Some(activity_identifier) = extract_project_name_from_vscode_title(&title?) {
-                    return Some(StartActivity {
+                return extract_project_name_from_vscode_title(&title?).map(
+                    |activity_identifier| StartActivity {
                         activity_identifier,
                         start_time: time,
-                    });
-                }
-
-                None
+                    },
+                );
             }
             UserMetric::AFK(_) => {
                 println!("Warning: Metric processor should not receive AFK");
@@ -43,11 +41,7 @@ fn extract_project_name_from_vscode_title(title: &str) -> Option<String> {
 
     let project_name = title_components.get(title_components.len() - 2);
 
-    if project_name.is_none() {
-        return None;
-    }
-
-    return Some(project_name.unwrap().to_string());
+    return project_name.map(|name| name.to_string());
 }
 
 #[cfg(test)]
