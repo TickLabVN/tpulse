@@ -10,7 +10,7 @@ use crate::{
     metrics::{AFKMetric, AFKStatus, UserMetric},
 };
 
-#[derive(Deserialize, Serialize, Clone)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum ActivityTag {
     BROWSER,
@@ -29,14 +29,14 @@ impl fmt::Display for ActivityTag {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct StartActivity {
     pub start_time: u64,
     pub activity_identifier: String,
     pub tag: ActivityTag,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct UpdateEndActivity {
     pub start_time: u64,
     pub end_time: u64,

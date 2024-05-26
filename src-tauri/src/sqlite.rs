@@ -33,11 +33,20 @@ pub fn insert_new_log(start_log_event: &StartActivity) {
         .expect("Failed to create new activity");
     }
 
-    conn.execute(
-        "INSERT INTO log (start_time, activity_identifier) VALUES (?1, ?2)",
-        params![start_time, activity_id],
-    )
-    .expect("Failed to insert new log");
+    let log_exists: bool = conn
+        .query_row(
+            "SELECT EXISTS(SELECT 1 FROM log WHERE start_time = ?1)",
+            params![start_time],
+            |row| row.get(0),
+        )
+        .unwrap_or(false);
+    if !log_exists {
+        conn.execute(
+            "INSERT INTO log (start_time, activity_identifier) VALUES (?1, ?2)",
+            params![start_time, activity_id],
+        )
+        .expect("Failed to insert new log");
+    }
 }
 
 pub fn update_log(end_log_event: &UpdateEndActivity) {
