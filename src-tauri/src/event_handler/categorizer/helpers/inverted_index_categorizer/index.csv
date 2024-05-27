@@ -1,3 +1,4 @@
+name,category
 docs.google.com,Documenting
 github.com,Code
 airtable.com,Task Management
@@ -264,14 +265,14 @@ FaceTime,Personal
 IntelliJ IDEA,Code
 Mozilla Firefox,Browsing
 Preview,Personal
-Spotify,Personal
+Spotify,Entertainment
 OBS,Code
 Figma,Design
 PyCharm,Code
 Notion,Documenting
 Xcode,Code
 Docker Desktop,Code
-Twitch,Personal
+Twitch,Entertainment
 GitHub Desktop,Code
 Microsoft PowerPoint,Documenting
 QuickTime Player,Personal
@@ -286,10 +287,10 @@ Dropbox,Documenting
 Evernote,Documenting
 Code,Code
 Docker,Code
-Music,Personal
+Music,Entertainment
 Plan,Task Management
-Reminders,Personal
-App Store,Personal
+Reminders,Task Management
+App Store,App Management
 Pages,Documenting
 Brave,Browsing
 WhatsApp,Messaging
@@ -304,9 +305,9 @@ Nuclino,Documenting
 iPhone Simulator,Code
 KeepPassX,Utility
 Activity Monitor,Utility
-Desktop Dimmer,Personal
-Steam,Personal
-Flux,Personal
+Desktop Dimmer,Personalization
+Steam,Entertainment
+Flux,Personalization
 Postman,Code
 Discord,Messaging
 Telegram,Messaging
@@ -328,7 +329,7 @@ DataGrip,Code
 Calculator,Utility
 Dictionary,Utility
 Tandem,Messaging
-PhotoBooth,Personal
+PhotoBooth,Entertainment
 Kindle,Reading
 Keynote,Documenting
 Clocker,Utility
@@ -428,11 +429,11 @@ Adobe Premiere Pro,Video Editing
 Adobe Acrobat,Documenting
 TradingView,Finance
 JetBrains Rider,Code
-Spotify,Personal
+Spotify,Entertainment
 ClickUp,Task Management
 Notepad++,Writing
 IntelliJ IDEA,Code
-Netflix,Personal
+Netflix,Entertainment
 OneDrive,Documenting
 Creative Cloud,Documenting
 MS Info,Utility

@@ -39,6 +39,7 @@ mod tests {
                 start_time: 682003,
                 tag: ActivityTag::BROWSER,
                 activity_identifier: "activity_id_1".to_string(),
+                tag: ActivityTag::WINDOW,
             };
             let end_event = UpdateEndActivity {
                 start_time: 682003,
