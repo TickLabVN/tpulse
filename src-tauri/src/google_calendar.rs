@@ -62,7 +62,7 @@ struct EventInfoResponse {
 /// # Examples
 ///
 /// ```
-/// use crate::GoogleCalendar;
+/// use tpulse::google_calendar::GoogleCalendar;
 ///
 /// let mut google_calendar = GoogleCalendar::default();
 ///

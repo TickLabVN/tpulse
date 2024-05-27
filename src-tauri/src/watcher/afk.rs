@@ -19,6 +19,8 @@ use std::time::{Duration, SystemTime};
 ///
 /// ```
 /// // Watch for AFK state with a poll time of 1000ms and a timeout of 5000ms
+///
+/// use tpulse::watcher::watch_afk;
 /// watch_afk(1000, 5000);
 /// ```
 pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
