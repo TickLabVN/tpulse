@@ -20,7 +20,7 @@ pub fn handle_events(events: Vec<ProcessedResult>) {
 mod tests {
     use crate::{
         initializer::db,
-        raw_metric_processor::{ProcessedResult, StartActivity, UpdateEndActivity},
+        raw_metric_processor::{ActivityTag, ProcessedResult, StartActivity, UpdateEndActivity},
         sqlite::{insert_new_log, update_log},
         utils::get_data_directory,
     };
@@ -38,6 +38,7 @@ mod tests {
             let start_event = StartActivity {
                 start_time: 682003,
                 activity_identifier: "activity_id_1".to_string(),
+                tag: ActivityTag::WINDOW,
             };
             let end_event = UpdateEndActivity {
                 start_time: 682003,
