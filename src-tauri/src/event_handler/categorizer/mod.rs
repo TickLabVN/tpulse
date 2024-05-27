@@ -12,11 +12,11 @@ pub fn handle_events(events: Vec<ProcessedResult>) {
 }
 
 fn handle_event(event: ProcessedResult) {
-    if let StartActivity {
+    if let ProcessedResult::StartActivity(StartActivity {
         tag,
         activity_identifier,
         ..
-    } = event
+    }) = event
     {
         let category = match tag {
             ActivityTag::WINDOW | ActivityTag::BROWSER => {
