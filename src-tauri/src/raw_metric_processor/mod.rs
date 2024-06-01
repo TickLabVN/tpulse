@@ -42,7 +42,7 @@ pub struct UpdateEndActivity {
     pub end_time: u64,
 }
 
-#[derive(Clone, VariantFrom)]
+#[derive(Clone, VariantFrom, Debug)]
 pub enum ProcessedResult {
     StartActivity(StartActivity),
     UpdateEndActivity(UpdateEndActivity),
