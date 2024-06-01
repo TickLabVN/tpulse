@@ -1,3 +1,5 @@
+use helpers::vscode_categorizer;
+
 use crate::raw_metric_processor::{ActivityTag, ProcessedResult, StartActivity};
 
 use self::helpers::inverted_index_categorizer;
@@ -22,7 +24,7 @@ fn handle_event(event: ProcessedResult) {
             ActivityTag::WINDOW | ActivityTag::BROWSER => {
                 inverted_index_categorizer::categorize(activity_identifier)
             }
-            ActivityTag::VSCODE => None,
+            ActivityTag::VSCODE => vscode_categorizer::categorize(activity_identifier),
             ActivityTag::YOUTUBE => None,
         };
     }
