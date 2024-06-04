@@ -20,10 +20,16 @@ fn handle_event(event: ProcessedResult) {
     {
         let category = match tag {
             ActivityTag::WINDOW | ActivityTag::BROWSER => {
-                inverted_index_categorizer::categorize(activity_identifier)
+                inverted_index_categorizer::categorize(activity_identifier.clone())
             }
-            ActivityTag::VSCODE => vscode_categorizer::categorize(activity_identifier),
-            ActivityTag::YOUTUBE => youtube_categorizer::categorize(activity_identifier),
+            ActivityTag::VSCODE => vscode_categorizer::categorize(activity_identifier.clone()),
+            ActivityTag::YOUTUBE => youtube_categorizer::categorize(activity_identifier.clone()),
         };
+
+        category.map(|category| persist_category_to_db(activity_identifier, category));
     }
+}
+
+fn persist_category_to_db(activity_identifier: String, Category(category): Category) {
+    panic!("Unimplemented");
 }
