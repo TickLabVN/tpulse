@@ -1,10 +1,8 @@
-use helpers::vscode_categorizer;
+mod helpers;
+
+use helpers::{inverted_index_categorizer, vscode_categorizer, youtube_categorizer};
 
 use crate::raw_metric_processor::{ActivityTag, ProcessedResult, StartActivity};
-
-use self::helpers::inverted_index_categorizer;
-
-mod helpers;
 
 #[derive(Debug, PartialEq)]
 pub struct Category(String);
@@ -25,7 +23,7 @@ fn handle_event(event: ProcessedResult) {
                 inverted_index_categorizer::categorize(activity_identifier)
             }
             ActivityTag::VSCODE => vscode_categorizer::categorize(activity_identifier),
-            ActivityTag::YOUTUBE => None,
+            ActivityTag::YOUTUBE => youtube_categorizer::categorize(activity_identifier),
         };
     }
 }
