@@ -1,11 +1,12 @@
 use lazy_static::lazy_static;
+use ruzzy::{fuzzy_match, FuzzyConfig};
 
 use crate::event_handler::categorizer::Category;
 
 mod utils;
 
 lazy_static! {
-    static ref HAYSTACK: Vec<(String, String)> = {
+    static ref _HAYSTACK: Vec<(String, String)> = {
         let index_file_path = std::env::current_dir()
             .expect("Should be able to retrieve current path from inverted_index_category")
             .join("src")
@@ -19,17 +20,25 @@ lazy_static! {
             .to_string();
         utils::read_csv(index_file_path).into_iter().collect()
     };
-}
-
-// TODO: improve this fuzzy_match function
-pub fn fuzzy_match<'a, T>(needle: &'a String, haystack: &'a Vec<(String, T)>) -> Option<&'a T> {
-    let hay = haystack.iter().find(|(key, _)| key == needle);
-    hay.map(|(_, value)| value)
+    static ref HAYSTACK: Vec<(String, &'static String)> = _HAYSTACK
+        .iter()
+        .map(|hay| (hay.0.clone(), &hay.1))
+        .collect::<Vec<_>>();
 }
 
 pub fn categorize(identifier: String) -> Option<Category> {
     let needle = identifier;
-    fuzzy_match(&needle, &HAYSTACK).map(|s| Category(s.clone()))
+    fuzzy_match(
+        &needle,
+        &*HAYSTACK,
+        FuzzyConfig {
+            threshold: 3,
+            insertion_penalty: None,
+            deletion_penalty: None,
+            substitution_penalty: None,
+        },
+    )
+    .map(|s| Category(s.clone()))
 }
 
 #[cfg(test)]
