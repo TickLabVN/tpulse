@@ -19,6 +19,8 @@ use std::time::{Duration, SystemTime};
 ///
 /// ```
 /// // Watch for AFK state with a poll time of 1000ms and a timeout of 5000ms
+///
+/// use tpulse::watcher::watch_afk;
 /// watch_afk(1000, 5000);
 /// ```
 pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
@@ -37,12 +39,10 @@ pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
         let current_mouse_pos = device_state.get_mouse().coords;
         if current_mouse_pos.0 != mouse_pos.0 || current_mouse_pos.1 != mouse_pos.1 {
             mouse_pos = current_mouse_pos;
-            info!("Detect mouse position change {:?}", mouse_pos);
             detect_interact = true;
         } else {
             let keys = device_state.query_keymap();
             if keys.len() > 0 {
-                info!("Detected key {:?}", keys);
                 detect_interact = true;
             }
         }

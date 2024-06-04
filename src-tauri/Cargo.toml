@@ -37,6 +37,8 @@ chrono = "0.4.37"
 once_cell = "1.19.0"
 into_variant = "0.3.0"
 url = "2.5.0"
+csv = "1.3.0"
+ruzzy = "0.1.0"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3.9", features = ["namedpipeapi", "handleapi"] }

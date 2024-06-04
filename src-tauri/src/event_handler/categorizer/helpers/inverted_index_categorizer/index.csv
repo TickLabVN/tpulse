@@ -1,0 +1,441 @@
+name,category
+docs.google.com,Documenting
+github.com,Code
+airtable.com,Task Management
+atlassian.net,Task Management
+atlassian.com,Task Management
+trello.com,Task Management
+mail.google.com,Email
+mail.superhuman.com,Email
+app.slack.com,Messaging
+medium.com,Reading
+stackoverflow.com,Code
+dev.to,Reading
+meet.google.com,Video Conferencing
+dashboard.heroku.com,Code
+twitter.com,Social Media
+staging.rize.io,Productivity
+rize.io,Productivity
+linear.app,Task Management
+app.usertesting.com,User Research
+invisionapp.com,Design
+linkedin.com,Social Media
+netflix.com,Entertainment
+amazon.com,Personal
+youtube.com,Entertainment
+youtube.com - tutorial,Learning
+espn.com,Entertainment
+portal.azure.com,Code
+google.com,Search
+console.google.com,Code
+docs.microsoft.com,Documenting
+sentry.io,Code
+facebook.com,Code
+localhost,Code
+outlook.office.com,Email
+draftkings.com,Entertainment
+sachi.la,Personal
+airbnb.com,Personal
+drive.google.com,Documenting
+box.com,Documenting
+dev.azure.com,Code
+twilio.com,Code
+news.ycombinator.com,Personal
+rescuetime.com,Personal
+newrelic.com,Code
+reddit.com,Social Media
+outlook.office365.com,Email
+priceline.com,Personal
+gitlab.com,Code
+webflow.com,Marketing
+en.wikipedia.org,Personal
+wikipedia.org,Personal
+calendar.google.com,Scheduling
+mailchimp.com,Marketing
+dashboard.stripe.com,Code
+disneyplus.com,Entertainment
+getplan.co,Task Management
+vimeo.com,Entertainment
+newrepublic.com,News
+nytimes.com,News
+blog.rize.io,Productivity
+unsplash.com,Design
+filestack.com,Code
+producthunt.com,Personal
+techcrunch.com,News
+mail.yahoo.com,Email
+hackernoon.com,Reading
+vercel.com,Code
+thespoon.tech,News
+delta.com,Personal
+electron.build,Code
+npmjs.com,Code
+docs.npmjs.com,Code
+docs.docker.com,Code
+docker.com,Code
+espnplus.com,Entertainment
+qz.com,News
+azure.microsoft.com,Code
+nextjs.org,Code
+account.postmarkapp.com,Code
+forbes.com,News
+bloomberg.com,News
+miro.com,Video Conferencing
+fast.com,Personal
+angel.co,Personal
+apple.com,Personal
+dashboard.twitch.tv,Entertainment
+twitch.tv,Entertainment
+groupon.com,Personal
+angular.io,Code
+calendly.com,Scheduling
+businessinsider.com,News
+direct.chownow.com,Personal
+sailsjs.com,Code
+weather.com,Personal
+app.bitrise.io,Code
+web.whatsapp.com,Social Media
+azure.github.io,Code
+football.fantasysports.yahoo.com,Entertainment
+pivotaltracker.com,Task Management
+hulu.com,Entertainment
+yelp.com,Entertainment
+duckduckgo.com,Search
+app.intercom.com,Customer Support
+intercom.com,Customer Support
+travis-ci.org,Code
+skyscanner.com,Personal
+accounts.google.com,Utility
+github.io,Code
+crunchbase.com,News
+outlook.live.com,Email
+bestbuy.com,Personal
+app.circleci.com,Code
+circleci.com,Code
+zillow.com,Personal
+console.aws.amazon.com,Code
+docs.aws.amazon.com,Code
+aws.amazon.com,Code
+overleaf.com,Writing
+colab.research.google.com,Code
+docs.travis-ci.com,Code
+boardgamearena.com,Personal
+smile.amazon.com,Personal
+glassdoor.com,Personal
+bamboohr.com,Utility
+personal.vanguard.com,Personal
+vanguard.com,Personal
+rightmove.co.uk,Personal
+apartments.com,Personal
+upwork.com,Personal
+theringer.com,News
+readymag.com,Design
+machinelearningmastery.com,Code
+tripadvisor.com,Personal
+figma.com,Design
+mitpress.mit.edu,Reading
+nudgetext.com,Personal
+translate.google.com,Personal
+app.grammarly.com,Utility
+grammarly.com,Utility
+realsimple.com,Personal
+discord.com,Messaging
+cloud.google.com,Code
+booking.com,Personal
+preview.pitch.com,Documenting
+pitch.com,Documenting
+ebay.com,Personal
+theguardian.com,News
+jira.com,Task Management
+slack.com,Messaging
+myjetbrains.com,Code
+kudoboard.com,Personal
+mixpanel.com,Code
+elastic.co,Code
+flow.org,Code
+dropbox.com,Documenting
+ubereats.com,Personal
+newyorker.com,News
+jam.dev,Design
+teams.microsoft.com,Messaging
+canva.com,Design
+stratechery.com,News
+zendesk.com,Customer Support
+googleapis.com,Code
+robinhood.com,Personal
+stackexchange.com,Code
+usertesting.com,User Research
+salesforce.com,Sales
+geico.com,Personal
+amplitude.com,Product
+goldcast.io,Events
+analytics.amplitude.com,Product
+travis-ci.com,Code
+chase.com,Personal
+dailymail.co.uk,Personal
+coda.io,Documenting
+airbnb.co.uk,Personal
+styled-components.com,Code
+graphql-ruby.org,Code
+web.dev,Code
+material-ui.com,Code
+lodash.com,Code
+newline.co,Code
+us02web.zoom.us,Video Conferencing
+ideaboardz.com,Product
+highcharts.com,Code
+fivethirtyeight.com,News
+theverge.com,News
+notion.so,Documenting
+successfactors.com,Utility
+betterdoctor.com,Personal
+kayak.com,Personal
+saucelabs.com,Code
+fullstory.com,User Research
+retool.com,Product
+shift.com,Personal
+stripe.com,Finance
+productboard.com,Task Management
+nypost.com,Entertainment
+edmunds.com,Personal
+kbb.com,Personal
+segment.com,Product
+zoom.us,Video Conferencing
+bitbucket.org,Code
+visualstudio.com,Code
+messenger.com,Personal
+indeed.com,Personal
+protonmail.com,Email
+craigslist.org,Personal
+asana.com,Task Management
+codeinterview.io,Marketing
+app.gotomeeting.com,Marketing
+global.gotomeeting.com,Marketing
+webex.com,Marketing
+hangouts.google.com,Marketing
+ringcentral.com,Marketing
+bluejeans.com,Marketing
+highfive.com,Marketing
+vowel.com,Marketing
+whereby.com,Marketing
+roamresearch.com,Documenting
+zapier.com,Productivity
+appsumo.com,Personal
+instagram.com,Social Media
+loginwindow,Do Not Track
+MacSystem Preferences,Do Not Track
+UI Agent Mac,Do Not Track
+Screen Saver Engine,Do Not Track
+Finder,Do Not Track
+UserNotificationCenter,Do Not Track
+Installer,Do Not Track
+Wi-Fi,Do Not Track
+Setup Assistant,Do Not Track
+Archive Utility,Do Not Track
+Mobile Device Updated,Do Not Track
+Command Line Tools,Do Not Track
+Flow,Do Not Track
+Time Out,Do Not Track
+Rubymine,Code
+iTerm,Code
+Chrome,Browsing
+Numbers,Documenting
+Slack,Messaging
+Messages,Messaging
+Apple Mail,Email
+Zoom,Video Conferencing
+Ulysses,Writing
+Airtable,Task Management
+Microsoft Excel,Documenting
+Command E,Productivity
+1Password 7,Utility
+WebStorm,Code
+Sketch,Design
+Rize (Staging),Productivity
+Electron,Code
+Microsoft Word,Documenting
+Safari,Browsing
+TextEdit,Writing
+Notes,Writing
+Creative Cloud,Design
+Sublime Text,Code
+Terminal,Code
+Code - Insiders,Code
+FaceTime,Personal
+IntelliJ IDEA,Code
+Mozilla Firefox,Browsing
+Preview,Personal
+Spotify,Entertainment
+OBS,Code
+Figma,Design
+PyCharm,Code
+Notion,Documenting
+Xcode,Code
+Docker Desktop,Code
+Twitch,Entertainment
+GitHub Desktop,Code
+Microsoft PowerPoint,Documenting
+QuickTime Player,Personal
+Tableau Public,Code
+Skype,Personal
+Microsoft Teams,Messaging
+Cisco Webex Meetings,Video Conferencing
+mmhmm,Personal
+Photos,Personal
+Find My,Personal
+Dropbox,Documenting
+Evernote,Documenting
+Code,Code
+Docker,Code
+Music,Entertainment
+Plan,Task Management
+Reminders,Task Management
+App Store,App Management
+Pages,Documenting
+Brave,Browsing
+WhatsApp,Messaging
+Mattermost,Messaging
+iCal,Scheduling
+Outlook,Email
+GoodNotes,Writing
+Superhuman,Email
+Zeplin,Design
+OmniFocus 3,Task Management
+Nuclino,Documenting
+iPhone Simulator,Code
+KeepPassX,Utility
+Activity Monitor,Utility
+Desktop Dimmer,Personalization
+Steam,Entertainment
+Flux,Personalization
+Postman,Code
+Discord,Messaging
+Telegram,Messaging
+Edge,Browsing
+Chromium,Browsing
+Dashlane,Utility
+Spark,Email
+Puppetry,Code
+Dropbox Paper,Documenting
+Fantastical,Task Management
+Bluejeans,Video Conferencing
+Things,Task Management
+Atom,Code
+Adobe Illustrator,Design
+Signal,Messaging
+Microsoft Edge,Browsing
+Apple TV,Entertainment
+DataGrip,Code
+Calculator,Utility
+Dictionary,Utility
+Tandem,Messaging
+PhotoBooth,Entertainment
+Kindle,Reading
+Keynote,Documenting
+Clocker,Utility
+PHP Storm,Code
+Kiwi,Email
+Citrix XenApp,Virtual Machine
+Viber,Messaging
+Tor,Browsing
+Microsoft RDC,Documenting
+Azure Data Studio,Code
+Photoshop,Design
+Amazon Chime,Video Conferencing
+Adobe Reader,Documenting
+Intellij,Code
+Nova,Code
+Canary,Utility
+VLC,Entertainment
+Hyper,Code
+TickTick,Task Management
+Cisco Spark,Messaging
+Obsidian,Documenting
+Stickies,Documenting
+Unclutter,Utility
+Adobe XD,Design
+CleanShot,Utility
+Edison Mail,Email
+Adobe Dreamweaver,Code
+Sequel Pro,Code
+Linear,Task Management
+Adobe Acrobat,Utility
+Grammarly,Utility
+DB Beaver,Code
+GoToMeeting,Video Conferencing
+Google Chat,Video Conferencing
+Meet,Video Conferencing
+AnyDesk,Video Conferencing
+Mighty,Browsing
+InDesign,Design
+Warp,Code
+Clean My Mac,Utility
+SigmaOS,Browsing
+Slack,Messaging
+Explorer,Utility
+Electron,Code
+VS Debug Console,Code
+Git Bash,Code
+WebStorm,Code
+Brave,Browsing
+Visual Studio,Code
+RubyMine,Code
+OneNote,Documenting
+Rize (Staging),Productivity
+Rize,Productivity
+Search App,Utility
+Shell Experience Host,Utility
+Firefox,Browsing
+Chrome,Browsing
+Command Line Interpreter,Code
+Powershell,Code
+Cortana,Productivity
+Accessibility Insights,Utility
+Sublime Text,Code
+Microsoft Screen Magnifier,Utility
+Start Menu,Utility
+Edge,Browsing
+File Picker UI,Utility
+Windows Task Manager,Utility
+Screen Sketch,Utility
+System Settings,Utility
+Excel,Documenting
+Discord,Messaging
+Telegram,Messaging
+Vivaldi,Browsing
+Sidekick,Browsing
+Outlook,Email
+Microsoft Word,Documenting
+Powerpoint,Documenting
+Picasa,Design
+Photoshop,Design
+Visual Studio Code,Code
+Zoom,Video Conferencing
+Opera,Browsing
+WhatsApp,Messaging
+Teams,Messaging
+Illustrator,Design
+Obsidian,Writing
+AutoCAD,Code
+Wavebox,Browsing
+SketchUp,Design
+Camtasia Studio,Video Editing
+Notepad,Writing
+Mailbird,Email
+Notion,Documenting
+Mattermost,Task Management
+Postbox,Email
+Adobe Premiere Pro,Video Editing
+Adobe Acrobat,Documenting
+TradingView,Finance
+JetBrains Rider,Code
+Spotify,Entertainment
+ClickUp,Task Management
+Notepad++,Writing
+IntelliJ IDEA,Code
+Netflix,Entertainment
+OneDrive,Documenting
+Creative Cloud,Documenting
+MS Info,Utility
+Google Chrome,Browsing
+Login Window,Do Not Track

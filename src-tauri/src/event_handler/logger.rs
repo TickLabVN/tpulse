@@ -1,3 +1,5 @@
+use log::info;
+
 use crate::{
     raw_metric_processor::ProcessedResult,
     sqlite::{insert_new_log, update_log},
@@ -5,6 +7,7 @@ use crate::{
 
 pub fn handle_events(events: Vec<ProcessedResult>) {
     for event in events {
+        info!("{:?}", event);
         match event {
             ProcessedResult::StartActivity(start_event) => {
                 insert_new_log(&start_event);
@@ -39,6 +42,7 @@ mod tests {
                 start_time: 682003,
                 tag: ActivityTag::BROWSER,
                 activity_identifier: "activity_id_1".to_string(),
+                tag: ActivityTag::WINDOW,
             };
             let end_event = UpdateEndActivity {
                 start_time: 682003,
