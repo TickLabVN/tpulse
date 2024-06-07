@@ -38,7 +38,7 @@ pub fn categorize(identifier: String) -> Option<Category> {
             substitution_penalty: None,
         },
     )
-    .map(|s| Category(s.clone()))
+    .map(|s| Category(s.to_string()))
 }
 
 #[cfg(test)]
