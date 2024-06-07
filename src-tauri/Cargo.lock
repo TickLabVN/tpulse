@@ -3293,9 +3293,9 @@ checksum = "7ffc183a10b4478d04cbbbfc96d0873219d962dd5accaff2ffbd4ceb7df837f4"
 
 [[package]]
 name = "ruzzy"
-version = "0.1.2"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43861dc273f303a78759f036b5a4fd40abd1c35d34c3a3187d493eb761c473a8"
+checksum = "7313f02f0eb7eed5b6a44ff8c2c770af96e4d1e83bf5003cab19235acd99469f"
 
 [[package]]
 name = "ryu"
