@@ -1,16 +1,26 @@
 use log::info;
 
 use crate::{
-    raw_metric_processor::ProcessedResult,
+    raw_metric_processor::{ProcessedResult, StartActivity},
     sqlite::{insert_new_log, update_log},
 };
+
+use super::categorizer::Category;
+
+pub struct ActivityStartLog {
+    pub start_log: StartActivity,
+    pub category_tag: Option<Category>,
+}
 
 pub fn handle_events(events: Vec<ProcessedResult>) {
     for event in events {
         info!("{:?}", event);
         match event {
             ProcessedResult::StartActivity(start_event) => {
-                insert_new_log(&start_event);
+                insert_new_log(ActivityStartLog {
+                    start_log: start_event,
+                    category_tag: Some(Category("test".to_string())),
+                });
             }
             ProcessedResult::UpdateEndActivity(end_event) => {
                 update_log(&end_event);
@@ -22,6 +32,7 @@ pub fn handle_events(events: Vec<ProcessedResult>) {
 #[cfg(test)]
 mod tests {
     use crate::{
+        event_handler::{categorizer::Category, logger::ActivityStartLog},
         initializer::db,
         raw_metric_processor::{ActivityTag, ProcessedResult, StartActivity, UpdateEndActivity},
         sqlite::{insert_new_log, update_log},
@@ -42,7 +53,6 @@ mod tests {
                 start_time: 682003,
                 tag: ActivityTag::BROWSER,
                 activity_identifier: "activity_id_1".to_string(),
-                tag: ActivityTag::WINDOW,
             };
             let end_event = UpdateEndActivity {
                 start_time: 682003,
@@ -64,7 +74,11 @@ mod tests {
                 for event in events {
                     match event {
                         ProcessedResult::StartActivity(start_event) => {
-                            insert_new_log(&start_event);
+                            let activity_start_log = ActivityStartLog {
+                                start_log: start_event,
+                                category_tag: Some(Category("Code".to_string())),
+                            };
+                            insert_new_log(activity_start_log);
                         }
                         ProcessedResult::UpdateEndActivity(end_event) => {
                             update_log(&end_event);

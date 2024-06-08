@@ -1,6 +1,5 @@
 use crate::{
-    config,
-    raw_metric_processor::{StartActivity, UpdateEndActivity},
+    config, event_handler::logger::ActivityStartLog, raw_metric_processor::UpdateEndActivity,
     utils::get_data_directory,
 };
 use lazy_static::lazy_static;
@@ -10,14 +9,18 @@ lazy_static! {
     static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
 }
 
-pub fn insert_new_log(start_log_event: &StartActivity) {
+pub fn insert_new_log(activity_start_log: ActivityStartLog) {
+    let ActivityStartLog {
+        start_log,
+        category_tag,
+    } = activity_start_log;
     let pool_time = config::get_setting().poll_time;
 
     let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
 
-    let start_time = &start_log_event.start_time;
-    let activity_id = &start_log_event.activity_identifier;
-    let activity_tag: &String = &start_log_event.tag.to_string();
+    let start_time = &start_log.start_time;
+    let activity_id = &start_log.activity_identifier;
+    let activity_tag: &String = &start_log.tag.to_string();
 
     let activity_exists: bool = conn
         .query_row(
@@ -27,10 +30,12 @@ pub fn insert_new_log(start_log_event: &StartActivity) {
         )
         .unwrap_or(false);
 
+    let category_str = category_tag.map(|tag| tag.value());
+
     if !activity_exists {
         conn.execute(
-            "INSERT INTO activity (identifier, activity_tag) VALUES (?1, ?2)",
-            params![activity_id, activity_tag],
+            "INSERT INTO activity (identifier, activity_tag, category_tag) VALUES (?1, ?2, ?3)",
+            params![activity_id, activity_tag, category_str],
         )
         .expect("Failed to create new activity");
     }
@@ -98,6 +103,7 @@ mod tests {
 
     use crate::{
         config,
+        event_handler::{categorizer::Category, logger::ActivityStartLog},
         initializer::db,
         raw_metric_processor::{ActivityTag, StartActivity, UpdateEndActivity},
         sqlite::{insert_new_log, update_log},
@@ -120,28 +126,59 @@ mod tests {
             .unwrap()
             .as_secs();
 
-        let start_activity = StartActivity {
+        let activity_identifier = "github.com".to_string();
+        let start_event = StartActivity {
             start_time,
-            activity_identifier: "test_activity".to_string(),
+            activity_identifier: activity_identifier.clone(),
             tag: ActivityTag::BROWSER,
         };
 
-        insert_new_log(&start_activity);
+        let category_str = "Code".to_string();
+        let activity_start_log = ActivityStartLog {
+            start_log: start_event.clone(),
+            category_tag: Some(Category(category_str.clone())),
+        };
+
+        insert_new_log(activity_start_log);
 
         let activity_exists: bool = conn
             .query_row(
                 "SELECT EXISTS(SELECT 1 FROM activity WHERE identifier = ?1)",
-                params![&start_activity.activity_identifier],
+                params![&activity_identifier],
                 |row| row.get(0),
             )
             .unwrap();
 
         assert!(activity_exists, "Activity should be inserted");
 
+        let activity_entry = conn
+            .query_row(
+                "SELECT identifier, activity_tag, category_tag FROM activity WHERE identifier = ?1",
+                params![&activity_identifier],
+                |row| {
+                    let identifier: String = row.get(0)?;
+                    let activity_tag: Option<String> = row.get(1)?;
+                    let category_tag: Option<String> = row.get(2)?;
+
+                    Ok((identifier, activity_tag, category_tag))
+                },
+            )
+            .unwrap();
+
+        assert_eq!(
+            activity_entry,
+            (
+                activity_identifier,
+                Some(ActivityTag::BROWSER.to_string()),
+                Some(category_str.clone())
+            ),
+            "Invalid activity data"
+        );
+
         let log_exists: bool = conn
             .query_row(
                 "SELECT EXISTS(SELECT 1 FROM log WHERE activity_identifier = ?1)",
-                params![&start_activity.activity_identifier],
+                params![&start_event.activity_identifier],
                 |row| row.get(0),
             )
             .unwrap();
@@ -185,7 +222,12 @@ mod tests {
         ];
 
         for activity in &activities {
-            insert_new_log(activity);
+            let activity_start_log = ActivityStartLog {
+                start_log: activity.clone(),
+                category_tag: Some(Category("Code".to_string())),
+            };
+
+            insert_new_log(activity_start_log);
         }
 
         let log_entry = conn
@@ -251,7 +293,12 @@ mod tests {
         };
 
         for activity in &activities {
-            insert_new_log(activity);
+            let activity_start_log = ActivityStartLog {
+                start_log: activity.clone(),
+                category_tag: Some(Category("Code".to_string())),
+            };
+
+            insert_new_log(activity_start_log);
         }
 
         update_log(&end_activity);
