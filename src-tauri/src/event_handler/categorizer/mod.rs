@@ -13,7 +13,7 @@ impl Category {
     }
 }
 
-pub fn categorize_event(event: ProcessedResult) {
+pub fn get_activity_category_tag(event: ProcessedResult) -> Option<Category> {
     if let ProcessedResult::StartActivity(StartActivity {
         tag,
         activity_identifier,
@@ -22,10 +22,16 @@ pub fn categorize_event(event: ProcessedResult) {
     {
         match tag {
             ActivityTag::WINDOW | ActivityTag::BROWSER => {
-                inverted_index_categorizer::categorize(activity_identifier.clone())
+                return inverted_index_categorizer::categorize(activity_identifier.clone())
             }
-            ActivityTag::VSCODE => vscode_categorizer::categorize(activity_identifier.clone()),
-            ActivityTag::YOUTUBE => youtube_categorizer::categorize(activity_identifier.clone()),
+            ActivityTag::VSCODE => {
+                return vscode_categorizer::categorize(activity_identifier.clone())
+            }
+            ActivityTag::YOUTUBE => {
+                return youtube_categorizer::categorize(activity_identifier.clone())
+            }
         };
+    } else {
+        return None;
     }
 }

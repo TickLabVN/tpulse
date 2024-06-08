@@ -1,6 +1,7 @@
 use log::info;
 
 use crate::{
+    event_handler::categorizer::get_activity_category_tag,
     raw_metric_processor::{ProcessedResult, StartActivity},
     sqlite::{insert_new_log, update_log},
 };
@@ -15,11 +16,12 @@ pub struct ActivityStartLog {
 pub fn handle_events(events: Vec<ProcessedResult>) {
     for event in events {
         info!("{:?}", event);
+        let category_tag = get_activity_category_tag(event.clone());
         match event {
             ProcessedResult::StartActivity(start_event) => {
                 insert_new_log(ActivityStartLog {
                     start_log: start_event,
-                    category_tag: Some(Category("test".to_string())),
+                    category_tag,
                 });
             }
             ProcessedResult::UpdateEndActivity(end_event) => {
@@ -32,10 +34,9 @@ pub fn handle_events(events: Vec<ProcessedResult>) {
 #[cfg(test)]
 mod tests {
     use crate::{
-        event_handler::{categorizer::Category, logger::ActivityStartLog},
+        event_handler::logger::handle_events,
         initializer::db,
         raw_metric_processor::{ActivityTag, ProcessedResult, StartActivity, UpdateEndActivity},
-        sqlite::{insert_new_log, update_log},
         utils::get_data_directory,
     };
     use lazy_static::lazy_static;
@@ -47,12 +48,14 @@ mod tests {
         db::initialize();
 
         let (tx, rx) = mpsc::channel();
+        let activity_identifier = "github.com".to_string();
+        let activity_identifier_insert = activity_identifier.clone();
 
         std::thread::spawn(move || {
             let start_event = StartActivity {
                 start_time: 682003,
                 tag: ActivityTag::BROWSER,
-                activity_identifier: "activity_id_1".to_string(),
+                activity_identifier: activity_identifier_insert,
             };
             let end_event = UpdateEndActivity {
                 start_time: 682003,
@@ -68,24 +71,10 @@ mod tests {
         });
 
         let handle_events_thread = thread::spawn(move || loop {
-            //custom body of handle_events
             loop {
                 let events = rx.recv().unwrap();
-                for event in events {
-                    match event {
-                        ProcessedResult::StartActivity(start_event) => {
-                            let activity_start_log = ActivityStartLog {
-                                start_log: start_event,
-                                category_tag: Some(Category("Code".to_string())),
-                            };
-                            insert_new_log(activity_start_log);
-                        }
-                        ProcessedResult::UpdateEndActivity(end_event) => {
-                            update_log(&end_event);
-                            return;
-                        }
-                    }
-                }
+                handle_events(events);
+                return;
             }
         });
 
@@ -99,10 +88,10 @@ mod tests {
 
         let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
 
-        let log_entry = conn
+        let activity_entry = conn
             .query_row(
-                "SELECT * FROM activity WHERE identifier = 'activity_id_1'",
-                [],
+                "SELECT * FROM activity WHERE identifier = ?1",
+                [activity_identifier.clone()],
                 |row| {
                     let identifier: String = row.get(0)?;
                     let activity_tag: Option<String> = row.get(1)?;
@@ -114,11 +103,11 @@ mod tests {
             .unwrap();
 
         debug_assert_eq!(
-            log_entry,
+            activity_entry,
             (
-                "activity_id_1".to_string(),
+                activity_identifier.clone(),
                 Some("browser".to_string()),
-                None
+                Some("Code".to_string()),
             )
         );
 
