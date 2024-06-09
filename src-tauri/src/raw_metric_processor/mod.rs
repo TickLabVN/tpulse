@@ -97,20 +97,13 @@ impl RawMetricProcessorManager {
                 if let None = res {
                     continue;
                 }
-                if let Some(model) = res {
-                    self.last_activity = Some(model.clone());
-                    results.push(model.into_variant());
-                    break;
-                }
 
-                let model = res.unwrap();
-
-                results.push(model.clone().into_variant());
-                let current_activity = model.clone();
+                let current_activity = res.unwrap();
 
                 if !self.last_activity.as_ref().is_some_and(|activity| {
                     activity.activity_identifier == current_activity.activity_identifier
                 }) {
+                    results.push(current_activity.clone().into_variant());
                     let last_activity = self.last_activity.as_ref().unwrap().clone();
                     results.push(
                         (UpdateEndActivity {
