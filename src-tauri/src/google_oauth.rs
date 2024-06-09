@@ -13,7 +13,7 @@ use std::{
     time::Duration,
 };
 
-use crate::setting::{handle_setting_error, read_setting, write_setting, Setting};
+use crate::app_config::{handle_setting_error, read_setting, write_setting, SettingName};
 
 #[derive(Default, Deserialize)]
 pub struct GoogleOAuth {
@@ -125,7 +125,7 @@ impl GoogleOAuth {
         let port = local_addr.port();
         self.port = port;
 
-        let _ = write_setting(Setting::RedirectPort, &port.to_string());
+        let _ = write_setting(SettingName::RedirectPort, &port.to_string());
 
         let redirect_url = format!("http://localhost:{}", port);
 
@@ -191,7 +191,7 @@ impl GoogleOAuth {
         // Assign the authorization code to the struct and setting.json
         self.refresh_token = refresh_token.secret().to_string();
         let _ = write_setting(
-            Setting::GoogleRefreshToken,
+            SettingName::GoogleRefreshToken,
             format!("\"{}\"", self.refresh_token).as_str(),
         );
 
@@ -200,26 +200,26 @@ impl GoogleOAuth {
 
     // Function to authorize the GoogleCalendar struct
     pub fn authorize(&mut self) -> Result<()> {
-        let refresh_token: Option<String> = read_setting::<String>(Setting::GoogleRefreshToken)
+        let refresh_token: Option<String> = read_setting::<String>(SettingName::GoogleRefreshToken)
             .unwrap_or_else(|err| {
                 Some(handle_setting_error(
-                    Setting::GoogleRefreshToken,
+                    SettingName::GoogleRefreshToken,
                     &err,
                     "Invalid Google authorization code".to_string(),
                 ))
             });
         match refresh_token {
             Some(token) => {
-                let redirect_port: u16 = read_setting::<u16>(Setting::RedirectPort)
+                let redirect_port: u16 = read_setting::<u16>(SettingName::RedirectPort)
                     .unwrap_or_else(|err| {
-                        Some(handle_setting_error(Setting::RedirectPort, &err, 0))
+                        Some(handle_setting_error(SettingName::RedirectPort, &err, 0))
                     })
                     .unwrap_or_default();
 
-                let access_token: String = read_setting::<String>(Setting::GoogleAccessToken)
+                let access_token: String = read_setting::<String>(SettingName::GoogleAccessToken)
                     .unwrap_or_else(|err| {
                         Some(handle_setting_error(
-                            Setting::GoogleAccessToken,
+                            SettingName::GoogleAccessToken,
                             &err,
                             "Invalid Google Access Token".into(),
                         ))
@@ -270,7 +270,7 @@ impl GoogleOAuth {
                     self.access_token = token.access_token().secret().to_string();
 
                     let _ = write_setting(
-                        Setting::GoogleAccessToken,
+                        SettingName::GoogleAccessToken,
                         &format!("\"{}\"", self.access_token),
                     );
                 }
@@ -288,7 +288,7 @@ impl GoogleOAuth {
                     self.access_token = retry_token_result.access_token().secret().to_string();
 
                     let _ = write_setting(
-                        Setting::GoogleAccessToken,
+                        SettingName::GoogleAccessToken,
                         &format!("\"{}\"", self.access_token),
                     );
                 }

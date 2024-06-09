@@ -5,14 +5,14 @@ use std::fs;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct AppConfig {
-    settings: HashMap<Setting, Option<String>>,
+    settings: HashMap<SettingName, Option<String>>,
 }
 
 impl Default for AppConfig {
     fn default() -> Self {
         let mut settings = HashMap::new();
-        settings.insert(Setting::PollTime, Some("500".to_string()));
-        settings.insert(Setting::Timeout, Some("1000".to_string()));
+        settings.insert(SettingName::PollTime, Some("500".to_string()));
+        settings.insert(SettingName::Timeout, Some("1000".to_string()));
 
         AppConfig { settings }
     }
@@ -20,7 +20,7 @@ impl Default for AppConfig {
 
 // add new settings here
 #[derive(Debug, Hash, Eq, PartialEq, Serialize, Deserialize)]
-pub enum Setting {
+pub enum SettingName {
     PollTime,
     Timeout,
     GoogleRefreshToken,
@@ -30,11 +30,11 @@ pub enum Setting {
 }
 
 impl AppConfig {
-    fn get_setting(&self, setting: &Setting) -> Option<&Option<String>> {
+    fn get_setting(&self, setting: &SettingName) -> Option<&Option<String>> {
         self.settings.get(setting)
     }
 
-    fn set_setting<T>(&mut self, setting: Setting, new_value: Option<T>)
+    fn set_setting<T>(&mut self, setting: SettingName, new_value: Option<T>)
     where
         T: Into<String>,
     {
@@ -56,12 +56,13 @@ fn write_all_settings_to_file(config: &AppConfig) -> Result<(), Box<dyn std::err
     Ok(())
 }
 
-pub fn read_setting<T>(setting_name: Setting) -> Result<Option<T>, Box<dyn std::error::Error>>
+pub fn read_setting<T>(setting_name: SettingName) -> Result<Option<T>, Box<dyn std::error::Error>>
 where
     T: serde::de::DeserializeOwned,
 {
-    let settings = read_all_settings_from_file()
-        .unwrap_or_else(|err| handle_setting_error(Setting::Timeout, &err, AppConfig::default()));
+    let settings = read_all_settings_from_file().unwrap_or_else(|err| {
+        handle_setting_error(SettingName::Timeout, &err, AppConfig::default())
+    });
 
     if let Some(setting_value) = settings.get_setting(&setting_name).cloned().flatten() {
         let parsed_value: T = serde_json::from_str(&setting_value)?;
@@ -72,11 +73,12 @@ where
 }
 
 pub fn write_setting(
-    setting_name: Setting,
+    setting_name: SettingName,
     new_value: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let mut settings = read_all_settings_from_file()
-        .unwrap_or_else(|err| handle_setting_error(Setting::Timeout, &err, AppConfig::default()));
+    let mut settings = read_all_settings_from_file().unwrap_or_else(|err| {
+        handle_setting_error(SettingName::Timeout, &err, AppConfig::default())
+    });
     settings.set_setting(setting_name, Some(new_value));
 
     write_all_settings_to_file(&settings)?;
@@ -84,14 +86,14 @@ pub fn write_setting(
     Ok(())
 }
 
-pub fn remove_setting(setting_name: Setting) -> Result<(), Box<dyn std::error::Error>> {
+pub fn remove_setting(setting_name: SettingName) -> Result<(), Box<dyn std::error::Error>> {
     let mut settings = read_all_settings_from_file()?;
     settings.settings.remove(&setting_name);
     write_all_settings_to_file(&settings)?;
     Ok(())
 }
 
-pub fn handle_setting_error<T>(setting: Setting, err: &Box<dyn Error>, default_value: T) -> T
+pub fn handle_setting_error<T>(setting: SettingName, err: &Box<dyn Error>, default_value: T) -> T
 where
     T: Default,
 {
