@@ -30,8 +30,8 @@ pub enum SettingName {
 }
 
 impl AppConfig {
-    fn get_setting(&self, setting: &SettingName) -> Option<&Option<String>> {
-        self.settings.get(setting)
+    fn get_setting(&self, setting: &SettingName) -> Option<String> {
+        self.settings.get(setting).and_then(|opt| opt.clone())
     }
 
     fn set_setting<T>(&mut self, setting: SettingName, new_value: Option<T>)
@@ -64,7 +64,7 @@ where
         handle_setting_error(SettingName::Timeout, &err, AppConfig::default())
     });
 
-    if let Some(setting_value) = settings.get_setting(&setting_name).cloned().flatten() {
+    if let Some(setting_value) = settings.get_setting(&setting_name).clone() {
         let parsed_value: T = serde_json::from_str(&setting_value)?;
         Ok(Some(parsed_value))
     } else {
