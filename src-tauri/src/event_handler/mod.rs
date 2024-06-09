@@ -1,6 +1,5 @@
 use crate::raw_metric_processor::ProcessedResult;
 
-pub mod categorizer;
 pub mod logger;
 
 pub type EventHandler = Box<dyn Fn(Vec<ProcessedResult>) + Send>;

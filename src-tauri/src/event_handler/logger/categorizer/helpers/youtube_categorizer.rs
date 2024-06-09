@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 
-use crate::event_handler::categorizer::Category;
+use crate::event_handler::logger::categorizer::Category;
 
 lazy_static! {
     static ref REGEX: Regex = Regex::new("\"category\":\"(.*?)\"").unwrap();
