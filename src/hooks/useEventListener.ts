@@ -1,13 +1,24 @@
 import { useEffect } from 'react';
 
-type EventKey = 'mousemove';
+type DialogName = 'mutate-task';
+type EventKey = `dialog:open:${DialogName}`;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useEventListener(event: EventKey, listener: (...args: any[]) => void) {
+export function useListenEvent<T = unknown>(event: EventKey, handler: (params: T) => void) {
   useEffect(() => {
-    window.addEventListener(event, listener);
+    const baseHandler = (e: CustomEvent<T>) => handler(e.detail);
+    // @ts-ignore
+    window.addEventListener(event, baseHandler);
     return () => {
-      window.removeEventListener(event, listener);
+      // @ts-ignore
+      window.removeEventListener(event, baseHandler);
     };
-  }, [event, listener]);
+  }, [event, handler]);
+}
+
+export function emitEvent<T = unknown>(event: EventKey, payload?: T) {
+  return window.dispatchEvent(new CustomEvent(event, { detail: payload }));
+}
+
+export function openDialog<T = unknown>(dialog: DialogName, payload?: T) {
+  emitEvent(`dialog:open:${dialog}`, payload);
 }

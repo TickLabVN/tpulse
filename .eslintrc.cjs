@@ -20,6 +20,7 @@ module.exports = {
     '@typescript-eslint/consistent-type-definitions': 'off',
     'react/prop-types': 'off',
     '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off'
   },
   parserOptions: {
     ecmaVersion: 'latest',
