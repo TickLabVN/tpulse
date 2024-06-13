@@ -1,4 +1,4 @@
-mod categorizer;
+pub mod categorizer;
 
 use log::info;
 

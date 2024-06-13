@@ -44,8 +44,8 @@ pub fn categorize(identifier: String) -> Option<Category> {
 
 #[cfg(test)]
 mod test {
-    use crate::event_handler::categorizer::helpers::inverted_index_categorizer::categorize;
-    use crate::event_handler::categorizer::Category;
+    use crate::event_handler::logger::categorizer::helpers::inverted_index_categorizer::categorize;
+    use crate::event_handler::logger::categorizer::Category;
 
     #[test]
     fn test_website_categories() {

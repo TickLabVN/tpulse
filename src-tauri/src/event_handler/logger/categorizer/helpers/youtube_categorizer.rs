@@ -18,7 +18,9 @@ pub fn categorize(identifier: String) -> Option<Category> {
 
 #[cfg(test)]
 mod test {
-    use crate::event_handler::categorizer::{helpers::youtube_categorizer::categorize, Category};
+    use crate::event_handler::logger::categorizer::{
+        helpers::youtube_categorizer::categorize, Category,
+    };
 
     #[test]
     fn test_mr_beast() {
