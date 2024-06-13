@@ -103,7 +103,7 @@ mod tests {
 
     use crate::{
         config,
-        event_handler::{categorizer::Category, logger::ActivityStartLog},
+        event_handler::{logger::ActivityStartLog, logger::Category},
         initializer::db,
         raw_metric_processor::{ActivityTag, StartActivity, UpdateEndActivity},
         sqlite::{insert_new_log, update_log},

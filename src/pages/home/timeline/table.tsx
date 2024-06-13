@@ -1,7 +1,10 @@
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
+import { Event } from './event';
+import { filterEvent } from '@/utils';
+import { EventData } from '@/interfaces';
+import { useTaskStore } from '@/states';
 function getCurrentTz() {
   const date = new Date();
   const offset = date.getTimezoneOffset();
@@ -9,20 +12,67 @@ function getCurrentTz() {
 
   return `GMT-${offsetInHours}`;
 }
-
-const TableRow: IComponent<{ isLastRow: boolean; title: string }> = ({ isLastRow, title }) => {
-  let rowStyle = 'border-x border-light-gray h-10';
+const ActivityData: EventData[] = [
+  {
+    id: '1',
+    title: 'Youtube',
+    start: moment().startOf('day').add(12, 'hours').unix(),
+    end: moment().startOf('day').add(14, 'hours').unix(),
+    icon: '/icons/youtube-icon.jpg'
+  },
+  {
+    id: '2',
+    title: 'VsCode',
+    start: moment().startOf('day').hours(14).minutes(30).unix(),
+    end: moment().startOf('day').hours(20).minutes(15).unix(),
+    icon: '/icons/vsc-icon.jpg'
+  }
+];
+const TableRow: IComponent<{ isLastRow: boolean; title: string; timeUnit: number }> = ({
+  isLastRow,
+  title,
+  timeUnit
+}) => {
+  const { taskList } = useTaskStore();
+  let rowStyle = 'relative border-x border-light-gray h-10';
   if (!isLastRow) rowStyle += ' border-b';
-
+  const filteredEventData = filterEvent(ActivityData, title, timeUnit);
+  const filteredTaskData = filterEvent(taskList, title, timeUnit);
   return (
     <tr id={title}>
       <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow ? <div className='text-sm text-end text-gray translate-y-1/2'>{title}</div> : null}
+        {!isLastRow ? <div className='text-sm translate-y-1/2 text-end text-gray'>{title}</div> : null}
       </td>
-      <td className={rowStyle}></td>
-      <td className={rowStyle}></td>
+      <td className={rowStyle}>
+        {filteredEventData.map((data, index) => (
+          <Event
+            key={index}
+            event={data}
+            timeUnit={timeUnit}
+            top={
+              title === moment.unix(data.start).format('HH:mm')
+                ? 40
+                : (Math.abs(data.start - moment(title, 'HH:mm').unix()) / timeUnit) * 40
+            }
+          />
+        ))}
+      </td>
+      <td className={rowStyle}>
+        {filteredTaskData.map((data, index) => (
+          <Event
+            key={index}
+            event={data}
+            timeUnit={timeUnit}
+            top={
+              title === moment.unix(data.start).format('HH:mm')
+                ? 40
+                : (Math.abs(data.start - moment(title, 'HH:mm').unix()) / timeUnit) * 40
+            }
+          />
+        ))}
+      </td>
       <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow ? <div className='text-sm text-start text-gray translate-y-1/2'>{title}</div> : null}
+        {!isLastRow ? <div className='text-sm translate-y-1/2 text-start text-gray'>{title}</div> : null}
       </td>
     </tr>
   );
@@ -65,7 +115,6 @@ export function TimeTable() {
     setScrollTop(table.scrollTop);
     setScrollHeight(table.scrollHeight);
     setClientHeight(table.clientHeight);
-
     function handleWheel(e: WheelEvent) {
       const isPressingCtrl = e.ctrlKey;
       if (isPressingCtrl) {
@@ -105,7 +154,9 @@ export function TimeTable() {
         .startOf('day')
         .add((i + 1) * timeUnit, 'seconds');
 
-      rows.push(<TableRow key={i} isLastRow={isLastRow} title={unixTs.format('HH:mm')} />);
+      rows.push(
+        <TableRow key={i} isLastRow={isLastRow} title={unixTs.format('HH:mm')} timeUnit={timeUnit} />
+      );
     }
     return rows;
   }, [timeUnit]);
@@ -122,25 +173,25 @@ export function TimeTable() {
               <div>EST</div>
               <div>{getCurrentTz()}</div>
             </th>
-            <th className='py-5 ps-8 border-x border-b border-light-gray shadow-sm'>
+            <th className='py-5 border-b shadow-sm ps-8 border-x border-light-gray'>
               <div className='flex items-center gap-[14px]'>
                 <div className='p-[10px] bg-[#D3FFD1] rounded-[10px] w-fit'>
                   <ClockFillIcon size={21} />
                 </div>
-                <div className='flex flex-col gap-1 items-start'>
-                  <span className='text-green font-bold text-xl'>ACTIVITY</span>
-                  <span className='text-navy font-bold text-sm'>Automatic Tracking</span>
+                <div className='flex flex-col items-start gap-1'>
+                  <span className='text-xl font-bold text-green'>ACTIVITY</span>
+                  <span className='text-sm font-bold text-navy'>Automatic Tracking</span>
                 </div>
               </div>
             </th>
-            <th className='py-5 ps-8 border-x border-b border-light-gray shadow-sm'>
+            <th className='py-5 border-b shadow-sm ps-8 border-x border-light-gray'>
               <div className='flex items-center gap-[14px]'>
                 <div className='p-[10px] bg-accent-light rounded-[10px] w-fit'>
                   <ChecklistIcon size={21} />
                 </div>
-                <div className='flex flex-col gap-1 items-start'>
-                  <span className='text-accent-blue font-bold text-xl'>PLANNING</span>
-                  <span className='text-navy font-bold text-sm'>Manual Tracking</span>
+                <div className='flex flex-col items-start gap-1'>
+                  <span className='text-xl font-bold text-accent-blue'>PLANNING</span>
+                  <span className='text-sm font-bold text-navy'>Manual Tracking</span>
                 </div>
               </div>
             </th>

@@ -7,6 +7,7 @@ use tauri_plugin_log::LogTarget;
 use tpulse::initializer::raw_metric_processor;
 use tpulse::{
     config,
+    google_calendar::{__cmd__handle_google_calendar, handle_google_calendar},
     initializer::db,
     metrics::UserMetric,
     watcher::{watch_afk, watch_browser, watch_window},
@@ -44,7 +45,10 @@ fn main() {
         // We cannot see log when running in bundled app.
         // This is a workaround to print log to stdout in production.
         // Can use other log targets
-        .invoke_handler(tauri::generate_handler![get_home_dir])
+        .invoke_handler(tauri::generate_handler![
+            get_home_dir,
+            handle_google_calendar
+        ])
         .plugin(
             tauri_plugin_log::Builder::default()
                 .targets([LogTarget::Stdout])

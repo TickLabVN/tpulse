@@ -1,8 +1,7 @@
 use anyhow::Result;
 use reqwest::blocking::Client;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
-use serde::Deserialize;
-
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt;
 
@@ -21,7 +20,7 @@ struct CalendarInfoResponse {
     items: Vec<CalendarInfo>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct EventDateTime {
     pub date: Option<String>,
     pub date_time: Option<String>,
@@ -38,7 +37,7 @@ impl fmt::Display for EventDateTime {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct EventInfo {
     pub id: String,
     pub summary: String,
@@ -197,4 +196,42 @@ fn get_color_code(color_id: &str) -> Option<&str> {
     .collect();
 
     color_palette.get(color_id).copied()
+}
+#[tauri::command]
+pub fn handle_google_calendar(date: String) -> Result<String, String> {
+    let mut google_calendar = GoogleCalendar::default();
+    let mut calendar_infos: Vec<EventInfo> = Vec::new();
+
+    match google_calendar.get_calendar_list() {
+        Ok(calendar_list) => {
+            for calendar in calendar_list {
+                let events = match google_calendar
+                    .get_events_for_day_selected_calendar(&calendar.id, &date)
+                {
+                    Ok(events) => events,
+                    Err(err) => {
+                        eprintln!("Error getting events: {}", err);
+                        continue; // Continue to the next calendar if there's an error
+                    }
+                };
+                calendar_infos.extend(events);
+                use std::io::{self, Write};
+
+                println!("{:?}", calendar_infos);
+
+                print!("Press Enter to continue...");
+                io::stdout().flush().unwrap();
+            }
+            // Serialize the vector of EventInfo into a JSON string
+            match serde_json::to_string(&calendar_infos) {
+                Ok(json_string) => Ok(json_string),
+                Err(err) => Err(format!("Error serializing JSON: {}", err)),
+            }
+        }
+        Err(err) => {
+            // Create an error message string
+            let error_msg = format!("Error getting calendar list: {}", err);
+            Err(error_msg)
+        }
+    }
 }

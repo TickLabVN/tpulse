@@ -8,7 +8,7 @@ use crate::{
     sqlite::{insert_new_log, update_log},
 };
 
-use categorizer::Category;
+pub use categorizer::Category;
 
 pub struct ActivityStartLog {
     pub start_log: StartActivity,
