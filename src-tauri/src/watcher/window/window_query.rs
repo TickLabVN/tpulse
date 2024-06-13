@@ -123,7 +123,7 @@ use {
 };
 
 #[cfg(target_os = "windows")]
-pub fn get_current_window_information() -> Result<WindowMetric> {
+pub fn get_current_window_information() -> Option<WindowMetric> {
     let mut window_info = WindowMetric {
         time: 0,
         title: None,
@@ -148,7 +148,7 @@ pub fn get_current_window_information() -> Result<WindowMetric> {
         window_info.exec_path = Some(path);
         window_info.class = Some(vec![name]);
     }
-    Ok(window_info)
+    Some(window_info)
 }
 
 #[cfg(target_os = "windows")]
@@ -237,10 +237,20 @@ enum DictEntryValue {
 }
 
 #[cfg(target_os = "macos")]
-pub fn get_current_window_information() -> Result<WindowMetric> {
-    let app_active = get_active_app().unwrap();
-    let window_info = get_window_information_by_apid(app_active)?;
-    Ok(window_info)
+pub fn get_current_window_information() -> Option<WindowMetric> {
+    match get_active_app() {
+        Ok(app_active) => match get_window_information_by_apid(app_active) {
+            Ok(window_info) => Some(window_info),
+            Err(e) => {
+                eprintln!("Error: {}", e);
+                None
+            }
+        },
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            None
+        }
+    }
 }
 
 #[cfg(target_os = "macos")]

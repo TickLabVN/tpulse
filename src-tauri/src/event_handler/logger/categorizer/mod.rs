@@ -5,7 +5,7 @@ use helpers::{inverted_index_categorizer, vscode_categorizer, youtube_categorize
 use crate::raw_metric_processor::{ActivityTag, ProcessedResult, StartActivity};
 
 #[derive(Debug, PartialEq)]
-pub struct Category(String);
+pub struct Category(pub String);
 
 impl Category {
     pub fn value(&self) -> String {
