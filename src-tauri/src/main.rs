@@ -3,7 +3,7 @@
 
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
-use tauri_plugin_log::LogTarget;
+use tauri_plugin_log::{Target, TargetKind};
 use tpulse::initializer::raw_metric_processor;
 use tpulse::{
     config,
@@ -49,8 +49,8 @@ fn main() {
             handle_google_calendar
         ])
         .plugin(
-            tauri_plugin_log::Builder::default()
-                .targets([LogTarget::Stdout])
+            tauri_plugin_log::Builder::new()
+                .targets([Target::new(TargetKind::Stdout)])
                 .build(),
         )
         // This plugin support us access sqlite database directly from Frontend-side

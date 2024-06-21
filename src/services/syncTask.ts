@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api';
 import { SyncTaskData } from '@/interfaces';
 export const syncTask = async (date: string) => {
   try {
