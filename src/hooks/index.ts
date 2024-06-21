@@ -3,5 +3,6 @@
  */
 
 export * from './useEventListener';
+export * from './useMouse';
 export * from './useOutsideClick';
 export * from './useTaskData';

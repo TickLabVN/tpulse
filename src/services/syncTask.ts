@@ -1,5 +1,6 @@
-import { invoke } from '@tauri-apps/api';
 import { SyncTaskData } from '@/interfaces';
+import { invoke } from '@tauri-apps/api';
+
 export const syncTask = async (date: string) => {
   try {
     const response: string = await invoke('handle_google_calendar', {

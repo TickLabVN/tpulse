@@ -1,11 +1,13 @@
+import { useTaskData } from '@/hooks';
+import { EventData } from '@/interfaces';
+import { TaskData } from '@/interfaces';
+import { filterEvent } from '@/utils';
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { Event } from './event';
-import { filterEvent } from '@/utils';
-import { EventData } from '@/interfaces';
-import { useTaskData } from '@/hooks';
-import { TaskData } from '@/interfaces';
+
 function getCurrentTz() {
   const date = new Date();
   const offset = date.getTimezoneOffset();

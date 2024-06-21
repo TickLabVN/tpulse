@@ -1,12 +1,12 @@
-import { ChevronRightIcon, FeedPlusIcon } from '@primer/octicons-react';
-import { prettyHour } from '@/utils';
 import { Badge } from '@/components';
 import { Checkbox } from '@/components/ui/checkbox';
-import { TaskDialog } from '@/pages/home/task/TaskDialog';
-import { useState } from 'react';
 import { useTaskData } from '@/hooks';
 import { openDialog } from '@/hooks';
+import { TaskDialog } from '@/pages/home/task/TaskDialog';
+import { prettyHour } from '@/utils';
+import { ChevronRightIcon, FeedPlusIcon } from '@primer/octicons-react';
 import moment from 'moment';
+import { useState } from 'react';
 
 export function TodayTask() {
   const { tasks } = useTaskData();

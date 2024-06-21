@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { Badge } from '@/components';
 import { EventData, TaskData } from '@/interfaces';
 import { prettyHour } from '@/utils';
-import { Badge } from '@/components';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
+
 interface EventProps {
   event: EventData | TaskData;
   timeUnit: number;

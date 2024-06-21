@@ -1,8 +1,9 @@
-import { Trash } from 'lucide-react';
 import TimePickerWithInputField from '@/components/ui/timepicker';
 import { TaskData } from '@/interfaces';
-import moment, { Moment } from 'moment';
 import { useTaskStore } from '@/states';
+import { Trash } from 'lucide-react';
+import moment, { Moment } from 'moment';
+
 interface InputItemProps {
   task: TaskData;
   index: number;

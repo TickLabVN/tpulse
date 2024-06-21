@@ -1,5 +1,6 @@
-import Database from '@tauri-apps/plugin-sql';
 import { invoke } from '@tauri-apps/api/tauri';
+import Database from '@tauri-apps/plugin-sql';
+
 let db: Promise<Database> | null = null;
 
 export async function getDb() {

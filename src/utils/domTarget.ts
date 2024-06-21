@@ -1,4 +1,5 @@
 import type { BasicTarget, TargetType, TargetValue } from '@/interfaces';
+
 import { isFunction } from './typeChecker';
 
 export function getTargetElement<T extends TargetType>(target: BasicTarget<T>, defaultElement?: T) {

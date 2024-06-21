@@ -1,4 +1,4 @@
-import { HomeIcon, GraphIcon, BriefcaseIcon, GearIcon, InfoIcon } from '@primer/octicons-react';
+import { BriefcaseIcon, GearIcon, GraphIcon, HomeIcon, InfoIcon } from '@primer/octicons-react';
 import { Link, useRouterState } from '@tanstack/react-router';
 
 const mainRoutes = [

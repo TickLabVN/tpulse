@@ -1,8 +1,9 @@
-import { create } from 'zustand';
 import { TaskData, TaskStore } from '@/interfaces';
-import moment from 'moment';
-import { syncTask } from '@/services';
 import { SyncTaskData } from '@/interfaces';
+import { syncTask } from '@/services';
+import moment from 'moment';
+import { create } from 'zustand';
+
 export const useTaskStore = create<TaskStore>((set) => ({
   taskList: [
     {

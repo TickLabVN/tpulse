@@ -1,5 +1,6 @@
 import { EventData, TaskData } from '@/interfaces';
 import moment from 'moment';
+
 export const filterEvent = (
   rawData: EventData[] | TaskData[] | undefined,
   title: string,

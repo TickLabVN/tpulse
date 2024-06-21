@@ -1,6 +1,7 @@
-import moment from 'moment';
-import { getDb } from './db';
 import { TaskData } from '@/interfaces';
+import moment from 'moment';
+
+import { getDb } from './db';
 
 // TODO: get project together with task
 async function getInCurrentDay(): Promise<TaskData[]> {

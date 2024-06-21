@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { ToastContainer } from 'react-toastify';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { routeTree } from './routeTree.gen';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-
-import 'react-toastify/dist/ReactToastify.css';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+import React from 'react';
 import 'react-circular-progressbar/dist/styles.css';
+import ReactDOM from 'react-dom/client';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './index.css';
+import { routeTree } from './routeTree.gen';
 
 const router = createRouter({
   routeTree,
@@ -18,7 +18,6 @@ const router = createRouter({
 const queryClient = new QueryClient();
 
 declare module '@tanstack/react-router' {
-  // eslint-disable-next-line no-unused-vars
   interface Register {
     router: typeof router;
   }

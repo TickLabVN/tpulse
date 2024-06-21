@@ -1,8 +1,9 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChevronDownIcon, FileDirectoryIcon } from '@primer/octicons-react';
+
 import { Timer } from './Timer';
 import { TodayTask } from './TodayTask';
 import { Timeline } from './timeline';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // TODO: Replace this with user's name
 const userName = 'Nguyen Phuc Vinh';

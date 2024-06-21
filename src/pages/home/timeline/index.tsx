@@ -1,8 +1,10 @@
+import { useTaskStore } from '@/states';
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
 import moment from 'moment';
 import { useRef, useState } from 'react';
+
 import { TimeTable } from './table';
-import { useTaskStore } from '@/states';
+
 export function Timeline() {
   const [currentTime, setCurrentTime] = useState<number>(moment().startOf('day').unix());
   const dateInputRef = useRef<HTMLInputElement>(null);

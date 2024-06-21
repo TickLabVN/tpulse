@@ -1,11 +1,12 @@
 import DatePickerWithInputField from '@/components/ui/datepicker';
 import TimePickerWithInputField from '@/components/ui/timepicker';
-import { BriefcaseBusiness, Clock, PencilLine, Trash } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { TaskData } from '@/interfaces';
 import { useOutsideClick } from '@/hooks';
-import moment from 'moment';
 import { useListenEvent } from '@/hooks';
+import { TaskData } from '@/interfaces';
+import { BriefcaseBusiness, Clock, PencilLine, Trash } from 'lucide-react';
+import moment from 'moment';
+import { useEffect, useRef, useState } from 'react';
+
 interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
