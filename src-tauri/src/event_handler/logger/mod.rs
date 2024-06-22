@@ -1,12 +1,14 @@
+pub mod categorizer;
+
 use log::info;
 
 use crate::{
-    event_handler::categorizer::get_activity_category_tag,
+    event_handler::logger::categorizer::get_activity_category_tag,
     raw_metric_processor::{ProcessedResult, StartActivity},
     sqlite::{insert_new_log, update_log},
 };
 
-use super::categorizer::Category;
+pub use categorizer::Category;
 
 pub struct ActivityStartLog {
     pub start_log: StartActivity,

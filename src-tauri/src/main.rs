@@ -3,20 +3,20 @@
 
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
-use tauri_plugin_log::LogTarget;
+use tauri_plugin_log::{Target, TargetKind};
 use tpulse::initializer::raw_metric_processor;
 use tpulse::{
     config,
+    google_calendar::{__cmd__handle_google_calendar, handle_google_calendar},
     initializer::db,
     metrics::UserMetric,
     watcher::{watch_afk, watch_browser, watch_window},
 };
 
 #[tauri::command]
-fn get_home_dir() -> String {
-    dirs::home_dir()
-        .map(|p| p.to_string_lossy().to_string())
-        .unwrap_or_else(|| "".to_string())
+fn get_data_dir() -> String {
+    let user_cfg = config::user::user();
+    user_cfg.data_dir.clone()
 }
 
 fn main() {
@@ -44,10 +44,13 @@ fn main() {
         // We cannot see log when running in bundled app.
         // This is a workaround to print log to stdout in production.
         // Can use other log targets
-        .invoke_handler(tauri::generate_handler![get_home_dir])
+        .invoke_handler(tauri::generate_handler![
+            get_data_dir,
+            handle_google_calendar
+        ])
         .plugin(
-            tauri_plugin_log::Builder::default()
-                .targets([LogTarget::Stdout])
+            tauri_plugin_log::Builder::new()
+                .targets([Target::new(TargetKind::Stdout)])
                 .build(),
         )
         // This plugin support us access sqlite database directly from Frontend-side

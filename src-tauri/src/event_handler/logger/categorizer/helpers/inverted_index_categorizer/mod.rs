@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
 use ruzzy::{fuzzy_match, FuzzyConfig};
 
-use crate::event_handler::categorizer::Category;
+use crate::event_handler::logger::categorizer::Category;
 
 mod utils;
 
@@ -11,6 +11,7 @@ lazy_static! {
             .expect("Should be able to retrieve current path from inverted_index_category")
             .join("src")
             .join("event_handler")
+            .join("logger")
             .join("categorizer")
             .join("helpers")
             .join("inverted_index_categorizer")
@@ -43,8 +44,8 @@ pub fn categorize(identifier: String) -> Option<Category> {
 
 #[cfg(test)]
 mod test {
-    use crate::event_handler::categorizer::helpers::inverted_index_categorizer::categorize;
-    use crate::event_handler::categorizer::Category;
+    use crate::event_handler::logger::categorizer::helpers::inverted_index_categorizer::categorize;
+    use crate::event_handler::logger::categorizer::Category;
 
     #[test]
     fn test_website_categories() {

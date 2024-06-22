@@ -22,16 +22,12 @@ pub fn get_activity_category_tag(event: ProcessedResult) -> Option<Category> {
     {
         match tag {
             ActivityTag::WINDOW | ActivityTag::BROWSER => {
-                return inverted_index_categorizer::categorize(activity_identifier.clone())
+                inverted_index_categorizer::categorize(activity_identifier)
             }
-            ActivityTag::VSCODE => {
-                return vscode_categorizer::categorize(activity_identifier.clone())
-            }
-            ActivityTag::YOUTUBE => {
-                return youtube_categorizer::categorize(activity_identifier.clone())
-            }
-        };
+            ActivityTag::VSCODE => vscode_categorizer::categorize(activity_identifier),
+            ActivityTag::YOUTUBE => youtube_categorizer::categorize(activity_identifier),
+        }
     } else {
-        return None;
+        None
     }
 }
