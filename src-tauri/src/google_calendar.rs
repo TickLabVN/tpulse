@@ -1,4 +1,5 @@
 use anyhow::Result;
+use log::{error, info};
 use reqwest::blocking::Client;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
 use serde::{Deserialize, Serialize};
@@ -158,7 +159,7 @@ impl GoogleCalendar {
                     if let Some(color_code) = get_color_code(&color_id) {
                         event.color = Some(color_code.to_string());
                     } else {
-                        eprintln!("Color code not found for color_id: {}", color_id);
+                        error!("Color code not found for color_id: {}", color_id);
                     }
                 }
             }
@@ -211,14 +212,14 @@ pub fn handle_google_calendar(date: String) -> Result<String, String> {
                 {
                     Ok(events) => events,
                     Err(err) => {
-                        eprintln!("Error getting events: {}", err);
+                        error!("Error getting events: {}", err);
                         continue; // Continue to the next calendar if there's an error
                     }
                 };
                 calendar_infos.extend(events);
                 use std::io::{self, Write};
 
-                println!("{:?}", calendar_infos);
+                info!("{:?}", calendar_infos);
 
                 print!("Press Enter to continue...");
                 io::stdout().flush().unwrap();

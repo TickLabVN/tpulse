@@ -1,3 +1,4 @@
+use log::error;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
@@ -97,6 +98,6 @@ pub fn handle_setting_error<T>(setting: SettingName, err: &Box<dyn Error>, defau
 where
     T: Default,
 {
-    eprintln!("Error reading {:?} setting: {}", setting, err);
+    error!("Error reading {:?} setting: {}", setting, err);
     default_value
 }
