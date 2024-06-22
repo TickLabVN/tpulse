@@ -1,11 +1,9 @@
 pub mod categorizer;
 
-use log::info;
-
 use crate::{
+    db::{insert_new_log, update_log},
     event_handler::logger::categorizer::get_activity_category_tag,
     raw_metric_processor::{ProcessedResult, StartActivity},
-    sqlite::{insert_new_log, update_log},
 };
 
 pub use categorizer::Category;
@@ -17,7 +15,7 @@ pub struct ActivityStartLog {
 
 pub fn handle_events(events: Vec<ProcessedResult>) {
     for event in events {
-        info!("{:?}", event);
+        println!("{:?}", event);
         let category_tag = get_activity_category_tag(event.clone());
         match event {
             ProcessedResult::StartActivity(start_event) => {
@@ -35,20 +33,15 @@ pub fn handle_events(events: Vec<ProcessedResult>) {
 
 #[cfg(test)]
 mod tests {
+    use crate::db::get_connection;
     use crate::{
         event_handler::logger::handle_events,
-        initializer::db,
         raw_metric_processor::{ActivityTag, ProcessedResult, StartActivity, UpdateEndActivity},
-        utils::get_data_directory,
     };
-    use lazy_static::lazy_static;
-    use rusqlite::Connection;
     use std::{sync::mpsc, thread};
 
     #[test]
     fn test_handle_events() {
-        db::initialize();
-
         let (tx, rx) = mpsc::channel();
         let activity_identifier = "github.com".to_string();
         let activity_identifier_insert = activity_identifier.clone();
@@ -84,11 +77,7 @@ mod tests {
             .join()
             .expect("Failed to join handle thread");
 
-        lazy_static! {
-            static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
-        }
-
-        let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
+        let conn = get_connection();
 
         let activity_entry = conn
             .query_row(

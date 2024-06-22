@@ -1,12 +1,19 @@
 use crate::{
     config, event_handler::logger::ActivityStartLog, raw_metric_processor::UpdateEndActivity,
-    utils::get_data_directory,
 };
-use lazy_static::lazy_static;
 use rusqlite::{params, Connection, OptionalExtension};
 
-lazy_static! {
-    static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
+static mut DB_PATH: Option<String> = None;
+
+pub fn set_path(db_path: &str) {
+    unsafe {
+        DB_PATH = Some(db_path.to_string());
+    }
+}
+
+pub fn get_connection() -> Connection {
+    let db_path = unsafe { DB_PATH.as_ref() }.expect("DB path not set");
+    Connection::open(&db_path).expect("Failed to open database connection")
 }
 
 pub fn insert_new_log(activity_start_log: ActivityStartLog) {
@@ -16,7 +23,7 @@ pub fn insert_new_log(activity_start_log: ActivityStartLog) {
     } = activity_start_log;
     let pool_time = config::get_setting().poll_time;
 
-    let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
+    let conn = get_connection();
 
     let start_time = &start_log.start_time;
     let activity_id = &start_log.activity_identifier;
@@ -70,7 +77,7 @@ pub fn insert_new_log(activity_start_log: ActivityStartLog) {
 }
 
 pub fn update_log(end_log_event: &UpdateEndActivity) {
-    let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
+    let conn = get_connection();
 
     let start_time_string = &end_log_event.start_time;
     let end_time_string = &end_log_event.end_time;
@@ -103,23 +110,14 @@ mod tests {
 
     use crate::{
         config,
-        event_handler::{logger::categorizer::Category, logger::ActivityStartLog},
-        initializer::db,
+        db::sqlite::{get_connection, insert_new_log, update_log},
+        event_handler::logger::{categorizer::Category, ActivityStartLog},
         raw_metric_processor::{ActivityTag, StartActivity, UpdateEndActivity},
-        sqlite::{insert_new_log, update_log},
-        utils::get_data_directory,
     };
-    use lazy_static::lazy_static;
-    use rusqlite::Connection;
 
     #[test]
     fn test_insert_single_new_log() {
-        db::initialize();
-        lazy_static! {
-            static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
-        }
-
-        let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
+        let conn = get_connection();
 
         let start_time = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -188,12 +186,7 @@ mod tests {
 
     #[test]
     fn test_insert_multiple_logs() {
-        db::initialize();
-        lazy_static! {
-            static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
-        }
-
-        let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
+        let conn = get_connection();
 
         let pool_time = config::get_setting().poll_time;
 
@@ -251,13 +244,7 @@ mod tests {
 
     #[test]
     fn test_insert_end_logs() {
-        db::initialize();
-        lazy_static! {
-            static ref DB_PATH: String = format!("{}/tpulse.sqlite3", get_data_directory());
-        }
-
-        let conn = Connection::open(&*DB_PATH).expect("Failed to open database connection");
-
+        let conn = get_connection();
         let pool_time = config::get_setting().poll_time;
 
         let start_time = SystemTime::now()

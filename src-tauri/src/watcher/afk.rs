@@ -1,6 +1,5 @@
 use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
 use device_query::{DeviceQuery, DeviceState};
-use log::info;
 use std::sync::mpsc;
 use std::thread::sleep;
 use std::time::{Duration, SystemTime};
@@ -24,7 +23,7 @@ use std::time::{Duration, SystemTime};
 /// watch_afk(1000, 5000);
 /// ```
 pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
-    info!("AFK watcher started");
+    println!("AFK watcher started");
 
     let device_state = DeviceState::new();
     let mut mouse_pos = device_state.get_mouse().coords;

@@ -3,31 +3,44 @@
 
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
+use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 use tpulse::initializer::raw_metric_processor;
 use tpulse::{
-    config,
+    config, db,
     google_calendar::{__cmd__handle_google_calendar, handle_google_calendar},
-    initializer::db,
     metrics::UserMetric,
     watcher::{watch_afk, watch_browser, watch_window},
 };
 
-#[tauri::command]
-fn get_data_dir() -> String {
-    let user_cfg = config::user::user();
-    user_cfg.data_dir.clone()
-}
-
 fn main() {
     let setting = config::get_setting();
-    db::initialize();
     let mut metric_processor_manager = raw_metric_processor::initialize();
 
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
     let browser_tx = tx.clone();
+
+    let app = tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![handle_google_calendar])
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .targets([Target::new(TargetKind::Stdout)])
+                .build(),
+        )
+        .plugin(
+            tauri_plugin_sql::Builder::default()
+                .add_migrations("sqlite:tpulse.sqlite3", vec![])
+                .build(),
+        )
+        .build(tauri::generate_context!())
+        .unwrap();
+
+    let db_path = app.path().app_data_dir().unwrap().join("tpulse.sqlite3");
+    let db_path = db_path.to_str().unwrap();
+    db::set_path(db_path);
+    db::apply_migrations();
 
     let workers = vec![
         thread::spawn(move || watch_browser(browser_tx)),
@@ -39,24 +52,7 @@ fn main() {
             }
         }),
     ];
-
-    tauri::Builder::default()
-        // We cannot see log when running in bundled app.
-        // This is a workaround to print log to stdout in production.
-        // Can use other log targets
-        .invoke_handler(tauri::generate_handler![
-            get_data_dir,
-            handle_google_calendar
-        ])
-        .plugin(
-            tauri_plugin_log::Builder::new()
-                .targets([Target::new(TargetKind::Stdout)])
-                .build(),
-        )
-        // This plugin support us access sqlite database directly from Frontend-side
-        .plugin(tauri_plugin_sql::Builder::default().build())
-        .run(tauri::generate_context!())
-        .expect("Error while running tauri application");
+    app.run(|_app_handler, _event| {});
 
     for worker in workers {
         worker.join().unwrap();

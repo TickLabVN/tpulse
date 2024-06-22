@@ -18,7 +18,6 @@ tauri-build = { version = "2.0.0-beta", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "2.0.0-beta", features = [] }
-log = "0.4"
 device_query = "1.1.3"
 anyhow = "1.0.77"
 regex = "1.10.2"
@@ -40,7 +39,7 @@ ruzzy = "0.2.0"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3.9", features = ["namedpipeapi", "handleapi"] }
-windows = { version = "0.52.0", features = [
+windows = { version = "0.57.0", features = [
     "Win32_Foundation",
     "Win32_UI",
     "Win32_UI_WindowsAndMessaging",
