@@ -26,7 +26,11 @@ fn main() {
         .invoke_handler(tauri::generate_handler![handle_google_calendar])
         .plugin(
             tauri_plugin_log::Builder::new()
-                .targets([Target::new(TargetKind::Stdout)])
+                .targets([
+                    Target::new(TargetKind::Stdout),
+                    Target::new(TargetKind::LogDir { file_name: None }),
+                    Target::new(TargetKind::Webview),
+                ])
                 .build(),
         )
         .plugin(
@@ -37,11 +41,7 @@ fn main() {
         .build(tauri::generate_context!())
         .unwrap();
 
-    let db_path = app
-        .path()
-        .app_local_data_dir()
-        .unwrap()
-        .join("tpulse.sqlite3");
+    let db_path = app.path().app_config_dir().unwrap().join("tpulse.sqlite3");
     // create folder if not exist
     fs::create_dir_all(db_path.parent().unwrap()).unwrap();
 

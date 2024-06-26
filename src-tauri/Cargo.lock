@@ -5006,6 +5006,7 @@ dependencies = [
  "into_variant",
  "lazy_static",
  "libc",
+ "log",
  "oauth2",
  "objc",
  "once_cell",
