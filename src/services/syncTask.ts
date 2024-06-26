@@ -1,4 +1,5 @@
 import { SyncTaskData } from '@/interfaces';
+import { log } from '@/utils/log';
 import { invoke } from '@tauri-apps/api';
 
 export const syncTask = async (date: string) => {
@@ -6,10 +7,10 @@ export const syncTask = async (date: string) => {
     const response: string = await invoke('handle_google_calendar', {
       date
     });
-    console.log(response);
+    log.info(response);
     const data: SyncTaskData[] = JSON.parse(response);
     return data;
   } catch (error) {
-    console.error(error);
+    log.error(error);
   }
 };
