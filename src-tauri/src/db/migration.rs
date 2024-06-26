@@ -7,12 +7,12 @@ pub fn apply_migrations() {
         PRAGMA foreign_keys = ON;
         CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            day DATE NOT NULL,
-            start_time INTEGER,
-            end_time INTEGER,
-            task_name TEXT NOT NULL,
-            category_tag TEXT,
-            priority_tag TEXT CHECK(priority_tag IN ('high', 'medium', 'low'))
+            created_at INTEGER NOT NULL,
+            start INTEGER,
+            end INTEGER,
+            name TEXT NOT NULL,
+            status TEXT NOT NULL CHECK(status IN ('todo', 'in_progress', 'done')) DEFAULT 'todo',
+            project_id INTEGER
         );
         CREATE TABLE IF NOT EXISTS activity (
             identifier TEXT PRIMARY KEY,
