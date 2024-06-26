@@ -2,15 +2,12 @@ import { Badge } from '@/components';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useTaskData } from '@/hooks';
 import { openDialog } from '@/hooks';
-import { TaskDialog } from '@/pages/home/task/TaskDialog';
 import { prettyHour } from '@/utils';
 import { ChevronRightIcon, FeedPlusIcon } from '@primer/octicons-react';
 import moment from 'moment';
-import { useState } from 'react';
 
 export function TodayTask() {
   const { tasks } = useTaskData();
-  const [openTaskDialog, setOpenTaskDialog] = useState(false);
   const showDialog = (index: number) => {
     if (index === -1 || !tasks) {
       openDialog('mutate-task', null);
@@ -22,15 +19,9 @@ export function TodayTask() {
     <div className='mt-[30px]'>
       <div className='relative flex items-center justify-between'>
         <span className='font-bold text-navy text-[26px] leading-8'>Today Tasks</span>
-        <div
-          onClick={() => {
-            showDialog(-1), setOpenTaskDialog(true);
-          }}
-          className='flex items-center gap-3'
-        >
+        <div className='flex items-center gap-3'>
           <FeedPlusIcon size={32} className='cursor-pointer stroke-1 text-green' />
         </div>
-        <TaskDialog open={openTaskDialog} onClose={() => setOpenTaskDialog(false)} />
       </div>
       <div className='flex flex-col w-full gap-3 mt-3'>
         {tasks?.map((item, index) => (
@@ -56,7 +47,6 @@ export function TodayTask() {
             </div>
             <div
               onClick={() => {
-                setOpenTaskDialog(true);
                 showDialog(index);
               }}
               className='flex items-center gap-3'
