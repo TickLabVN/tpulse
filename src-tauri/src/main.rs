@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::sync::mpsc::{self, Receiver, Sender};
-use std::thread;
+use std::{fs, thread};
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 use tpulse::initializer::raw_metric_processor;
@@ -37,7 +37,14 @@ fn main() {
         .build(tauri::generate_context!())
         .unwrap();
 
-    let db_path = app.path().app_data_dir().unwrap().join("tpulse.sqlite3");
+    let db_path = app
+        .path()
+        .app_local_data_dir()
+        .unwrap()
+        .join("tpulse.sqlite3");
+    // create folder if not exist
+    fs::create_dir_all(db_path.parent().unwrap()).unwrap();
+
     let db_path = db_path.to_str().unwrap();
     db::set_path(db_path);
     db::apply_migrations();

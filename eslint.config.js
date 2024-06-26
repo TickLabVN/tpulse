@@ -18,7 +18,6 @@ const compat = new FlatCompat({
 
 export default [{
     ignores: [
-        "**/dist",
         "**/.eslintrc.cjs",
         "**/dist",
         "**/coverage",
@@ -47,7 +46,7 @@ export default [{
         sourceType: "module",
         parserOptions: {
             project: ["./tsconfig.json", "./tsconfig.node.json"],
-            tsconfigRootDir: "/home/phucvinh57/Works/ticklab/tpulse",
+            tsconfigRootDir: __dirname,
         },
     },
 
