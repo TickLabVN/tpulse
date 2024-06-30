@@ -1,12 +1,12 @@
-import { useTaskData } from '@/hooks';
-import { EventData } from '@/interfaces';
-import { TaskData } from '@/interfaces';
-import { filterEvent } from '@/utils';
+import { ActivityLog, Task, activityLogSvc, taskSvc } from '@/services';
+import { log } from '@/utils/log';
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
+import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDebounceValue } from 'usehooks-ts';
 
-import { Event } from './event';
+import { TimelineRow } from './row';
 
 function getCurrentTz() {
   const date = new Date();
@@ -15,79 +15,6 @@ function getCurrentTz() {
 
   return `GMT-${offsetInHours}`;
 }
-const ActivityData: EventData[] = [
-  {
-    id: '1',
-    title: 'Youtube',
-    start: moment().startOf('day').add(12, 'hours').unix(),
-    end: moment().startOf('day').add(14, 'hours').unix(),
-    icon: '/icons/youtube-icon.jpg'
-  },
-  {
-    id: '2',
-    title: 'VsCode',
-    start: moment().startOf('day').hours(14).minutes(30).unix(),
-    end: moment().startOf('day').hours(20).minutes(15).unix(),
-    icon: '/icons/vsc-icon.jpg'
-  }
-];
-const TableRow: IComponent<{
-  isLastRow: boolean;
-  title: string;
-  timeUnit: number;
-  taskList: TaskData[] | undefined;
-}> = ({ isLastRow, title, timeUnit, taskList }) => {
-  let rowStyle = 'relative border-x border-light-gray h-10';
-  if (!isLastRow) rowStyle += ' border-b';
-  const filteredEventData = filterEvent(ActivityData, title, timeUnit);
-  const filteredTaskData = filterEvent(taskList, title, timeUnit);
-  return (
-    <tr id={title}>
-      <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow ? <div className='text-sm translate-y-1/2 text-end text-gray'>{title}</div> : null}
-      </td>
-      <td className={rowStyle}>
-        {filteredEventData.map((data, index) => (
-          <Event
-            key={index}
-            event={data}
-            timeUnit={timeUnit}
-            top={
-              'start' in data
-                ? title === moment.unix(data.start).format('HH:mm')
-                  ? 40
-                  : (Math.abs(data.start - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-                : title === moment.unix(data.from).format('HH:mm')
-                  ? 40
-                  : (Math.abs(data.from - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-            }
-          />
-        ))}
-      </td>
-      <td className={rowStyle}>
-        {filteredTaskData.map((data, index) => (
-          <Event
-            key={index}
-            event={data}
-            timeUnit={timeUnit}
-            top={
-              'from' in data
-                ? title === moment.unix(data.from).format('HH:mm')
-                  ? 40
-                  : (Math.abs(data.from - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-                : title === moment.unix(data.start).format('HH:mm')
-                  ? 40
-                  : (Math.abs(data.start - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-            }
-          />
-        ))}
-      </td>
-      <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow ? <div className='text-sm translate-y-1/2 text-start text-gray'>{title}</div> : null}
-      </td>
-    </tr>
-  );
-};
 
 const ZOOM_SCALE = 100;
 const NUM_SECS_PER_DAY = 86400;
@@ -101,32 +28,39 @@ const MAX_ZOOM_FACTOR = (TIME_UNITS.length - 1) * ZOOM_SCALE;
  */
 export function TimeTable() {
   const [zoomFactor, setZoomFactor] = useState<number>(MAX_ZOOM_FACTOR);
-  // const [scrollHeight, setScrollHeight] = useState<number>(0);
-  // const [scrollTop, setScrollTop] = useState<number>(0);
-  // const [clientHeight, setClientHeight] = useState<number>(0);
+  const [scrollHeight, setScrollHeight] = useState<number>(0);
+  const [scrollTop, setScrollTop] = useState<number>(0);
+  const [clientHeight, setClientHeight] = useState<number>(0);
 
   const timeUnit = useMemo(() => {
     const idx = Math.floor(zoomFactor / ZOOM_SCALE);
     return TIME_UNITS[idx];
   }, [zoomFactor]);
 
-  // const queryRange = useMemo(() => {
-  //   const startOfDay = moment().startOf('day').unix();
-  //   return {
-  //     from: startOfDay + Math.floor((NUM_SECS_PER_DAY * scrollTop) / scrollHeight),
-  //     to: startOfDay + Math.ceil((NUM_SECS_PER_DAY * (scrollTop + clientHeight)) / scrollHeight)
-  //   };
-  // }, [clientHeight, scrollHeight, scrollTop]);
-  // useEffect(() => {
-  //   console.log(queryRange);
-  // }, [queryRange]);
+  const [queryRange, setQueryRange] = useDebounceValue(
+    {
+      from: moment().startOf('day').unix(),
+      to: moment().endOf('day').unix()
+    },
+    1000
+  );
+
+  useEffect(() => {
+    const startOfDay = moment().startOf('day').unix();
+    const range = {
+      from: startOfDay + Math.floor((NUM_SECS_PER_DAY * scrollTop) / scrollHeight),
+      to: startOfDay + Math.ceil((NUM_SECS_PER_DAY * (scrollTop + clientHeight)) / scrollHeight)
+    };
+    log.info(range, 'range');
+    setQueryRange(range);
+  }, [clientHeight, scrollHeight, scrollTop, setQueryRange]);
 
   useEffect(() => {
     const table = document.getElementById('timeline-table');
     if (!table) return;
-    // setScrollTop(table.scrollTop);
-    // setScrollHeight(table.scrollHeight);
-    // setClientHeight(table.clientHeight);
+    setScrollTop(table.scrollTop);
+    setScrollHeight(table.scrollHeight);
+    setClientHeight(table.clientHeight);
     function handleWheel(e: WheelEvent) {
       const isPressingCtrl = e.ctrlKey;
       if (isPressingCtrl) {
@@ -144,9 +78,9 @@ export function TimeTable() {
         });
       } else {
         if (!table) return;
-        // setScrollTop(table.scrollTop);
-        // setScrollHeight(table.scrollHeight);
-        // setClientHeight(table.clientHeight);
+        setScrollTop(table.scrollTop);
+        setScrollHeight(table.scrollHeight);
+        setClientHeight(table.clientHeight);
       }
     }
 
@@ -155,29 +89,79 @@ export function TimeTable() {
       table.removeEventListener('wheel', handleWheel);
     };
   }, []);
-  const { tasks: taskList } = useTaskData();
+
+  const { data: tasks } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: () => taskSvc.getInRange(queryRange.from, queryRange.to)
+  });
+
+  const { data: activityLogs } = useQuery({
+    queryKey: ['activities'],
+    queryFn: () => activityLogSvc.getLogs(queryRange.from, queryRange.to)
+  });
+
   const renderRows = useCallback(() => {
     const numOfRows = Math.ceil(NUM_SECS_PER_DAY / timeUnit);
+    const timelineRows = [];
 
-    const rows = [];
+    let rowIdx = 0;
+    let activityIdx = 0;
+
     for (let i = 0; i < numOfRows; i++) {
       const isLastRow = i === numOfRows - 1;
-      const unixTs = moment()
+      const rowStartTime = moment()
         .startOf('day')
-        .add((i + 1) * timeUnit, 'seconds');
+        .add((i + 1) * timeUnit, 'seconds')
+        .unix();
 
-      rows.push(
-        <TableRow
+      const rowEndTime = moment()
+        .startOf('day')
+        .add((i + 2) * timeUnit, 'seconds')
+        .unix();
+
+      const rowActivityLogs: ActivityLog[] = [];
+      if (activityLogs) {
+        while (activityIdx < activityLogs.length) {
+          if (
+            rowStartTime <= activityLogs[activityIdx].start_time &&
+            activityLogs[activityIdx].start_time <= rowEndTime
+          ) {
+            rowActivityLogs.push(activityLogs[activityIdx]);
+          } else if (activityLogs[activityIdx].start_time > rowEndTime) {
+            break;
+          }
+          activityIdx++;
+        }
+      }
+
+      const rowTasks: Task[] = [];
+      if (tasks) {
+        while (rowIdx < tasks.length) {
+          const taskStartTime = tasks[rowIdx].start;
+          if (!taskStartTime) continue;
+
+          if (rowStartTime <= taskStartTime && taskStartTime <= rowEndTime) {
+            rowTasks.push(tasks[rowIdx]);
+          } else if (taskStartTime > rowEndTime) {
+            break;
+          }
+          rowIdx++;
+        }
+      }
+
+      timelineRows.push(
+        <TimelineRow
           key={i}
+          displayTime={moment.unix(rowStartTime).format('HH:mm')}
           isLastRow={isLastRow}
-          title={unixTs.format('HH:mm')}
           timeUnit={timeUnit}
-          taskList={taskList}
+          tasks={rowTasks}
+          activities={rowActivityLogs}
         />
       );
     }
-    return rows;
-  }, [timeUnit, taskList]);
+    return timelineRows;
+  }, [timeUnit, tasks, activityLogs]);
 
   return (
     <div

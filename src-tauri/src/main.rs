@@ -46,6 +46,8 @@ fn main() {
     fs::create_dir_all(db_path.parent().unwrap()).unwrap();
 
     let db_path = db_path.to_str().unwrap();
+    println!("{}", db_path);
+
     db::set_path(db_path);
     db::apply_migrations();
 

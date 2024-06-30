@@ -4,7 +4,7 @@
 
 export * from './cn';
 export * from './domTarget';
-export * from './filterEvent';
 export * from './getRandomColor';
+export * from './log';
 export * from './time';
 export * from './typeChecker';
