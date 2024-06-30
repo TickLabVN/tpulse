@@ -9,14 +9,18 @@ use {
 };
 
 #[cfg(any(target_os = "linux", target = "macos"))]
-pub fn create_named_pipe(pipe_name: &str) -> Result<(), &'static str> {
+pub fn create_named_pipe(pipe_name: &str) -> Result<(), String> {
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
     let result = unsafe { mkfifo(c_pipe_name.as_ptr(), 0o666) };
 
     if result == 0 {
         Ok(())
     } else {
-        Err("Failed to create named pipe")
+        let msg = format!(
+            "Failed to create named pipe: {}, result_code: {}",
+            pipe_name, result
+        );
+        Err(msg)
     }
 }
 

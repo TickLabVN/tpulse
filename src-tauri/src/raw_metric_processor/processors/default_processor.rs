@@ -1,3 +1,5 @@
+use log::warn;
+
 use crate::{
     metrics::{UserMetric, WindowMetric},
     raw_metric_processor::{ActivityTag, MetricProcessor, StartActivity},
@@ -15,11 +17,11 @@ impl MetricProcessor for DefaultProcessor {
                 })
             }
             UserMetric::AFK(_) => {
-                println!("Warning: Metric processor should not receive AFK");
+                warn!("Metric processor should not receive AFK");
                 None
             }
             UserMetric::Browser(_) => {
-                println!("Warning: Default processor should not receive Browser");
+                warn!("Default processor should not receive Browser");
                 None
             }
         }

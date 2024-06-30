@@ -27,9 +27,8 @@ pub fn watch_window(poll_time: u64, tx: mpsc::Sender<UserMetric>) {
             Some(Err(e)) => {
                 eprintln!("Window information error: {}", e);
             }
-            None => {
-                eprintln!("Window information error: unknown");
-            }
+            // No active window
+            None => {}
         }
         sleep(Duration::from_millis(poll_time));
     }

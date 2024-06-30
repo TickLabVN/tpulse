@@ -5,6 +5,7 @@ use oauth2::{
 };
 use serde::Deserialize;
 
+use log::error;
 use std::{
     io::{self, Read, Write},
     net::{TcpListener, TcpStream},
@@ -149,7 +150,7 @@ impl GoogleOAuth {
         let oauth_code: String;
 
         if let Err(err) = webbrowser::open(auth_url.as_str()) {
-            eprintln!("Error opening browser: {:?}", err);
+            error!("Error opening browser: {:?}", err);
         }
 
         let (sender, receiver) = channel();

@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::sync::mpsc::{self, Receiver, Sender};
-use std::thread;
+use std::{fs, thread};
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 use tpulse::initializer::raw_metric_processor;
@@ -26,7 +26,11 @@ fn main() {
         .invoke_handler(tauri::generate_handler![handle_google_calendar])
         .plugin(
             tauri_plugin_log::Builder::new()
-                .targets([Target::new(TargetKind::Stdout)])
+                .targets([
+                    Target::new(TargetKind::Stdout),
+                    Target::new(TargetKind::LogDir { file_name: None }),
+                    Target::new(TargetKind::Webview),
+                ])
                 .build(),
         )
         .plugin(
@@ -37,8 +41,13 @@ fn main() {
         .build(tauri::generate_context!())
         .unwrap();
 
-    let db_path = app.path().app_data_dir().unwrap().join("tpulse.sqlite3");
+    let db_path = app.path().app_config_dir().unwrap().join("tpulse.sqlite3");
+    // create folder if not exist
+    fs::create_dir_all(db_path.parent().unwrap()).unwrap();
+
     let db_path = db_path.to_str().unwrap();
+    println!("{}", db_path);
+
     db::set_path(db_path);
     db::apply_migrations();
 

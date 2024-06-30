@@ -1,3 +1,5 @@
+use log::warn;
+
 use crate::{
     metrics::{BrowserMetric, BrowserMetricType, UserMetric},
     raw_metric_processor::{ActivityTag, MetricProcessor, StartActivity},
@@ -32,7 +34,7 @@ impl MetricProcessor for YoutubeProcessor {
                 None
             }
             UserMetric::AFK(_) => {
-                println!("Warning: Metric processor should not receive AFK");
+                warn!("Metric processor should not receive AFK");
                 None
             }
             _ => None,

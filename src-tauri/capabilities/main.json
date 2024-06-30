@@ -7,6 +7,20 @@
     ],
     "permissions": [
         "sql:allow-load",
-        "sql:allow-execute"
+        "sql:allow-execute",
+        "sql:default",
+        "sql:allow-select",
+        "event:allow-listen",
+        "event:default",
+        "log:allow-log",
+        "log:default",
+        "path:allow-dirname",
+        "path:allow-extname",
+        "path:allow-join",
+        "window:default",
+        "app:default",
+        "resources:default",
+        "menu:default",
+        "tray:default"
     ]
 }
