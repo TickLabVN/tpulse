@@ -1,4 +1,6 @@
-import { ActivityLog, Task } from '@/services';
+import type { ActivityLog, Task } from '@/services';
+
+import { ActivitySpan, TaskSpan } from './timeSpan';
 
 export const TimelineRow: IComponent<{
   isLastRow: boolean;
@@ -16,40 +18,12 @@ export const TimelineRow: IComponent<{
       </td>
       <td className={rowStyle}>
         {activities.map((data) => (
-          <div key={data.name}> {data.name} </div>
-          // <TimeSpan
-          //   key={index}
-          //   event={data}
-          //   timeUnit={timeUnit}
-          //   top={
-          //     'start' in data
-          //       ? title === moment.unix(data.start).format('HH:mm')
-          //         ? 40
-          //         : (Math.abs(data.start - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-          //       : title === moment.unix(data.from).format('HH:mm')
-          //         ? 40
-          //         : (Math.abs(data.from - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-          //   }
-          // />
+          <ActivitySpan key={data.name} data={data} />
         ))}
       </td>
       <td className={rowStyle}>
         {tasks.map((data) => (
-          <div key={data.name}> {data.name} </div>
-          // <TimeSpan
-          //   key={index}
-          //   event={data}
-          //   timeUnit={timeUnit}
-          //   top={
-          //     'start' in data
-          //       ? title === moment.unix(data.start).format('HH:mm')
-          //         ? 40
-          //         : (Math.abs(data.status - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-          //       : title === moment.unix(data.start).format('HH:mm')
-          //         ? 40
-          //         : (Math.abs(data.start - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-          //   }
-          // />
+          <TaskSpan key={data.name} data={data} />
         ))}
       </td>
       <td className='font-bold px-[15px] align-bottom'>
