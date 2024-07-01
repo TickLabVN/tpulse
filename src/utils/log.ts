@@ -1,4 +1,4 @@
-import { LogOptions, debug, error, info, trace, warn } from '@tauri-apps/plugin-log';
+import { type LogOptions, debug, error, info, trace, warn } from '@tauri-apps/plugin-log';
 
 type LogFn = (message: string, options?: LogOptions) => Promise<void>;
 

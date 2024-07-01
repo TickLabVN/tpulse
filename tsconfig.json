@@ -27,7 +27,7 @@
     /* Path */
     "paths": {
       "@/*": ["./src/*"]
-    },
+    }
   },
   "include": ["src", "**/*.ts", "**/*.tsx", "**/*.js", "*.cjs"],
   "references": [{ "path": "./tsconfig.node.json" }]

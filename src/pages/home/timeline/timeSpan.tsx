@@ -1,4 +1,4 @@
-import { ActivityLog, Task } from '@/services';
+import type { ActivityLog, Task } from '@/services';
 import { prettyTime } from '@/utils';
 import { useMemo } from 'react';
 

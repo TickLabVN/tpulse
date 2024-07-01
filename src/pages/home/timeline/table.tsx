@@ -1,4 +1,4 @@
-import { ActivityLog, Task, activityLogSvc, taskSvc } from '@/services';
+import { type ActivityLog, type Task, activityLogSvc, taskSvc } from '@/services';
 import { log } from '@/utils/log';
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
 import { useQuery } from '@tanstack/react-query';

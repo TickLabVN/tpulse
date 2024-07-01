@@ -5,13 +5,12 @@
   "license": "MIT",
   "scripts": {
     "prepare": "is-ci || husky",
-    "lint": "eslint '**/*.{ts,tsx}'",
-    "lint:fix": "eslint '**/*.{ts,tsx}' --fix",
-    "format": "prettier '**/*.{ts,tsx}' --write",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "barrels": "barrelsby --config .barrelsby.json -q",
+    "format": "bunx @biomejs/biome format --write",
+    "lint": "bunx @biomejs/biome lint --write",
     "clean:git": "git branch --merged >/tmp/merged-branches && nano /tmp/merged-branches && xargs git branch -D </tmp/merged-branches && git fetch --prune --all",
     "ui": "shadcn-ui"
   },
@@ -43,6 +42,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
     "@eslint/compat": "^1.1.0",
     "@tanstack/router-vite-plugin": "^1.39.12",
     "@tauri-apps/cli": "^2.0.0-beta.20",

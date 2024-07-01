@@ -28,6 +28,7 @@ declare module '@tanstack/react-router' {
 // with TargetKind::Webview enabled this function will print logs to the browser console
 attachConsole().then(() => log.info('attached console'));
 
+// biome-ignore lint/style/noNonNullAssertion: <explanation>
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <LocalizationProvider dateAdapter={AdapterMoment}>
