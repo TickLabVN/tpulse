@@ -2,25 +2,11 @@
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
   "formatter": {
     "enabled": true,
-    "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineEnding": "lf",
     "lineWidth": 110,
-    "attributePosition": "auto",
-    "ignore": [
-      "**/dist",
-      "**/docs",
-      "**/node_modules",
-      "**/*.lock",
-      "**/*.yaml",
-      "**/*.yml",
-      "**/*.md",
-      "src-tauri",
-      "**/coverage",
-      "src-tauri/target",
-      "**/*-lock.json"
-    ]
+    "ignore": ["dist", "docs", "node_modules", "src-tauri", "coverage", "src-tauri/target"]
   },
   "organizeImports": {
     "enabled": true
