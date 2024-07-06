@@ -104,20 +104,20 @@ export function TimeTable() {
     const numOfRows = Math.ceil(NUM_SECS_PER_DAY / timeUnit);
     const timelineRows = [];
 
-    let rowIdx = 0;
+    let taskIdx = 0;
     let activityIdx = 0;
 
     for (let i = 0; i < numOfRows; i++) {
       const isLastRow = i === numOfRows - 1;
       const rowStartTime = moment()
         .startOf('day')
-        .add((i + 1) * timeUnit, 'seconds')
+        .add(i * timeUnit, 'seconds')
         .unix();
 
-      const rowEndTime = moment()
+      const rowEnd = moment()
         .startOf('day')
-        .add((i + 2) * timeUnit, 'seconds')
-        .unix();
+        .add((i + 1) * timeUnit, 'seconds');
+      const rowEndTime = rowEnd.unix();
 
       const rowActivityLogs: ActivityLog[] = [];
       if (activityLogs) {
@@ -136,23 +136,23 @@ export function TimeTable() {
 
       const rowTasks: Task[] = [];
       if (tasks) {
-        while (rowIdx < tasks.length) {
-          const taskStartTime = tasks[rowIdx].start;
+        while (taskIdx < tasks.length) {
+          const taskStartTime = tasks[taskIdx].start;
           if (!taskStartTime) continue;
 
           if (rowStartTime <= taskStartTime && taskStartTime <= rowEndTime) {
-            rowTasks.push(tasks[rowIdx]);
+            rowTasks.push(tasks[taskIdx]);
           } else if (taskStartTime > rowEndTime) {
             break;
           }
-          rowIdx++;
+          taskIdx++;
         }
       }
 
       timelineRows.push(
         <TimelineRow
           key={i}
-          displayTime={moment.unix(rowStartTime).format('HH:mm')}
+          displayTime={rowEnd.format('HH:mm')}
           isLastRow={isLastRow}
           timeUnit={timeUnit}
           tasks={rowTasks}
@@ -168,7 +168,7 @@ export function TimeTable() {
       className='rounded-2xl bg-white p-0 border-light-gray border mt-4 max-h-[80vh] no-scrollbar overflow-y-scroll'
       id='timeline-table'
     >
-      <table className='w-full border-collapse'>
+      <table className='w-full border-collapse table-fixed'>
         <thead className='sticky top-0 z-10 bg-white'>
           <tr>
             <th className='px-[15px] text-end w-20 shadow-sm border-b border-light-gray'>
@@ -203,7 +203,7 @@ export function TimeTable() {
             </th>
           </tr>
         </thead>
-        <tbody id='timeline-table-body'>{renderRows()}</tbody>
+        <tbody>{renderRows()}</tbody>
       </table>
     </div>
   );

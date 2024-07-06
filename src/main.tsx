@@ -8,7 +8,6 @@ import 'react-circular-progressbar/dist/styles.css';
 import ReactDOM from 'react-dom/client';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import './index.css';
 import { routeTree } from './routeTree.gen';
 import { log } from './utils/log';

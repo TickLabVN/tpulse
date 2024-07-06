@@ -6,7 +6,15 @@
     "indentWidth": 2,
     "lineEnding": "lf",
     "lineWidth": 110,
-    "ignore": ["dist", "docs", "node_modules", "src-tauri", "coverage", "src-tauri/target"]
+    "ignore": [
+      "dist",
+      "docs",
+      "node_modules",
+      "src-tauri",
+      "coverage",
+      "src-tauri/target",
+      "src/routeTree.gen.ts"
+    ]
   },
   "organizeImports": {
     "enabled": true

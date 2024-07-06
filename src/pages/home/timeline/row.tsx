@@ -9,10 +9,10 @@ export const TimelineRow: IComponent<{
   tasks: Task[];
   activities: ActivityLog[];
 }> = ({ isLastRow, tasks, activities, displayTime }) => {
-  let rowStyle = 'relative border-x border-light-gray h-10';
+  let rowStyle = 'relative px-4 border-x border-light-gray h-10';
   if (!isLastRow) rowStyle += ' border-b';
   return (
-    <tr id={'asdasd'}>
+    <tr>
       <td className='font-bold px-[15px] align-bottom'>
         {!isLastRow ? <div className='text-sm translate-y-1/2 text-end text-gray'>{displayTime}</div> : null}
       </td>
