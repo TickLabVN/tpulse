@@ -25,7 +25,7 @@ const MAX_ZOOM_FACTOR = (TIME_UNITS.length - 1) * ZOOM_SCALE;
  * Implementation description is in `docs/timetable.md`
  */
 export function TimeTable() {
-  const [zoomFactor, setZoomFactor] = useState<number>(MAX_ZOOM_FACTOR);
+  const [zoomFactor, setZoomFactor] = useState<number>(1);
 
   const [startOfDay, endOfDay] = useMemo(() => {
     const currTime = moment();
