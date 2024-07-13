@@ -1,10 +1,8 @@
 import { type ActivityLog, type Task, activityLogSvc, taskSvc } from '@/services';
-import { log } from '@/utils/log';
 import { ChecklistIcon, ClockFillIcon } from '@primer/octicons-react';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDebounceValue } from 'usehooks-ts';
 
 import { TimelineRow } from './row';
 
@@ -28,42 +26,26 @@ const MAX_ZOOM_FACTOR = (TIME_UNITS.length - 1) * ZOOM_SCALE;
  */
 export function TimeTable() {
   const [zoomFactor, setZoomFactor] = useState<number>(MAX_ZOOM_FACTOR);
-  const [scrollHeight, setScrollHeight] = useState<number>(0);
-  const [scrollTop, setScrollTop] = useState<number>(0);
-  const [clientHeight, setClientHeight] = useState<number>(0);
+
+  const [startOfDay, endOfDay] = useMemo(() => {
+    const currTime = moment();
+    const startOfDay = currTime.startOf('day').unix();
+    const endOfDay = currTime.endOf('day').unix();
+    return [startOfDay, endOfDay];
+  }, []);
 
   const timeUnit = useMemo(() => {
     const idx = Math.floor(zoomFactor / ZOOM_SCALE);
     return TIME_UNITS[idx];
   }, [zoomFactor]);
 
-  const [queryRange, setQueryRange] = useDebounceValue(
-    {
-      from: moment().startOf('day').unix(),
-      to: moment().endOf('day').unix()
-    },
-    1000
-  );
-
-  useEffect(() => {
-    const startOfDay = moment().startOf('day').unix();
-    const range = {
-      from: startOfDay + Math.floor((NUM_SECS_PER_DAY * scrollTop) / scrollHeight),
-      to: startOfDay + Math.ceil((NUM_SECS_PER_DAY * (scrollTop + clientHeight)) / scrollHeight)
-    };
-    log.info(range, 'range');
-    setQueryRange(range);
-  }, [clientHeight, scrollHeight, scrollTop, setQueryRange]);
-
   useEffect(() => {
     const table = document.getElementById('timeline-table');
     if (!table) return;
-    setScrollTop(table.scrollTop);
-    setScrollHeight(table.scrollHeight);
-    setClientHeight(table.clientHeight);
     function handleWheel(e: WheelEvent) {
       const isPressingCtrl = e.ctrlKey;
       if (isPressingCtrl) {
+        // Zoom in/out
         e.preventDefault();
         const diffPixel = e.deltaY;
         let diffFactor = Math.floor(Math.abs(diffPixel));
@@ -76,11 +58,6 @@ export function TimeTable() {
 
           return newZoomFactor;
         });
-      } else {
-        if (!table) return;
-        setScrollTop(table.scrollTop);
-        setScrollHeight(table.scrollHeight);
-        setClientHeight(table.clientHeight);
       }
     }
 
@@ -92,12 +69,12 @@ export function TimeTable() {
 
   const { data: tasks } = useQuery({
     queryKey: ['tasks'],
-    queryFn: () => taskSvc.getInRange(queryRange.from, queryRange.to)
+    queryFn: () => taskSvc.getInRange(startOfDay, endOfDay)
   });
 
   const { data: activityLogs } = useQuery({
     queryKey: ['activities'],
-    queryFn: () => activityLogSvc.getLogs(queryRange.from, queryRange.to)
+    queryFn: () => activityLogSvc.getLogs(startOfDay, endOfDay)
   });
 
   const renderRows = useCallback(() => {
@@ -108,7 +85,6 @@ export function TimeTable() {
     let activityIdx = 0;
 
     for (let i = 0; i < numOfRows; i++) {
-      const isLastRow = i === numOfRows - 1;
       const rowStartTime = moment()
         .startOf('day')
         .add(i * timeUnit, 'seconds')
@@ -152,8 +128,7 @@ export function TimeTable() {
       timelineRows.push(
         <TimelineRow
           key={i}
-          displayTime={rowEnd.format('HH:mm')}
-          isLastRow={isLastRow}
+          displayTime={rowEnd}
           timeUnit={timeUnit}
           tasks={rowTasks}
           activities={rowActivityLogs}

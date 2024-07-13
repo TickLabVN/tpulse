@@ -1,20 +1,26 @@
 import type { ActivityLog, Task } from '@/services';
-
+import type { Moment } from 'moment';
+import { useMemo } from 'react';
 import { ActivitySpan, TaskSpan } from './timeSpan';
 
 export const TimelineRow: IComponent<{
-  isLastRow: boolean;
   timeUnit: number;
-  displayTime: string;
+  displayTime: Moment;
   tasks: Task[];
   activities: ActivityLog[];
-}> = ({ isLastRow, tasks, activities, displayTime }) => {
-  let rowStyle = 'relative px-4 border-x border-light-gray h-10';
-  if (!isLastRow) rowStyle += ' border-b';
+}> = ({ tasks, activities, displayTime }) => {
+  const [milestone, isLastRow, rowStyle] = useMemo(() => {
+    const milestone = displayTime.format('HH:mm');
+    const isLastRow = milestone === '00:00';
+    let rowStyle = 'px-4 border-x border-light-gray top-0 !max-h-12 overflow-hidden';
+    if (!isLastRow) rowStyle += ' border-b';
+    return [milestone, isLastRow, rowStyle];
+  }, [displayTime]);
+
   return (
-    <tr>
+    <tr className='h-12 overflow-visible'>
       <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow ? <div className='text-sm translate-y-1/2 text-end text-gray'>{displayTime}</div> : null}
+        {!isLastRow && <div className='text-sm translate-y-1/2 text-end text-gray'>{milestone}</div>}
       </td>
       <td className={rowStyle}>
         {activities.map((data) => (
@@ -27,9 +33,7 @@ export const TimelineRow: IComponent<{
         ))}
       </td>
       <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow ? (
-          <div className='text-sm translate-y-1/2 text-start text-gray'>{displayTime}</div>
-        ) : null}
+        {!isLastRow && <div className='text-sm translate-y-1/2 text-start text-gray'>{milestone}</div>}
       </td>
     </tr>
   );
