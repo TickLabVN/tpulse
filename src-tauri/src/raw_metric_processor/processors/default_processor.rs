@@ -30,7 +30,6 @@ impl MetricProcessor for DefaultProcessor {
 #[cfg(test)]
 mod tests {
     use crate::metrics::{BrowserMetric, BrowserMetricType};
-
     use super::*;
 
     #[test]

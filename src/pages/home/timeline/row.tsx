@@ -1,72 +1,55 @@
-import type { ActivityLog, Task } from '@/services';
-import type { Moment } from 'moment';
-import { useCallback, useMemo } from 'react';
-import { ActivitySpan, TaskSpan } from './timeSpan';
+import { NUM_SECS_IN_DAY } from '@/constants';
+import { activityLogSvc } from '@/services';
+import { useQuery } from '@tanstack/react-query';
+import moment from 'moment';
+import { useMemo } from 'react';
+import type { ListChildComponentProps } from 'react-window';
+import { ActivitySpan } from './timeSpan';
 
-const ROW_HEIGHT = 48; // 48px
+export const TableRow = ({
+  index,
+  style,
+  data: { timeUnit }
+}: ListChildComponentProps<{ timeUnit: number }>) => {
+  const { milestone, isLastRow, rowStyle, startTime, endTime } = useMemo(() => {
+    const startOfDay = moment().startOf('day');
+    const startTime = startOfDay.clone().add(index * timeUnit, 'seconds');
+    const endTime = startOfDay.clone().add((index + 1) * timeUnit, 'seconds');
 
-export const TimelineRow: IComponent<{
-  index: number;
-  style: unknown;
-  timeUnit: number;
-  displayTime: Moment;
-  tasks: Task[];
-  activities: ActivityLog[];
-}> = ({ tasks, activities, displayTime, timeUnit }) => {
-  const [milestone, isLastRow, rowStyle] = useMemo(() => {
-    const milestone = displayTime.format('HH:mm');
-    const isLastRow = milestone === '00:00';
-    let rowStyle = `px-4 border-x border-light-gray top-0 !max-h-[${ROW_HEIGHT}px] overflow-visible relative`;
-    if (!isLastRow) rowStyle += ' border-b';
-    return [milestone, isLastRow, rowStyle];
-  }, [displayTime]);
+    const milestone = endTime.format('HH:mm:ss');
+    const isLastRow = index === NUM_SECS_IN_DAY / timeUnit - 1;
 
-  const calcSpanHeight = useCallback(
-    (start: number, end: number) => {
-      const duration = end - start;
-      return (duration / timeUnit) * ROW_HEIGHT;
-    },
-    [timeUnit]
-  );
+    let rowStyle = 'px-4 border-light-gray flex-1 h-full';
+    if (!isLastRow) rowStyle += ' border-b-[1px]';
+    return {
+      milestone,
+      isLastRow,
+      rowStyle,
+      startTime: startTime.unix(),
+      endTime: endTime.unix() - 1
+    };
+  }, [index, timeUnit]);
 
-  const calcTopPosition = useCallback(
-    (start: number) => {
-      const duration = start - displayTime.unix() + timeUnit;
-      return (duration / timeUnit) * ROW_HEIGHT;
-    },
-    [displayTime, timeUnit]
-  );
+  const { data: activities } = useQuery({
+    queryKey: ['activities', startTime, endTime],
+    queryFn: () => activityLogSvc.getLogs(startTime, endTime),
+    staleTime: 10_000
+  });
 
   return (
-    <tr className='h-12 overflow-visible'>
-      <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow && <div className='text-sm translate-y-1/2 text-end text-gray'>{milestone}</div>}
-      </td>
-      <td className={rowStyle}>
-        {activities.map((data) => (
-          <ActivitySpan
-            key={data.start_time}
-            data={data}
-            height={calcSpanHeight(data.start_time, data.end_time)}
-            top={calcTopPosition(data.start_time)}
-          />
+    <div style={style} className='flex justify-between items-end'>
+      <div className='font-bold align-bottom w-20'>
+        {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
+      </div>
+      <div className={`${rowStyle} border-x-[1px]`}>
+        {activities?.map((data) => (
+          <ActivitySpan key={data.start_time} data={data} />
         ))}
-      </td>
-      <td className={rowStyle}>
-        {tasks.map((data) =>
-          data.start && data.end ? (
-            <TaskSpan
-              key={data.id}
-              data={data}
-              height={calcSpanHeight(data.start, data.end)}
-              top={calcTopPosition(data.start)}
-            />
-          ) : null
-        )}
-      </td>
-      <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow && <div className='text-sm translate-y-1/2 text-start text-gray'>{milestone}</div>}
-      </td>
-    </tr>
+      </div>
+      <div className={`${rowStyle} border-e-[1px]`}>Row {index}</div>
+      <div className='font-bold align-bottom w-20'>
+        {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
+      </div>
+    </div>
   );
 };

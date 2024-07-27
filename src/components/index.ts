@@ -8,3 +8,4 @@ export * from './ui/badge';
 export * from './ui/checkbox';
 export * from './ui/datepicker';
 export * from './ui/timepicker';
+export * from './ui/tooltip';
