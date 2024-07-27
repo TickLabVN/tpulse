@@ -1,6 +1,8 @@
 // The browser tpulse extension sends read data to a named pipe
 // Our app reads data from this named pipe to retrieve data from browser tabs
 use crate::metrics::{BrowserMetric, UserMetric};
+use log::info;
+
 #[cfg(any(target_os = "linux", target = "macos"))]
 use {
     libc::{mkfifo, open, read, O_RDONLY},
@@ -10,10 +12,16 @@ use {
 
 #[cfg(any(target_os = "linux", target = "macos"))]
 pub fn create_named_pipe(pipe_name: &str) -> Result<(), String> {
+    use log::info;
+
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
     let result = unsafe { mkfifo(c_pipe_name.as_ptr(), 0o666) };
 
     if result == 0 {
+        info!("Named pipe {} created", pipe_name);
+        Ok(())
+    } else if result == -1 {
+        info!("Named pipe {} already exists", pipe_name);
         Ok(())
     } else {
         let msg = format!(

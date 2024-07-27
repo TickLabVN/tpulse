@@ -29,8 +29,8 @@ impl MetricProcessor for DefaultProcessor {
 }
 #[cfg(test)]
 mod tests {
-    use crate::metrics::{BrowserMetric, BrowserMetricType};
     use super::*;
+    use crate::metrics::{BrowserMetric, BrowserMetricType};
 
     #[test]
     fn test_default_processor_github_desktop_window_metric() {

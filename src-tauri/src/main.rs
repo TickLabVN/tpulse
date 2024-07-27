@@ -4,16 +4,17 @@
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::{fs, thread};
 use tauri::Manager;
-use tauri_plugin_log::{Target, TargetKind};
 use tpulse::initializer::raw_metric_processor;
 use tpulse::{
     config, db,
-    google_calendar::{__cmd__handle_google_calendar, handle_google_calendar},
     metrics::UserMetric,
     watcher::{watch_afk, watch_browser, watch_window},
 };
+use dotenv::dotenv;
 
 fn main() {
+    dotenv().ok();
+    env_logger::init();
     let setting = config::get_setting();
     let mut metric_processor_manager = raw_metric_processor::initialize();
 
@@ -23,31 +24,27 @@ fn main() {
     let browser_tx = tx.clone();
 
     let app = tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![handle_google_calendar])
-        .plugin(
-            tauri_plugin_log::Builder::new()
-                .targets([
-                    Target::new(TargetKind::Stdout),
-                    Target::new(TargetKind::LogDir { file_name: None }),
-                    Target::new(TargetKind::Webview),
-                ])
-                .build(),
-        )
-        .plugin(
-            tauri_plugin_sql::Builder::default()
-                .add_migrations("sqlite:tpulse.sqlite3", vec![])
-                .build(),
-        )
+        // .invoke_handler(tauri::generate_handler![handle_google_calendar])
+        // .plugin(
+        //     tauri_plugin_log::Builder::new()
+        //         .targets([
+        //             Target::new(TargetKind::Stdout),
+        //             Target::new(TargetKind::LogDir { file_name: None }),
+        //             Target::new(TargetKind::Webview),
+        //         ])
+        //         .build(),
+        // )
+        // .plugin(
+        //     tauri_plugin_sql::Builder::default()
+        //         .add_migrations("sqlite:tpulse.sqlite3", vec![])
+        //         .build(),
+        // )
         .build(tauri::generate_context!())
         .unwrap();
 
     let db_path = app.path().app_config_dir().unwrap().join("tpulse.sqlite3");
-    // create folder if not exist
     fs::create_dir_all(db_path.parent().unwrap()).unwrap();
-
     let db_path = db_path.to_str().unwrap();
-    println!("{}", db_path);
-
     db::set_path(db_path);
     db::apply_migrations();
 
@@ -61,7 +58,7 @@ fn main() {
             }
         }),
     ];
-    app.run(|_app_handler, _event| {});
+    // app.run(|_app_handler, _event| {});
 
     for worker in workers {
         worker.join().unwrap();

@@ -1,10 +1,9 @@
 pub mod processors;
 
-use std::fmt;
-
 use into_variant::{IntoVariant, VariantFrom};
 use log::warn;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 use crate::{
     event_handler::EventHandler,

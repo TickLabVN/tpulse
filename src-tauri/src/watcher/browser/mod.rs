@@ -6,11 +6,11 @@ use utils::{convert_to_user_metric, create_named_pipe, read_from_pipe};
 #[cfg(any(target_os = "linux", target = "macos"))]
 
 pub fn watch_browser(tx: mpsc::Sender<UserMetric>) {
+    use log::error;
     let pipe_name = "/tmp/tpulse";
-    match create_named_pipe(&pipe_name) {
-        Ok(_) => println!("Creating named pipe successfully"),
-        Err(err) => eprintln!("Error: {}", err),
-    };
+    if let Err(err) = create_named_pipe(&pipe_name)  {
+        error!("Error: {}", err);
+    }
     loop {
         match read_from_pipe(&pipe_name)
             .map_err(|e| e.to_string())
