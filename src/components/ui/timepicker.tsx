@@ -1,8 +1,12 @@
 import { TextField } from '@mui/material';
-import { UseTimeFieldProps } from '@mui/x-date-pickers/TimeField';
-import { TimePicker, TimePickerProps } from '@mui/x-date-pickers/TimePicker';
-import { BaseSingleInputFieldProps, FieldSection, TimeValidationError } from '@mui/x-date-pickers/models';
-import moment, { Moment } from 'moment';
+import type { UseTimeFieldProps } from '@mui/x-date-pickers/TimeField';
+import { TimePicker, type TimePickerProps } from '@mui/x-date-pickers/TimePicker';
+import type {
+  BaseSingleInputFieldProps,
+  FieldSection,
+  TimeValidationError
+} from '@mui/x-date-pickers/models';
+import moment, { type Moment } from 'moment';
 import * as React from 'react';
 
 interface ButtonFieldProps
@@ -44,7 +48,7 @@ function InputTimePicker(props: Omit<TimePickerProps<Moment>, 'open' | 'onOpen' 
   return (
     <TimePicker
       slots={{ ...props.slots, field: InputField }}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       slotProps={{ ...props.slotProps, field: { setOpen } as any }}
       {...props}
       open={open}

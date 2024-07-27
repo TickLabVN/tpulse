@@ -21,6 +21,8 @@
         "app:default",
         "resources:default",
         "menu:default",
-        "tray:default"
+        "tray:default",
+        "webview:allow-internal-toggle-devtools",
+        "webview:default"
     ]
 }

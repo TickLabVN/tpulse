@@ -1,4 +1,4 @@
-import { SyncTaskData } from '@/interfaces';
+import type { SyncTaskData } from '@/interfaces';
 import { log } from '@/utils/log';
 import { invoke } from '@tauri-apps/api';
 

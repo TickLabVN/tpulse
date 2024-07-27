@@ -1,62 +1,55 @@
-import { ActivityLog, Task } from '@/services';
+import { NUM_SECS_IN_DAY } from '@/constants';
+import { activityLogSvc } from '@/services';
+import { useQuery } from '@tanstack/react-query';
+import moment from 'moment';
+import { useMemo } from 'react';
+import type { ListChildComponentProps } from 'react-window';
+import { ActivitySpan } from './timeSpan';
 
-export const TimelineRow: IComponent<{
-  isLastRow: boolean;
-  timeUnit: number;
-  displayTime: string;
-  tasks: Task[];
-  activities: ActivityLog[];
-}> = ({ isLastRow, tasks, activities, displayTime }) => {
-  let rowStyle = 'relative border-x border-light-gray h-10';
-  if (!isLastRow) rowStyle += ' border-b';
+export const TableRow = ({
+  index,
+  style,
+  data: { timeUnit }
+}: ListChildComponentProps<{ timeUnit: number }>) => {
+  const { milestone, isLastRow, rowStyle, startTime, endTime } = useMemo(() => {
+    const startOfDay = moment().startOf('day');
+    const startTime = startOfDay.clone().add(index * timeUnit, 'seconds');
+    const endTime = startOfDay.clone().add((index + 1) * timeUnit, 'seconds');
+
+    const milestone = endTime.format('HH:mm:ss');
+    const isLastRow = index === NUM_SECS_IN_DAY / timeUnit - 1;
+
+    let rowStyle = 'px-4 border-light-gray flex-1 h-full';
+    if (!isLastRow) rowStyle += ' border-b-[1px]';
+    return {
+      milestone,
+      isLastRow,
+      rowStyle,
+      startTime: startTime.unix(),
+      endTime: endTime.unix() - 1
+    };
+  }, [index, timeUnit]);
+
+  const { data: activities } = useQuery({
+    queryKey: ['activities', startTime, endTime],
+    queryFn: () => activityLogSvc.getLogs(startTime, endTime),
+    staleTime: 10_000
+  });
+
   return (
-    <tr id={'asdasd'}>
-      <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow ? <div className='text-sm translate-y-1/2 text-end text-gray'>{displayTime}</div> : null}
-      </td>
-      <td className={rowStyle}>
-        {activities.map((data) => (
-          <div key={data.name}> {data.name} </div>
-          // <TimeSpan
-          //   key={index}
-          //   event={data}
-          //   timeUnit={timeUnit}
-          //   top={
-          //     'start' in data
-          //       ? title === moment.unix(data.start).format('HH:mm')
-          //         ? 40
-          //         : (Math.abs(data.start - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-          //       : title === moment.unix(data.from).format('HH:mm')
-          //         ? 40
-          //         : (Math.abs(data.from - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-          //   }
-          // />
+    <div style={style} className='flex justify-between items-end'>
+      <div className='font-bold align-bottom w-20'>
+        {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
+      </div>
+      <div className={`${rowStyle} border-x-[1px]`}>
+        {activities?.map((data) => (
+          <ActivitySpan key={data.start_time} data={data} />
         ))}
-      </td>
-      <td className={rowStyle}>
-        {tasks.map((data) => (
-          <div key={data.name}> {data.name} </div>
-          // <TimeSpan
-          //   key={index}
-          //   event={data}
-          //   timeUnit={timeUnit}
-          //   top={
-          //     'start' in data
-          //       ? title === moment.unix(data.start).format('HH:mm')
-          //         ? 40
-          //         : (Math.abs(data.status - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-          //       : title === moment.unix(data.start).format('HH:mm')
-          //         ? 40
-          //         : (Math.abs(data.start - moment(title, 'HH:mm').unix()) / timeUnit) * 40
-          //   }
-          // />
-        ))}
-      </td>
-      <td className='font-bold px-[15px] align-bottom'>
-        {!isLastRow ? (
-          <div className='text-sm translate-y-1/2 text-start text-gray'>{displayTime}</div>
-        ) : null}
-      </td>
-    </tr>
+      </div>
+      <div className={`${rowStyle} border-e-[1px]`}>Row {index}</div>
+      <div className='font-bold align-bottom w-20'>
+        {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
+      </div>
+    </div>
   );
 };

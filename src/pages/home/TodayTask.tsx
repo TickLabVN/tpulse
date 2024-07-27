@@ -2,7 +2,7 @@ import { Badge } from '@/components';
 import { Checkbox } from '@/components/ui/checkbox';
 import { openDialog } from '@/hooks';
 import { taskSvc } from '@/services';
-import { prettyHour } from '@/utils';
+import { prettyTime } from '@/utils';
 import { ChevronRightIcon, FeedPlusIcon } from '@primer/octicons-react';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
@@ -42,7 +42,7 @@ export function TodayTask() {
                   <div className='flex items-center gap-3'>
                     <span className='font-semibold text-[18px] leading-5'>{item.name}</span>
                     <Badge className='!bg-accent-blue !text-sm !font-bold !rounded-[5px] !px-2 !py-1 text-white !leading-5 !border-none'>
-                      {prettyHour(item.end - item.start)}
+                      {prettyTime(item.end - item.start)}
                     </Badge>
                   </div>
                   <div className='flex items-center text-sm font-semibold text-background'>

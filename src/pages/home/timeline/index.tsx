@@ -1,7 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
 import moment from 'moment';
 import { useRef, useState } from 'react';
-
 import { TimeTable } from './table';
 
 export function Timeline() {
