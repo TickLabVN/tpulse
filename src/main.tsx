@@ -3,12 +3,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { attachConsole } from '@tauri-apps/plugin-log';
-import 'react-circular-progressbar/dist/styles.css';
-import ReactDOM from 'react-dom/client';
-import './index.css';
 import { StrictMode } from 'react';
+import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
 import { log } from './utils/log';
+import 'react-circular-progressbar/dist/styles.css';
+import './index.css';
 
 const router = createRouter({
   routeTree,

@@ -6,6 +6,8 @@ import { ActivitySpan, TaskSpan } from './timeSpan';
 const ROW_HEIGHT = 48; // 48px
 
 export const TimelineRow: IComponent<{
+  index: number;
+  style: unknown;
   timeUnit: number;
   displayTime: Moment;
   tasks: Task[];
