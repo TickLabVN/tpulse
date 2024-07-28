@@ -2,13 +2,14 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use dotenv::dotenv;
+use tpulse::app::create_app;
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::{fs, thread};
 use tauri::Manager;
 use tpulse::{
     db,
     metrics::UserMetric,
-    watcher::{watch_afk, watch_browser, watch_window},
+    collector::{watch_afk, watch_browser, watch_window},
     raw_metric_processor,
 };
 
@@ -22,24 +23,7 @@ fn main() {
     let window_tx = tx.clone();
     let browser_tx = tx.clone();
 
-    let app = tauri::Builder::default()
-        // .invoke_handler(tauri::generate_handler![handle_google_calendar])
-        // .plugin(
-        //     tauri_plugin_log::Builder::new()
-        //         .targets([
-        //             Target::new(TargetKind::Stdout),
-        //             Target::new(TargetKind::LogDir { file_name: None }),
-        //             Target::new(TargetKind::Webview),
-        //         ])
-        //         .build(),
-        // )
-        // .plugin(
-        //     tauri_plugin_sql::Builder::default()
-        //         .add_migrations("sqlite:tpulse.sqlite3", vec![])
-        //         .build(),
-        // )
-        .build(tauri::generate_context!())
-        .unwrap();
+    let app = create_app();
 
     let db_path = app.path().app_config_dir().unwrap().join("tpulse.sqlite3");
     fs::create_dir_all(db_path.parent().unwrap()).unwrap();
@@ -57,7 +41,6 @@ fn main() {
             }
         }),
     ];
-    // app.run(|_app_handler, _event| {});
 
     for worker in workers {
         worker.join().unwrap();

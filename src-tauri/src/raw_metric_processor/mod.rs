@@ -1,5 +1,4 @@
-pub mod processors;
-
+mod processors;
 use into_variant::{IntoVariant, VariantFrom};
 use log::warn;
 use serde::{Deserialize, Serialize};
@@ -138,7 +137,7 @@ impl RawMetricProcessorManager {
 fn handle_afk_metric(
     last_activity: StartActivity,
     AFKMetric {
-        start_time_unix,
+        start_time: start_time_unix,
         status,
     }: AFKMetric,
 ) -> ProcessedResult {

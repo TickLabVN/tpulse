@@ -1,7 +1,6 @@
 mod window_query;
-
 use crate::{
-    config, metrics::UserMetric, watcher::window::window_query::get_current_window_information,
+    config, metrics::UserMetric, collector::window::window_query::get_current_window_information,
 };
 use log::info;
 use std::{sync::mpsc, thread::sleep, time::Duration};

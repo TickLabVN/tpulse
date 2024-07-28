@@ -10,7 +10,8 @@ pub enum AFKStatus {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AFKMetric {
     pub status: AFKStatus,
-    pub start_time_unix: u64,
+    /// Unix timestamp
+    pub start_time: u64,
 }
 
 #[derive(Clone, Debug, Deserialize)]
