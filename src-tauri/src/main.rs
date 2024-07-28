@@ -1,21 +1,20 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use dotenv::dotenv;
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::{fs, thread};
 use tauri::Manager;
-use tpulse::initializer::raw_metric_processor;
 use tpulse::{
-    config, db,
+    db,
     metrics::UserMetric,
     watcher::{watch_afk, watch_browser, watch_window},
+    raw_metric_processor,
 };
-use dotenv::dotenv;
 
 fn main() {
     dotenv().ok();
     env_logger::init();
-    let setting = config::get_setting();
     let mut metric_processor_manager = raw_metric_processor::initialize();
 
     let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
@@ -50,8 +49,8 @@ fn main() {
 
     let workers = vec![
         thread::spawn(move || watch_browser(browser_tx)),
-        thread::spawn(move || watch_afk(setting.poll_time, setting.time_out, afk_tx)),
-        thread::spawn(move || watch_window(setting.poll_time, window_tx)),
+        thread::spawn(move || watch_afk(afk_tx)),
+        thread::spawn(move || watch_window(window_tx)),
         thread::spawn(move || {
             while let Ok(user_metric) = rx.recv() {
                 metric_processor_manager.handle_metric(user_metric);

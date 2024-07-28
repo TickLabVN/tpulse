@@ -4,7 +4,6 @@ pub mod db;
 pub mod event_handler;
 pub mod google_calendar;
 pub mod google_oauth;
-pub mod initializer;
 pub mod metrics;
 pub mod raw_metric_processor;
 pub mod utils;

@@ -5,6 +5,9 @@ use log::warn;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+pub mod init;
+pub use init::initialize;
+
 use crate::{
     event_handler::EventHandler,
     metrics::{AFKMetric, AFKStatus, UserMetric},

@@ -1,3 +1,4 @@
+use crate::config::get_setting;
 use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
 use device_query::{DeviceQuery, DeviceState};
 use log::info;
@@ -23,14 +24,16 @@ use std::time::{Duration, SystemTime};
 /// use tpulse::watcher::watch_afk;
 /// watch_afk(1000, 5000);
 /// ```
-pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
+pub fn watch_afk(tx: mpsc::Sender<UserMetric>) {
     info!("AFK watcher started");
     let device_state = DeviceState::new();
     let mut mouse_pos = device_state.get_mouse().coords;
     let mut total_timeout = 0;
     let mut afk = false;
     loop {
-        sleep(Duration::from_millis(poll_time));
+        let setting = get_setting();
+
+        sleep(Duration::from_millis(setting.poll_time));
         let mut detect_interact = false;
 
         let current_mouse_pos = device_state.get_mouse().coords;
@@ -60,8 +63,8 @@ pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
                 .unwrap();
             }
         } else {
-            total_timeout += poll_time;
-            if total_timeout >= timeout && !afk {
+            total_timeout += setting.poll_time;
+            if total_timeout >= setting.time_out && !afk {
                 afk = true;
                 // send metric offline
                 let unix_ts = SystemTime::now()

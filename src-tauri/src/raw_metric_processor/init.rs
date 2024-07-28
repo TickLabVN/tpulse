@@ -1,12 +1,11 @@
-use crate::{
-    event_handler::{logger, make_event_handler},
-    raw_metric_processor::{
-        processors::{
-            browser_tab_processor::BrowserTabProcessor, default_processor::DefaultProcessor,
-            vscode_processor::VSCodeProcessor, youtube_processor::YoutubeProcessor,
-        },
-        RawMetricProcessorManager,
+use crate::event_handler::{logger, make_event_handler};
+
+use super::{
+    processors::{
+        browser_tab_processor::BrowserTabProcessor, default_processor::DefaultProcessor,
+        vscode_processor::VSCodeProcessor, youtube_processor::YoutubeProcessor,
     },
+    RawMetricProcessorManager,
 };
 
 pub fn initialize() -> RawMetricProcessorManager {

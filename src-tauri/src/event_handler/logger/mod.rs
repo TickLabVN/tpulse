@@ -15,7 +15,6 @@ pub struct ActivityStartLog {
 
 pub fn handle_events(events: Vec<ProcessedResult>) {
     for event in events {
-        println!("{:?}", event);
         let category_tag = get_activity_category_tag(event.clone());
         match event {
             ProcessedResult::StartActivity(start_event) => {
