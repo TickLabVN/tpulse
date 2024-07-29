@@ -2,14 +2,14 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use dotenv::dotenv;
-use tpulse::app::create_app;
-use std::sync::mpsc::{self, Receiver, Sender};
-use std::{fs, thread};
+use tpulse::processor;
+use std::{fs, sync::mpsc, thread};
 use tauri::Manager;
+use tpulse::app::create_app;
 use tpulse::{
+    collector::{watch_afk, watch_browser, watch_window},
     db,
     metrics::UserMetric,
-    collector::{watch_afk, watch_browser, watch_window},
     raw_metric_processor,
 };
 
@@ -18,7 +18,9 @@ fn main() {
     env_logger::init();
     let mut metric_processor_manager = raw_metric_processor::initialize();
 
-    let (tx, rx): (Sender<UserMetric>, Receiver<UserMetric>) = mpsc::channel();
+    let metric_processor = processor::create_processor();
+
+    let (tx, rx) = mpsc::channel::<UserMetric>();
     let afk_tx = tx.clone();
     let window_tx = tx.clone();
     let browser_tx = tx.clone();
@@ -37,7 +39,8 @@ fn main() {
         thread::spawn(move || watch_window(window_tx)),
         thread::spawn(move || {
             while let Ok(user_metric) = rx.recv() {
-                metric_processor_manager.handle_metric(user_metric);
+                metric_processor_manager.handle_metric(user_metric.clone());
+                metric_processor.process(&user_metric);
             }
         }),
     ];

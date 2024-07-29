@@ -51,3 +51,12 @@ pub enum UserMetric {
     Window(WindowMetric),
     Browser(BrowserMetric),
 }
+
+pub struct Activity {
+    pub start_time: u64,
+    pub end_time: Option<u64>,
+    pub identifier: String,
+    pub url: Option<String>,
+    pub exec_path: Option<String>,
+    pub tags: Vec<String>,
+}

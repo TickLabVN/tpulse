@@ -19,7 +19,6 @@ impl MetricProcessor for VSCodeProcessor {
                 if !class?.contains(&VSCODE_CLASS_NAME.to_string()) {
                     return None;
                 }
-
                 extract_project_name_from_vscode_title(&title?).map(|activity_identifier| {
                     StartActivity {
                         activity_identifier,
