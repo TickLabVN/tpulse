@@ -1,4 +1,6 @@
+pub mod app;
 pub mod app_config;
+pub mod collector;
 pub mod config;
 pub mod db;
 pub mod event_handler;
@@ -6,7 +8,5 @@ pub mod google_calendar;
 pub mod google_oauth;
 pub mod metrics;
 pub mod processor;
-pub mod utils;
-pub mod collector;
 pub mod raw_metric_processor;
-pub mod app;
+pub mod utils;

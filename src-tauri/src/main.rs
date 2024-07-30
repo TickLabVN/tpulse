@@ -2,10 +2,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use dotenv::dotenv;
-use tpulse::processor;
 use std::{fs, sync::mpsc, thread};
 use tauri::Manager;
 use tpulse::app::create_app;
+use tpulse::processor;
 use tpulse::{
     collector::{watch_afk, watch_browser, watch_window},
     db,

@@ -123,7 +123,7 @@ use {
 };
 
 #[cfg(target_os = "windows")]
-pub fn get_current_window_information() ->  Option<Result<WindowMetric>> {
+pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
     let mut window_info = WindowMetric {
         time: 0,
         title: None,
