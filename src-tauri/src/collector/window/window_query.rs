@@ -123,7 +123,7 @@ use {
 };
 
 #[cfg(target_os = "windows")]
-pub fn get_current_window_information() -> Option<WindowMetric> {
+pub fn get_current_window_information() ->  Option<Result<WindowMetric>> {
     let mut window_info = WindowMetric {
         time: 0,
         title: None,
@@ -148,7 +148,7 @@ pub fn get_current_window_information() -> Option<WindowMetric> {
         window_info.exec_path = Some(path);
         window_info.class = Some(vec![name]);
     }
-    Some(window_info)
+    Some(Ok(window_info))
 }
 
 #[cfg(target_os = "windows")]

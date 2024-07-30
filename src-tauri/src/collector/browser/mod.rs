@@ -4,7 +4,7 @@ use log::error;
 use std::sync::mpsc;
 use utils::{convert_to_user_metric, create_named_pipe, read_from_pipe};
 
-#[cfg(any(target_os = "linux", target = "macos"))]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn watch_browser(tx: mpsc::Sender<UserMetric>) {
     let pipe_name = "/tmp/tpulse";
     if let Err(err) = create_named_pipe(&pipe_name) {
@@ -44,7 +44,7 @@ pub fn watch_browser(tx: mpsc::Sender<UserMetric>) {
                 if connected == 0 {
                     eprintln!("Couldn't connect to named pipe");
                 }
-                match read_from_pipe(&pipe_name)
+                match read_from_pipe(pipe_handle)
                     .map_err(|e| e.to_string())
                     .and_then(|v| convert_to_user_metric(v).map_err(|e| e.to_string()))
                 {
@@ -53,7 +53,7 @@ pub fn watch_browser(tx: mpsc::Sender<UserMetric>) {
                             eprintln!("Failed to send browser metric");
                         }
                     }
-                    Err(err) => eprintln!("Error: {}", err),
+                    Err(err) => error!("Error: {}", err),
                 }
                 unsafe {
                     DisconnectNamedPipe(pipe_handle as *mut c_void);
@@ -61,7 +61,7 @@ pub fn watch_browser(tx: mpsc::Sender<UserMetric>) {
             }
         }
         Err(err) => {
-            eprintln!("Error creating named pipe: {}", err);
+            error!("Error creating named pipe: {}", err);
         }
     }
 }

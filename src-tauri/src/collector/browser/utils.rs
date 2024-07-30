@@ -3,14 +3,14 @@
 use crate::metrics::{BrowserMetric, UserMetric};
 use log::info;
 
-#[cfg(any(target_os = "linux", target = "macos"))]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 use {
     libc::{mkfifo, open, read, O_RDONLY},
     std::ffi::CString,
     std::io::Error,
 };
 
-#[cfg(any(target_os = "linux", target = "macos"))]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn create_named_pipe(pipe_name: &str) -> Result<(), String> {
     use log::info;
 
@@ -32,7 +32,7 @@ pub fn create_named_pipe(pipe_name: &str) -> Result<(), String> {
     }
 }
 
-#[cfg(any(target_os = "linux", target = "macos"))]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
 
@@ -57,7 +57,7 @@ pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
     };
     Ok(buffer)
 }
-#[cfg(any(target_os = "linux", target = "macos"))]
+
 pub fn convert_to_user_metric(data: String) -> Result<UserMetric, serde_json::Error> {
     let browser_metric: BrowserMetric = serde_json::from_str(&data)?;
     Ok(UserMetric::Browser(browser_metric))
@@ -98,7 +98,9 @@ pub fn create_named_pipe(pipe_name: &str) -> Result<i32, Error> {
 
     if pipe_handle == winapi::um::handleapi::INVALID_HANDLE_VALUE {
         return Err(Error::last_os_error());
-    }
+    };
+
+    info!("Named pipe {} created", pipe_name);
     Ok(pipe_handle as i32)
 }
 
