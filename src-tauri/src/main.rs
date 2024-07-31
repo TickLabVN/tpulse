@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use std::{fs, sync::mpsc, thread};
 use tauri::Manager;
 use tpulse::app::create_app;
