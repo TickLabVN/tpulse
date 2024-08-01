@@ -1,6 +1,6 @@
 // The browser tpulse extension sends read data to a named pipe
 // Our app reads data from this named pipe to retrieve data from browser tabs
-use crate::metrics::{BrowserMetric, UserMetric};
+use crate::metrics::{BrowserMetric, Activity};
 use log::info;
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -58,9 +58,9 @@ pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
     Ok(buffer)
 }
 
-pub fn convert_to_user_metric(data: String) -> Result<UserMetric, serde_json::Error> {
+pub fn convert_to_user_metric(data: String) -> Result<Activity, serde_json::Error> {
     let browser_metric: BrowserMetric = serde_json::from_str(&data)?;
-    Ok(UserMetric::Browser(browser_metric))
+    Ok(Activity::Browser(browser_metric))
 }
 #[cfg(target_os = "windows")]
 use {

@@ -1,15 +1,18 @@
 mod utils;
-use crate::metrics::UserMetric;
+use crate::metrics::Activity;
 use log::error;
 use std::sync::mpsc;
 use utils::{convert_to_user_metric, create_named_pipe, read_from_pipe};
+use log::info;
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
-pub fn watch_browser(tx: mpsc::Sender<UserMetric>) {
+pub fn watch_browser(tx: mpsc::Sender<Activity>) {
+    info!("Watching browser");
     let pipe_name = "/tmp/tpulse";
     if let Err(err) = create_named_pipe(&pipe_name) {
         error!("Error: {}", err);
     }
+
     loop {
         match read_from_pipe(&pipe_name)
             .map_err(|e| e.to_string())
@@ -33,7 +36,7 @@ use {
 };
 
 #[cfg(target_os = "windows")]
-pub fn watch_browser(tx: mpsc::Sender<UserMetric>) {
+pub fn watch_browser(tx: mpsc::Sender<Activity>) {
     let pipe_name = "\\\\.\\pipe\\tpulse";
     match create_named_pipe(&pipe_name) {
         Ok(pipe_handle) => {

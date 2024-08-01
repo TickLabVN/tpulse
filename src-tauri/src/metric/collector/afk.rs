@@ -1,5 +1,5 @@
 use crate::config::get_setting;
-use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
+use crate::metrics::{AFKMetric, AFKStatus, Activity};
 use device_query::{DeviceQuery, DeviceState};
 use log::info;
 use std::sync::mpsc;
@@ -24,7 +24,7 @@ use std::time::{Duration, SystemTime};
 /// use tpulse::watcher::watch_afk;
 /// watch_afk(1000, 5000);
 /// ```
-pub fn watch_afk(tx: mpsc::Sender<UserMetric>) {
+pub fn watch_afk(tx: mpsc::Sender<Activity>) {
     info!("AFK watcher started");
     let device_state = DeviceState::new();
     let mut mouse_pos = device_state.get_mouse().coords;
@@ -56,7 +56,7 @@ pub fn watch_afk(tx: mpsc::Sender<UserMetric>) {
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
 
-                tx.send(UserMetric::AFK(AFKMetric {
+                tx.send(Activity::AFK(AFKMetric {
                     start_time: unix_ts.as_secs() as u64,
                     status: AFKStatus::ONLINE,
                 }))
@@ -70,7 +70,7 @@ pub fn watch_afk(tx: mpsc::Sender<UserMetric>) {
                 let unix_ts = SystemTime::now()
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
-                tx.send(UserMetric::AFK(AFKMetric {
+                tx.send(Activity::AFK(AFKMetric {
                     start_time: unix_ts.as_secs() as u64,
                     status: AFKStatus::OFFLINE,
                 }))
