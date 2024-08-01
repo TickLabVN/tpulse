@@ -1329,6 +1329,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "fuzzy-matcher"
+version = "0.3.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "54614a3312934d066701a80f20f15fa3b56d67ac7722b39eea5b4c9dd1d66c94"
+dependencies = [
+ "thread_local",
+]
+
+[[package]]
 name = "fxhash"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3710,12 +3719,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "955d28af4278de8121b7ebeb796b6a45735dc01436d898801014aced2773a3d6"
 
 [[package]]
-name = "ruzzy"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7313f02f0eb7eed5b6a44ff8c2c770af96e4d1e83bf5003cab19235acd99469f"
-
-[[package]]
 name = "ryu"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5121,6 +5124,7 @@ dependencies = [
  "dirs",
  "dotenvy",
  "env_logger",
+ "fuzzy-matcher",
  "lazy_static",
  "libc",
  "log",
@@ -5130,7 +5134,6 @@ dependencies = [
  "regex",
  "reqwest 0.12.5",
  "rusqlite",
- "ruzzy",
  "serde",
  "serde_json",
  "tauri",

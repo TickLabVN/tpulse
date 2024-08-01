@@ -34,12 +34,12 @@ chrono = "0.4.37"
 once_cell = "1.19.0"
 url = "2.5.0"
 csv = "1.3.0"
-ruzzy = "0.2.0"
 log = "0.4.21"
 env_logger = "0.11"
 dotenvy = "0.15.7"
+fuzzy-matcher = "0.3.7"
 
-[target.'cfg(windows)'.dependencies]
+[target.'cfg(target_os = "windows")'.dependencies]
 winapi = { version = "0.3.9", features = [
     "namedpipeapi",
     "handleapi",

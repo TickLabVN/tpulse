@@ -20,7 +20,11 @@ fn read_csv(file_path: String) -> Vec<(String, String)> {
     rdr.into_records()
         .map(|r| {
             let r = r.expect("Should be able to parse csv record");
-            (r[0].to_string(), r[1].to_string())
+            (normalize_str(&r[0]), r[1].to_string())
         })
         .collect()
+}
+
+pub fn normalize_str(s: &str) -> String {
+    s.chars().filter(|c| c.is_ascii_alphanumeric()).collect()
 }

@@ -3,12 +3,14 @@ use crate::{
     metrics::{BrowserMetric, BrowserMetricType},
 };
 use lazy_static::lazy_static;
+use log::info;
 use oauth2::url;
-use ruzzy::{fuzzy_match, FuzzyConfig};
+use fuzzy_matcher::{FuzzyMatcher, skim::SkimMatcherV2};
 use url::Url;
 
 lazy_static! {
     static ref HAYSTACK: Vec<(String, String)> = load_categorized_dataset("browser.csv");
+    static ref MATCHER: SkimMatcherV2 = SkimMatcherV2::default();
 }
 
 pub fn categorize_browser_tab(metric: &mut BrowserMetric) {
@@ -20,23 +22,12 @@ pub fn categorize_browser_tab(metric: &mut BrowserMetric) {
     let parsed_url = Url::parse(url).unwrap();
 
     if let Some(hostname) = parsed_url.host_str() {
-        if let Some(category) = get_categorize(hostname) {
-            metric.tags.push(category);
+        for (needle, category) in HAYSTACK.iter() {
+            info!("Needle: {}, Category: {}, search: {}", needle, category, hostname);
+            if MATCHER.fuzzy_match(&needle, hostname).is_some() {
+                metric.tags.push(category.clone());
+                return;
+            }
         }
     }
-}
-
-fn get_categorize(hostname: &str) -> Option<String> {
-    let needle = hostname.to_owned();
-    fuzzy_match(
-        &needle,
-        &*HAYSTACK,
-        FuzzyConfig {
-            threshold: 3,
-            insertion_penalty: None,
-            deletion_penalty: None,
-            substitution_penalty: None,
-        },
-    )
-    .map(|s| s.to_string())
 }
