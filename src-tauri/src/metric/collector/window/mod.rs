@@ -1,9 +1,8 @@
 mod window_query;
-use crate::{
-    collector::window::window_query::get_current_window_information, config, metrics::UserMetric,
-};
+use crate::{config, metrics::UserMetric};
 use log::info;
 use std::{sync::mpsc, thread::sleep, time::Duration};
+use window_query::get_current_window_information;
 
 /// Watches the current window and sends window information through a channel.
 ///

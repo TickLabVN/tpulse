@@ -1,11 +1,11 @@
 use super::{browser::process_browser_tab, vscode::process_vscode, youtube::process_youtube};
-use crate::metrics::{Activity, BrowserMetric, UserMetric, WindowMetric};
-
+use crate::{metric::categorizer::categorize_video, metrics::{Activity, BrowserMetric, UserMetric, WindowMetric}};
 pub type ProcessFn<T> = fn(&T, &mut Activity) -> bool;
 
 pub struct MetricProcessor {
     window_process_fns: Vec<ProcessFn<WindowMetric>>,
     browser_process_fns: Vec<ProcessFn<BrowserMetric>>,
+    categorize_fns: Vec<fn(&mut Activity)>,
 }
 
 impl MetricProcessor {
@@ -13,6 +13,7 @@ impl MetricProcessor {
         MetricProcessor {
             window_process_fns: Vec::new(),
             browser_process_fns: Vec::new(),
+            categorize_fns: Vec::new(),
         }
     }
 
@@ -24,11 +25,15 @@ impl MetricProcessor {
         self.browser_process_fns.push(processor);
     }
 
+    fn add_categorize_fn(&mut self, categorize_fn: fn(&mut Activity)) {
+        self.categorize_fns.push(categorize_fn);
+    }
+
     pub fn process(&self, metric: &UserMetric) {
-        match metric {
+        let activity = match metric {
             UserMetric::AFK(_) => {
                 // TODO: Handle AFK metric
-                return;
+                None
             }
             UserMetric::Window(m) => {
                 let mut activity = Activity {
@@ -45,6 +50,7 @@ impl MetricProcessor {
                         break;
                     }
                 }
+                Some(activity)
             }
             UserMetric::Browser(m) => {
                 let mut activity = Activity {
@@ -61,7 +67,14 @@ impl MetricProcessor {
                         break;
                     }
                 }
+                Some(activity)
             }
+        };
+
+        if let Some(mut activity) = activity {
+            for categorize_fn in &self.categorize_fns {
+                categorize_fn(&mut activity);
+            }   
         }
     }
 }
@@ -71,5 +84,7 @@ pub fn create_processor() -> MetricProcessor {
     manager.add_window_process_fn(process_vscode);
     manager.add_browser_process_fn(process_youtube);
     manager.add_browser_process_fn(process_browser_tab);
+
+    manager.add_categorize_fn(categorize_video);
     manager
 }
