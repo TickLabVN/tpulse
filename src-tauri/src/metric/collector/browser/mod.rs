@@ -1,9 +1,9 @@
 mod utils;
-use crate::metrics::Activity;
+use crate::metric::schema::Activity;
 use log::error;
+use log::info;
 use std::sync::mpsc;
 use utils::{convert_to_user_metric, create_named_pipe, read_from_pipe};
-use log::info;
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn watch_browser(tx: mpsc::Sender<Activity>) {

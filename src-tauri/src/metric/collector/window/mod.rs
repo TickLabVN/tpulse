@@ -1,5 +1,5 @@
 mod window_query;
-use crate::{config, metrics::Activity};
+use crate::{config, metric::schema::Activity};
 use log::{error, info};
 use std::{sync::mpsc, thread::sleep, time::Duration};
 use window_query::get_current_window_information;

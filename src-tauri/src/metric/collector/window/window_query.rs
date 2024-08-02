@@ -1,4 +1,4 @@
-use crate::metrics::WindowMetric;
+use crate::metric::schema::WindowMetric;
 use std::time::SystemTime;
 
 #[cfg(target_os = "linux")]
@@ -107,7 +107,7 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
         title: title.unwrap(),
         class: class.unwrap(),
         exec_path: exec_path.unwrap(),
-        tags: vec![],
+        category: None,
     };
 
     Ok(window)

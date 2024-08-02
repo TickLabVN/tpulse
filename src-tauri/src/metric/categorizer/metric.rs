@@ -1,7 +1,7 @@
 use log::info;
 
 use super::{browser::categorize_browser_tab, window::categorize_window};
-use crate::metrics::{Activity, BrowserMetric, WindowMetric};
+use crate::metric::schema::{Activity, BrowserMetric, WindowMetric};
 pub type ProcessFn<T> = fn(&mut T);
 
 pub struct MetricProcessor {

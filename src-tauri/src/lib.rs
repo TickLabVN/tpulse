@@ -5,5 +5,4 @@ pub mod db;
 pub mod google_calendar;
 pub mod google_oauth;
 pub mod metric;
-pub mod metrics;
 pub mod utils;

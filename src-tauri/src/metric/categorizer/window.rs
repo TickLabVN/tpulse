@@ -1,7 +1,7 @@
 use std::collections::hash_map;
 
 use super::util::normalize_str;
-use crate::{metric::categorizer::util::load_categorized_dataset, metrics::WindowMetric};
+use crate::{metric::categorizer::util::load_categorized_dataset, metric::schema::WindowMetric};
 use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
 use hash_map::HashMap;
 use lazy_static::lazy_static;
@@ -43,6 +43,6 @@ pub fn categorize_window(metric: &mut WindowMetric) {
     }
 
     if let Some(category) = max_category {
-        metric.tags.push(category.clone());
+        metric.category = Some(category.clone());
     }
 }

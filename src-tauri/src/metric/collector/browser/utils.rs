@@ -1,6 +1,6 @@
 // The browser tpulse extension sends read data to a named pipe
 // Our app reads data from this named pipe to retrieve data from browser tabs
-use crate::metrics::{BrowserMetric, Activity};
+use crate::metric::schema::{Activity, BrowserMetric};
 use log::info;
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]

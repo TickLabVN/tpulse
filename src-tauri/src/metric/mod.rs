@@ -1,11 +1,12 @@
-mod collector;
 mod categorizer;
+mod collector;
+mod schema;
 
-use std::thread::{self, JoinHandle};
-use crate::metrics::Activity;
-use collector::{watch_afk, watch_browser, watch_window};
-use std::sync::mpsc;
 use categorizer::create_processor;
+use collector::{watch_afk, watch_browser, watch_window};
+use schema::Activity;
+use std::sync::mpsc;
+use std::thread::{self, JoinHandle};
 
 pub fn start_collector() -> Vec<JoinHandle<()>> {
     let (tx, rx) = mpsc::channel::<Activity>();

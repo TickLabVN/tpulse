@@ -1,11 +1,9 @@
-use crate::{
-    metric::categorizer::util::load_categorized_dataset,
-    metrics::{BrowserMetric, BrowserMetricType},
-};
+use std::collections::HashMap;
+
+use crate::{metric::categorizer::util::load_categorized_dataset, metric::schema::BrowserMetric};
+use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
 use lazy_static::lazy_static;
-use log::info;
 use oauth2::url;
-use fuzzy_matcher::{FuzzyMatcher, skim::SkimMatcherV2};
 use url::Url;
 
 lazy_static! {
@@ -14,20 +12,38 @@ lazy_static! {
 }
 
 pub fn categorize_browser_tab(metric: &mut BrowserMetric) {
-    if metric.data_type != BrowserMetricType::BrowserTab {
+    let mut score_map: HashMap<String, i64> = HashMap::new();
+
+    let needle = Url::parse(&metric.url);
+    if needle.is_err() {
         return;
     }
 
-    let url = metric.url.as_str();
-    let parsed_url = Url::parse(url).unwrap();
+    let binding = needle.unwrap();
+    let hostname = binding.host_str().unwrap();
 
-    if let Some(hostname) = parsed_url.host_str() {
-        for (needle, category) in HAYSTACK.iter() {
-            info!("Needle: {}, Category: {}, search: {}", needle, category, hostname);
-            if MATCHER.fuzzy_match(&needle, hostname).is_some() {
-                metric.tags.push(category.clone());
-                return;
-            }
+    for (title, category) in HAYSTACK.iter() {
+        if let Some(score) = MATCHER.fuzzy_match(hostname, &title) {
+            let value = score_map.entry(category.clone()).or_insert(0);
+            *value += score;
         }
+    }
+
+    if score_map.is_empty() {
+        return;
+    }
+
+    let mut max_score = -1;
+    let mut max_category: Option<&String> = None;
+
+    for (category, score) in score_map.iter() {
+        if *score >= max_score {
+            max_score = *score;
+            max_category = Some(category);
+        }
+    }
+
+    if let Some(category) = max_category {
+        metric.category = Some(category.clone());
     }
 }
