@@ -1,4 +1,4 @@
-use crate::metrics::WindowMetric;
+use crate::metric::schema::WindowMetric;
 use std::time::SystemTime;
 
 #[cfg(target_os = "linux")]
@@ -13,7 +13,8 @@ use {
 pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
     let window_raw_id = get_window_id().unwrap();
     if window_raw_id == 0 {
-        return None; // Or some other error type
+        // No open window found
+        return None;
     }
 
     let window_info = get_window_information_by_id(window_raw_id);
@@ -68,12 +69,11 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
     let unix_ts = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap();
-    let mut window_info = WindowMetric {
-        time: unix_ts.as_secs(),
-        title: None,
-        class: None,
-        exec_path: None,
-    };
+
+    let mut title: Option<String> = None;
+    let time = unix_ts.as_secs();
+    let mut class: Option<Vec<String>> = None;
+    let mut exec_path: Option<String> = None;
 
     for line in stdout.lines() {
         let parts: Vec<&str> = line.split('=').map(|s| s.trim()).collect();
@@ -82,30 +82,36 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
         }
 
         match parts[0] {
-            "WM_NAME" => window_info.title = Some(parts[1].trim_matches('"').to_string()),
+            "WM_NAME" => title = Some(parts[1].trim_matches('"').to_string()),
             "WM_CLASS" => {
-                let class = parts[1].split(',').map(|s| s.trim().trim_matches('"'));
-                window_info.class = Some(class.map(|s| s.to_string()).collect());
+                let wm_class = parts[1].split(',').map(|s| s.trim().trim_matches('"'));
+                class = Some(wm_class.map(|s| s.to_string()).collect());
             }
             "_NET_WM_PID" => {
                 let pid = parts[1].trim().parse::<i32>().unwrap();
-                if let std::result::Result::Ok(exec_path) =
-                    fs::read_link(format!("/proc/{}/exe", pid))
-                {
-                    let path_str = exec_path.as_path().display().to_string();
-                    window_info.exec_path = Some(path_str);
+                if let std::result::Result::Ok(path) = fs::read_link(format!("/proc/{}/exe", pid)) {
+                    let path_str = path.as_path().display().to_string();
+                    exec_path = Some(path_str);
                 }
             }
             "_NET_WM_NAME" => {
-                if window_info.title.is_none() {
-                    window_info.title = Some(parts[1].trim_matches('"').to_string());
+                if title.is_none() {
+                    title = Some(parts[1].trim_matches('"').to_string());
                 }
             }
             _ => {}
         }
     }
+    
+    let window = WindowMetric {
+        time,
+        title: title.unwrap(),
+        class: class.unwrap(),
+        exec_path,
+        category: None,
+    };
 
-    Ok(window_info)
+    Ok(window)
 }
 
 #[cfg(target_os = "windows")]
@@ -123,7 +129,7 @@ use {
 };
 
 #[cfg(target_os = "windows")]
-pub fn get_current_window_information() -> Option<WindowMetric> {
+pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
     let mut window_info = WindowMetric {
         time: 0,
         title: None,
@@ -148,7 +154,7 @@ pub fn get_current_window_information() -> Option<WindowMetric> {
         window_info.exec_path = Some(path);
         window_info.class = Some(vec![name]);
     }
-    Some(window_info)
+    Some(Ok(window_info))
 }
 
 #[cfg(target_os = "windows")]

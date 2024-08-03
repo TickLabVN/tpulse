@@ -1,19 +1,27 @@
 // The browser tpulse extension sends read data to a named pipe
 // Our app reads data from this named pipe to retrieve data from browser tabs
-use crate::metrics::{BrowserMetric, UserMetric};
-#[cfg(any(target_os = "linux", target = "macos"))]
+use crate::metric::schema::{Activity, BrowserMetric};
+use log::info;
+
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 use {
     libc::{mkfifo, open, read, O_RDONLY},
     std::ffi::CString,
     std::io::Error,
 };
 
-#[cfg(any(target_os = "linux", target = "macos"))]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn create_named_pipe(pipe_name: &str) -> Result<(), String> {
+    use log::info;
+
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
     let result = unsafe { mkfifo(c_pipe_name.as_ptr(), 0o666) };
 
     if result == 0 {
+        info!("Named pipe {} created", pipe_name);
+        Ok(())
+    } else if result == -1 {
+        info!("Named pipe {} already exists", pipe_name);
         Ok(())
     } else {
         let msg = format!(
@@ -24,7 +32,7 @@ pub fn create_named_pipe(pipe_name: &str) -> Result<(), String> {
     }
 }
 
-#[cfg(any(target_os = "linux", target = "macos"))]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
     let c_pipe_name = CString::new(pipe_name).expect("Failed to convert pipe name to CString");
 
@@ -34,7 +42,7 @@ pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
         return Err(Error::last_os_error());
     }
 
-    let mut buffer = String::new();
+    let mut buffer = vec![];
     unsafe {
         let mut byte: u8 = 0;
         loop {
@@ -44,16 +52,24 @@ pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
             } else if result == 0 {
                 break;
             }
-            buffer.push(byte as char);
+            buffer.push(byte);
         }
     };
-    Ok(buffer)
+    Ok(String::from_utf8(buffer).expect("Failed to convert buffer to string"))
 }
-#[cfg(any(target_os = "linux", target = "macos"))]
-pub fn convert_to_user_metric(data: String) -> Result<UserMetric, serde_json::Error> {
-    let browser_metric: BrowserMetric = serde_json::from_str(&data)?;
-    Ok(UserMetric::Browser(browser_metric))
+
+pub fn convert_to_user_metric(data: &mut String) -> Result<Vec<Activity>, serde_json::Error> {
+    if data.chars().last().is_some_and(|c| c == ',') {
+        data.pop();
+    }
+    data.insert(0, '[');
+    data.push(']');
+    info!("Received data: {}", data);
+
+    let metrics: Vec<BrowserMetric> = serde_json::from_str(data)?;
+    Ok(metrics.into_iter().map(|m| Activity::Browser(m)).collect())
 }
+
 #[cfg(target_os = "windows")]
 use {
     std::ffi::OsStr,
@@ -90,7 +106,9 @@ pub fn create_named_pipe(pipe_name: &str) -> Result<i32, Error> {
 
     if pipe_handle == winapi::um::handleapi::INVALID_HANDLE_VALUE {
         return Err(Error::last_os_error());
-    }
+    };
+
+    info!("Named pipe {} created", pipe_name);
     Ok(pipe_handle as i32)
 }
 

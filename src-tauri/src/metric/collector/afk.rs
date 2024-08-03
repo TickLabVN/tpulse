@@ -1,5 +1,7 @@
-use crate::metrics::{AFKMetric, AFKStatus, UserMetric};
+use crate::config::get_setting;
+use crate::metric::schema::{AFKMetric, AFKStatus, Activity};
 use device_query::{DeviceQuery, DeviceState};
+use log::info;
 use std::sync::mpsc;
 use std::thread::sleep;
 use std::time::{Duration, SystemTime};
@@ -22,17 +24,16 @@ use std::time::{Duration, SystemTime};
 /// use tpulse::watcher::watch_afk;
 /// watch_afk(1000, 5000);
 /// ```
-pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
-    println!("AFK watcher started");
-
+pub fn watch_afk(tx: mpsc::Sender<Activity>) {
+    info!("AFK watcher started");
     let device_state = DeviceState::new();
     let mut mouse_pos = device_state.get_mouse().coords;
-
     let mut total_timeout = 0;
     let mut afk = false;
     loop {
-        sleep(Duration::from_millis(poll_time));
+        let setting = get_setting();
 
+        sleep(Duration::from_millis(setting.poll_time));
         let mut detect_interact = false;
 
         let current_mouse_pos = device_state.get_mouse().coords;
@@ -55,22 +56,22 @@ pub fn watch_afk(poll_time: u64, timeout: u64, tx: mpsc::Sender<UserMetric>) {
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
 
-                tx.send(UserMetric::AFK(AFKMetric {
-                    start_time_unix: unix_ts.as_secs() as u64,
+                tx.send(Activity::AFK(AFKMetric {
+                    start_time: unix_ts.as_secs() as u64,
                     status: AFKStatus::ONLINE,
                 }))
                 .unwrap();
             }
         } else {
-            total_timeout += poll_time;
-            if total_timeout >= timeout && !afk {
+            total_timeout += setting.poll_time;
+            if total_timeout >= setting.time_out && !afk {
                 afk = true;
                 // send metric offline
                 let unix_ts = SystemTime::now()
                     .duration_since(SystemTime::UNIX_EPOCH)
                     .unwrap();
-                tx.send(UserMetric::AFK(AFKMetric {
-                    start_time_unix: unix_ts.as_secs() as u64,
+                tx.send(Activity::AFK(AFKMetric {
+                    start_time: unix_ts.as_secs() as u64,
                     status: AFKStatus::OFFLINE,
                 }))
                 .unwrap();
