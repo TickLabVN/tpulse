@@ -42,7 +42,7 @@ pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
         return Err(Error::last_os_error());
     }
 
-    let mut buffer = String::new();
+    let mut buffer = vec![];
     unsafe {
         let mut byte: u8 = 0;
         loop {
@@ -52,16 +52,24 @@ pub fn read_from_pipe(pipe_name: &str) -> Result<String, Error> {
             } else if result == 0 {
                 break;
             }
-            buffer.push(byte as char);
+            buffer.push(byte);
         }
     };
-    Ok(buffer)
+    Ok(String::from_utf8(buffer).expect("Failed to convert buffer to string"))
 }
 
-pub fn convert_to_user_metric(data: String) -> Result<Activity, serde_json::Error> {
-    let browser_metric: BrowserMetric = serde_json::from_str(&data)?;
-    Ok(Activity::Browser(browser_metric))
+pub fn convert_to_user_metric(data: &mut String) -> Result<Vec<Activity>, serde_json::Error> {
+    if data.chars().last().is_some_and(|c| c == ',') {
+        data.pop();
+    }
+    data.insert(0, '[');
+    data.push(']');
+    info!("Received data: {}", data);
+
+    let metrics: Vec<BrowserMetric> = serde_json::from_str(data)?;
+    Ok(metrics.into_iter().map(|m| Activity::Browser(m)).collect())
 }
+
 #[cfg(target_os = "windows")]
 use {
     std::ffi::OsStr,

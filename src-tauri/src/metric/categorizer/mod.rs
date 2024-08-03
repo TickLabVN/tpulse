@@ -1,6 +1,6 @@
 mod browser;
-mod metric;
+mod processor;
 mod util;
 mod window;
 
-pub use metric::create_processor;
+pub use processor::create_processor;

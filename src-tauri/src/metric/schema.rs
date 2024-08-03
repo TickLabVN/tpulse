@@ -17,7 +17,7 @@ pub struct WindowMetric {
     pub time: u64,
     pub title: String,
     pub class: Vec<String>,
-    pub exec_path: String,
+    pub exec_path: Option<String>,
     pub category: Option<String>,
 }
 
@@ -29,12 +29,12 @@ pub enum BrowserMetricType {
 
 #[derive(Clone, Deserialize, Debug)]
 pub struct BrowserMetric {
-    #[serde(rename = "type")]
-    pub data_type: BrowserMetricType,
+    // #[serde(rename = "type")]
+    // pub data_type: BrowserMetricType,
     pub title: String,
     pub url: String,
     pub time: u64,
-    pub paused: bool,
+    pub paused: Option<bool>,
     pub category: Option<String>,
 }
 

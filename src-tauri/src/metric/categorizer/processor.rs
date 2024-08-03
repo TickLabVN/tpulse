@@ -1,5 +1,3 @@
-use log::info;
-
 use super::{browser::categorize_browser_tab, window::categorize_window};
 use crate::metric::schema::{Activity, BrowserMetric, WindowMetric};
 pub type ProcessFn<T> = fn(&mut T);
@@ -35,13 +33,14 @@ impl MetricProcessor {
                 for cfn in &self.window_categorize_fn {
                     cfn(m);
                 }
-                info!("Window metric: {:?}", m);
+                if m.category.is_none() {
+                    m.category = Some("Uncategorized".to_string());
+                }
             }
             Activity::Browser(m) => {
                 for cfn in &self.browser_categorize_fn {
                     cfn(m);
                 }
-                info!("Browser metric: {:?}", m);
             }
         };
     }

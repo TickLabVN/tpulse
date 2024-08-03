@@ -1,7 +1,6 @@
 mod utils;
 use crate::metric::schema::Activity;
-use log::error;
-use log::info;
+use log::{error, info};
 use std::sync::mpsc;
 use utils::{convert_to_user_metric, create_named_pipe, read_from_pipe};
 
@@ -16,11 +15,13 @@ pub fn watch_browser(tx: mpsc::Sender<Activity>) {
     loop {
         match read_from_pipe(&pipe_name)
             .map_err(|e| e.to_string())
-            .and_then(|v| convert_to_user_metric(v).map_err(|e| e.to_string()))
+            .and_then(|mut v| convert_to_user_metric(&mut v).map_err(|e| e.to_string()))
         {
             Ok(metric) => {
-                if let Err(_) = tx.send(metric) {
-                    eprintln!("Failed to send browser metric");
+                for m in metric {
+                    if let Err(e) = tx.send(m) {
+                        error!("Failed to send browser metric: {}", e);
+                    }
                 }
             }
             Err(err) => eprintln!("Error: {}", err),
