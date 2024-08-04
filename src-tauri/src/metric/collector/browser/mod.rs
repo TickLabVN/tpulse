@@ -24,7 +24,7 @@ pub fn watch_browser(tx: mpsc::Sender<Activity>) {
                     }
                 }
             }
-            Err(err) => eprintln!("Error: {}", err),
+            Err(err) => error!("Error: {}", err),
         }
     }
 }
@@ -41,7 +41,7 @@ pub fn watch_browser(tx: mpsc::Sender<Activity>) {
     let pipe_name = "\\\\.\\pipe\\tpulse";
     match create_named_pipe(&pipe_name) {
         Ok(pipe_handle) => {
-            println!("Waiting for client to connect...");
+            info!("Watching browser...");
             loop {
                 let connected =
                     unsafe { ConnectNamedPipe(pipe_handle as *mut c_void, ptr::null_mut()) };
@@ -50,11 +50,13 @@ pub fn watch_browser(tx: mpsc::Sender<Activity>) {
                 }
                 match read_from_pipe(pipe_handle)
                     .map_err(|e| e.to_string())
-                    .and_then(|v| convert_to_user_metric(v).map_err(|e| e.to_string()))
+                    .and_then(|mut v| convert_to_user_metric(&mut v).map_err(|e| e.to_string()))
                 {
                     Ok(metric) => {
-                        if let Err(_) = tx.send(metric) {
-                            eprintln!("Failed to send browser metric");
+                        for m in metric {
+                            if let Err(e) = tx.send(m) {
+                                error!("Failed to send browser metric: {}", e);
+                            }
                         }
                     }
                     Err(err) => error!("Error: {}", err),

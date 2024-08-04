@@ -102,7 +102,7 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
             _ => {}
         }
     }
-    
+
     let window = WindowMetric {
         time,
         title: title.unwrap(),
@@ -130,13 +130,13 @@ use {
 
 #[cfg(target_os = "windows")]
 pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
-    let mut window_info = WindowMetric {
-        time: 0,
-        title: None,
-        class: None,
-        exec_path: None,
-    };
+    let unix_ts = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap();
+
     unsafe {
+        let time = unix_ts.as_secs();
+
         let mut pid = 0;
         let hwnd = GetForegroundWindow();
         GetWindowThreadProcessId(hwnd, Option::Some(&mut pid));
@@ -145,16 +145,14 @@ pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
         let phlde: HANDLE = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid).unwrap();
         let (path, name) = get_process_path_and_name(phlde);
 
-        let unix_ts = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap();
-
-        window_info.time = unix_ts.as_secs();
-        window_info.title = Some(window_title);
-        window_info.exec_path = Some(path);
-        window_info.class = Some(vec![name]);
+        Some(Ok(WindowMetric {
+            time,
+            title: window_title,
+            class: vec![name],
+            exec_path: Some(path),
+            category: None,
+        }))
     }
-    Some(Ok(window_info))
 }
 
 #[cfg(target_os = "windows")]
