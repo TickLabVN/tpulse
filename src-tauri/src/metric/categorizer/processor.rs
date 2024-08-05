@@ -1,9 +1,11 @@
-use log::info;
-
 use super::{browser::categorize_browser_tab, window::categorize_window};
 use crate::{
-    db, metric::schema::{Activity, BrowserMetric, WindowMetric}
+    db::{self, BrowserActivity, WindowActivity},
+    metric::schema::{Activity, BrowserMetric, WindowMetric},
 };
+use log::info;
+use url::Url;
+
 pub type ProcessFn<T> = fn(&mut T);
 
 pub struct MetricProcessor {
@@ -38,22 +40,16 @@ impl MetricProcessor {
                 for cfn in &self.window_categorize_fn {
                     cfn(metric);
                 }
-                
-                let mut id = &metric.title;
-                let mut category: Option<String> = None;
-                if let Some((app_name, app_category)) = &metric.label {
-                    id = app_name;
-                    category = Some(app_category.clone());
-                }
 
-                db::insert_window_metric(
+                info!("Window metric: {:?}", metric);
+                db::insert_window_activity(
                     metric.time,
-                    &db::WindowActivity {
-                        id: id.clone(),
+                    &WindowActivity {
+                        id: metric.title.clone(),
                         title: metric.title.clone(),
                         class: metric.class.join(","),
                         execute_binary: metric.exec_path.clone(),
-                        category,
+                        category: metric.category.clone(),
                     },
                 );
             }
@@ -61,6 +57,22 @@ impl MetricProcessor {
                 for cfn in &self.browser_categorize_fn {
                     cfn(m);
                 }
+
+                let id = {
+                    let url = Url::parse(&m.url).unwrap();
+                    let hostname = url.host_str().unwrap();
+                    hostname.to_string()
+                };
+                db::insert_browser_activity(
+                    m.time,
+                    &BrowserActivity {
+                        id,
+                        title: m.title.clone(),
+                        url: m.url.clone(),
+                        category: m.category.clone(),
+                    },
+                );
+                info!("Browser metric: {:?}", m);
             }
         };
     }

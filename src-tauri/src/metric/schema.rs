@@ -18,7 +18,7 @@ pub struct WindowMetric {
     pub title: String,
     pub class: Vec<String>,
     pub exec_path: Option<String>,
-    pub label: Option<(String, String)>, // App name and category
+    pub category: Option<String>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -26,7 +26,7 @@ pub struct BrowserMetric {
     pub title: String,
     pub url: String,
     pub time: u64,
-    pub label: Option<(String, String)>,
+    pub category: Option<String>,
 }
 
 #[derive(Deserialize)]

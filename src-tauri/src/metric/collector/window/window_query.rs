@@ -108,7 +108,7 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
         title: title.unwrap(),
         class: class.unwrap(),
         exec_path,
-        label: None,
+        category: None,
     };
 
     Ok(window)

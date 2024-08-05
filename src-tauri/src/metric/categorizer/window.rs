@@ -23,7 +23,6 @@ pub fn categorize_window(metric: &mut WindowMetric) {
 
     let mut max_score = -1;
     let mut max_category: Option<&str> = None;
-    let mut matched_app_name: Option<&str> = None;
 
     for (title, category) in HAYSTACK.iter() {
         if let Some(score) = MATCHER.fuzzy_match(&needle, &title) {
@@ -33,14 +32,11 @@ pub fn categorize_window(metric: &mut WindowMetric) {
             if *total_score > max_score {
                 max_score = *total_score;
                 max_category = Some(category);
-                matched_app_name = Some(title);
             }
         }
     }
 
     if let Some(category) = max_category {
-        if let Some(app_name) = matched_app_name {
-            metric.label = Some((app_name.to_string(), category.to_string()));
-        }
+        metric.category = Some(category.to_string());
     }
 }
