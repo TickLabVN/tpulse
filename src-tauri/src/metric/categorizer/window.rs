@@ -21,28 +21,26 @@ pub fn categorize_window(metric: &mut WindowMetric) {
     }
     needle = normalize_str(&needle);
 
+    let mut max_score = -1;
+    let mut max_category: Option<&str> = None;
+    let mut matched_app_name: Option<&str> = None;
+
     for (title, category) in HAYSTACK.iter() {
         if let Some(score) = MATCHER.fuzzy_match(&needle, &title) {
-            let value = score_map.entry(category.clone()).or_insert(0);
-            *value += score;
-        }
-    }
+            let total_score = score_map.entry(category.clone()).or_insert(0);
+            *total_score += score;
 
-    if score_map.is_empty() {
-        return;
-    }
-
-    let mut max_score = -1;
-    let mut max_category: Option<&String> = None;
-
-    for (category, score) in score_map.iter() {
-        if *score >= max_score {
-            max_score = *score;
-            max_category = Some(category);
+            if *total_score > max_score {
+                max_score = *total_score;
+                max_category = Some(category);
+                matched_app_name = Some(title);
+            }
         }
     }
 
     if let Some(category) = max_category {
-        metric.category = Some(category.clone());
+        if let Some(app_name) = matched_app_name {
+            metric.label = Some((app_name.to_string(), category.to_string()));
+        }
     }
 }

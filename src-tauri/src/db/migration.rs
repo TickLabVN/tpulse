@@ -11,30 +11,48 @@ pub fn apply_migrations() {
             start INTEGER,
             end INTEGER,
             name TEXT NOT NULL,
-            status TEXT NOT NULL CHECK(status IN ('todo', 'in_progress', 'done')) DEFAULT 'todo',
-            project_id INTEGER
+            status TEXT NOT NULL CHECK(status IN ('todo', 'in_progress', 'done')) DEFAULT 'todo'
+        );
+
+        CREATE TABLE IF NOT EXISTS window_activity (
+            id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            class TEXT NOT NULL,
+            execute_binary TEXT,
+
+            FOREIGN KEY(id) REFERENCES activity(id)
+        );
+        CREATE TABLE IF NOT EXISTS browser_activity (
+            id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            url TEXT NOT NULL,
+
+            FOREIGN KEY(id) REFERENCES activity(id)
         );
         CREATE TABLE IF NOT EXISTS activity (
-            identifier TEXT PRIMARY KEY,
-            activity_tag TEXT,
-            category_tag TEXT
+            id TEXT PRIMARY KEY,
+            type TEXT NOT NULL CHECK(type IN ('window', 'browser')),
+            category TEXT
         );
+
         CREATE TABLE IF NOT EXISTS log (
-            start_time INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            start_time INTEGER,
             end_time INTEGER,
-            activity_identifier TEXT NOT NULL,
+            activity_id TEXT NOT NULL,
             task_id INTEGER,
-            FOREIGN KEY(task_id) REFERENCES tasks(id)
-            FOREIGN KEY(activity_identifier) REFERENCES activity(identifier)
+            
+            FOREIGN KEY(task_id) REFERENCES tasks(id),
+            FOREIGN KEY(activity_id) REFERENCES activity(id)
         );
+
         CREATE VIEW IF NOT EXISTS activity_log AS
-            SELECT activity.identifier AS name, 
+            SELECT activity.id AS name, 
                 log.start_time, 
                 log.end_time, 
-                activity.category_tag, 
-                log.task_id
-            FROM activity 
-            JOIN log ON activity.identifier = log.activity_identifier;
+                activity.category AS category
+            FROM activity
+            JOIN log ON activity.id = log.activity_id;
     ",
     )
     .unwrap();

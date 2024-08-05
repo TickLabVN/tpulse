@@ -1,7 +1,9 @@
 use log::info;
 
 use super::{browser::categorize_browser_tab, window::categorize_window};
-use crate::metric::schema::{Activity, BrowserMetric, WindowMetric};
+use crate::{
+    db, metric::schema::{Activity, BrowserMetric, WindowMetric}
+};
 pub type ProcessFn<T> = fn(&mut T);
 
 pub struct MetricProcessor {
@@ -27,18 +29,33 @@ impl MetricProcessor {
 
     pub fn categorize(&self, metric: &mut Activity) {
         match metric {
-            Activity::AFK(_) => {
+            Activity::AFK(m) => {
                 // TODO: Handle AFK metric
+                info!("AFK metric: {:?}", m);
                 return;
             }
-            Activity::Window(m) => {
+            Activity::Window(metric) => {
                 for cfn in &self.window_categorize_fn {
-                    cfn(m);
+                    cfn(metric);
                 }
-                if m.category.is_none() {
-                    m.category = Some("Uncategorized".to_string());
+                
+                let mut id = &metric.title;
+                let mut category: Option<String> = None;
+                if let Some((app_name, app_category)) = &metric.label {
+                    id = app_name;
+                    category = Some(app_category.clone());
                 }
-                info!("Window: {:?}", m);
+
+                db::insert_window_metric(
+                    metric.time,
+                    &db::WindowActivity {
+                        id: id.clone(),
+                        title: metric.title.clone(),
+                        class: metric.class.join(","),
+                        execute_binary: metric.exec_path.clone(),
+                        category,
+                    },
+                );
             }
             Activity::Browser(m) => {
                 for cfn in &self.browser_categorize_fn {

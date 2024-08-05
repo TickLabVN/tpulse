@@ -64,7 +64,6 @@ pub fn convert_to_user_metric(data: &mut String) -> Result<Vec<Activity>, serde_
     }
     data.insert(0, '[');
     data.push(']');
-    info!("Received data: {}", data);
 
     let metrics: Vec<BrowserMetric> = serde_json::from_str(data)?;
     Ok(metrics.into_iter().map(|m| Activity::Browser(m)).collect())

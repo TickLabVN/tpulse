@@ -18,27 +18,18 @@ pub struct WindowMetric {
     pub title: String,
     pub class: Vec<String>,
     pub exec_path: Option<String>,
-    pub category: Option<String>,
+    pub label: Option<(String, String)>, // App name and category
 }
 
-#[derive(Clone, Deserialize, PartialEq, Debug)]
-pub enum BrowserMetricType {
-    VideoStatus,
-    BrowserTab,
-}
-
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct BrowserMetric {
-    // #[serde(rename = "type")]
-    // pub data_type: BrowserMetricType,
     pub title: String,
     pub url: String,
     pub time: u64,
-    pub paused: Option<bool>,
-    pub category: Option<String>,
+    pub label: Option<(String, String)>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize)]
 pub enum Activity {
     AFK(AFKMetric),
     Window(WindowMetric),
