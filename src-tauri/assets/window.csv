@@ -12,8 +12,8 @@ Mobile Device Updated,Do Not Track
 Command Line Tools,Do Not Track
 Flow,Do Not Track
 Time Out,Do Not Track
-Rubymine,Code
-iTerm,Code
+Rubymine,Programming
+iTerm,Programming
 Chrome,Browsing
 Numbers,Documenting
 Slack,Messaging
@@ -25,34 +25,34 @@ Airtable,Task Management
 Microsoft Excel,Documenting
 Command E,Productivity
 1Password 7,Utility
-WebStorm,Code
+WebStorm,Programming
 Sketch,Design
 Rize (Staging),Productivity
-Electron,Code
+Electron,Programming
 Microsoft Word,Documenting
 Safari,Browsing
 TextEdit,Writing
 Notes,Writing
 Creative Cloud,Design
-Sublime Text,Code
-Terminal,Code
-Code - Insiders,Code
+Sublime Text,Programming
+Terminal,Programming
+Code - Insiders,Programming
 FaceTime,Personal
-IntelliJ IDEA,Code
+IntelliJ IDEA,Programming
 Mozilla Firefox,Browsing
 Preview,Personal
 Spotify,Entertainment
-OBS,Code
+OBS,Programming
 Figma,Design
-PyCharm,Code
+PyCharm,Programming
 Notion,Documenting
-Xcode,Code
-Docker Desktop,Code
+Xcode,Programming
+Docker Desktop,Programming
 Twitch,Entertainment
-GitHub Desktop,Code
+GitHub Desktop,Programming
 Microsoft PowerPoint,Documenting
 QuickTime Player,Personal
-Tableau Public,Code
+Tableau Public,Programming
 Skype,Personal
 Microsoft Teams,Messaging
 Cisco Webex Meetings,Video Conferencing
@@ -61,8 +61,8 @@ Photos,Personal
 Find My,Personal
 Dropbox,Documenting
 Evernote,Documenting
-Code,Code
-Docker,Code
+Code,Programming
+Docker,Programming
 Music,Entertainment
 Plan,Task Management
 Reminders,Task Management
@@ -78,30 +78,30 @@ Superhuman,Email
 Zeplin,Design
 OmniFocus 3,Task Management
 Nuclino,Documenting
-iPhone Simulator,Code
+iPhone Simulator,Programming
 KeepPassX,Utility
 Activity Monitor,Utility
 Desktop Dimmer,Personalization
 Steam,Entertainment
 Flux,Personalization
-Postman,Code
+Postman,Programming
 Discord,Messaging
 Telegram,Messaging
 Edge,Browsing
 Chromium,Browsing
 Dashlane,Utility
 Spark,Email
-Puppetry,Code
+Puppetry,Programming
 Dropbox Paper,Documenting
 Fantastical,Task Management
 Bluejeans,Video Conferencing
 Things,Task Management
-Atom,Code
+Atom,Programming
 Adobe Illustrator,Design
 Signal,Messaging
 Microsoft Edge,Browsing
 Apple TV,Entertainment
-DataGrip,Code
+DataGrip,Programming
 Calculator,Utility
 Dictionary,Utility
 Tandem,Messaging
@@ -109,21 +109,21 @@ PhotoBooth,Entertainment
 Kindle,Reading
 Keynote,Documenting
 Clocker,Utility
-PHP Storm,Code
+PHP Storm,Programming
 Kiwi,Email
 Citrix XenApp,Virtual Machine
 Viber,Messaging
 Tor,Browsing
 Microsoft RDC,Documenting
-Azure Data Studio,Code
+Azure Data Studio,Programming
 Photoshop,Design
 Amazon Chime,Video Conferencing
 Adobe Reader,Documenting
-Intellij,Code
-Nova,Code
+Intellij,Programming
+Nova,Programming
 Canary,Utility
 VLC,Entertainment
-Hyper,Code
+Hyper,Programming
 TickTick,Task Management
 Cisco Spark,Messaging
 Obsidian,Documenting
@@ -132,30 +132,30 @@ Unclutter,Utility
 Adobe XD,Design
 CleanShot,Utility
 Edison Mail,Email
-Adobe Dreamweaver,Code
-Sequel Pro,Code
+Adobe Dreamweaver,Programming
+Sequel Pro,Programming
 Linear,Task Management
 Adobe Acrobat,Utility
 Grammarly,Utility
-DB Beaver,Code
+DB Beaver,Programming
 GoToMeeting,Video Conferencing
 Google Chat,Video Conferencing
 Meet,Video Conferencing
 AnyDesk,Video Conferencing
 Mighty,Browsing
 InDesign,Design
-Warp,Code
+Warp,Programming
 Clean My Mac,Utility
 SigmaOS,Browsing
 Slack,Messaging
 Explorer,Utility
-Electron,Code
-VS Debug Console,Code
-Git Bash,Code
-WebStorm,Code
+Electron,Programming
+VS Debug Console,Programming
+Git Bash,Programming
+WebStorm,Programming
 Brave,Browsing
-Visual Studio,Code
-RubyMine,Code
+Visual Studio,Programming
+RubyMine,Programming
 OneNote,Documenting
 Rize (Staging),Productivity
 Rize,Productivity
@@ -163,11 +163,11 @@ Search App,Utility
 Shell Experience Host,Utility
 Firefox,Browsing
 Chrome,Browsing
-Command Line Interpreter,Code
-Powershell,Code
+Command Line Interpreter,Programming
+Powershell,Programming
 Cortana,Productivity
 Accessibility Insights,Utility
-Sublime Text,Code
+Sublime Text,Programming
 Microsoft Screen Magnifier,Utility
 Start Menu,Utility
 Edge,Browsing
@@ -184,14 +184,14 @@ Microsoft Word,Documenting
 Powerpoint,Documenting
 Picasa,Design
 Photoshop,Design
-Visual Studio Code,Code
+Visual Studio Code,Programming
 Zoom,Video Conferencing
 Opera,Browsing
 WhatsApp,Messaging
 Teams,Messaging
 Illustrator,Design
 Obsidian,Writing
-AutoCAD,Code
+AutoCAD,Programming
 Wavebox,Browsing
 SketchUp,Design
 Camtasia Studio,Video Editing
@@ -203,11 +203,11 @@ Postbox,Email
 Adobe Premiere Pro,Video Editing
 Adobe Acrobat,Documenting
 TradingView,Finance
-JetBrains Rider,Code
+JetBrains Rider,Programming
 Spotify,Entertainment
 ClickUp,Task Management
 Notepad++,Writing
-IntelliJ IDEA,Code
+IntelliJ IDEA,Programming
 Netflix,Entertainment
 OneDrive,Documenting
 Creative Cloud,Documenting

@@ -1,8 +1,24 @@
-mod window_query;
 use crate::{config, metric::schema::Activity};
-use log::{error, info};
+use log::info;
 use std::{sync::mpsc, thread::sleep, time::Duration};
-use window_query::get_current_window_information;
+
+#[cfg(target_os = "macos")]
+mod macos;
+
+#[cfg(target_os = "macos")]
+pub use macos::get_current_window_information;
+
+#[cfg(target_os = "linux")]
+mod linux;
+
+#[cfg(target_os = "linux")]
+pub use linux::get_current_window_information;
+
+#[cfg(target_os = "windows")]
+mod windows;
+
+#[cfg(target_os = "windows")]
+pub use windows::get_current_window_information;
 
 /// Watches the current window and sends window information through a channel.
 ///
@@ -19,13 +35,7 @@ pub fn watch_window(tx: mpsc::Sender<Activity>) {
     info!("Window watcher started!");
     loop {
         // If there is an active window
-        if let Some(r) = get_current_window_information() {
-            if r.is_err() {
-                error!("Window information error: {:?}", r);
-            }
-
-            let window_info = r.unwrap();
-            // Check if the window is a browser
+        if let Some(window_info) = get_current_window_information() {
             let mut is_browser = false;
             for browser in BROWSERS {
                 for class in &window_info.class {

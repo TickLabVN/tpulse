@@ -19,6 +19,8 @@ fn main() {
     db::apply_migrations();
 
     let workers = start_collector();
+
+    // app.run(|app_handle, event| log::info!("Application start..."));
     for w in workers {
         w.join().unwrap();
     }
