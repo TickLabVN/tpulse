@@ -26,5 +26,7 @@ fn read_csv(file_path: String) -> Vec<(String, String)> {
 }
 
 pub fn normalize_str(s: &str) -> String {
-    s.chars().filter(|c| c.is_ascii_alphanumeric() || c.eq(&'.')).collect()
+    s.chars()
+        .filter(|c| c.is_ascii_alphanumeric() || c.eq(&'.'))
+        .collect()
 }

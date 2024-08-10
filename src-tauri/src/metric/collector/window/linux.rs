@@ -1,4 +1,3 @@
-
 #[cfg(target_os = "linux")]
 use {
     anyhow::{anyhow, Ok, Result},
@@ -111,5 +110,3 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
 
     Ok(window)
 }
-
-

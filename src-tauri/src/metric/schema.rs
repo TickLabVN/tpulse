@@ -21,6 +21,18 @@ pub struct WindowMetric {
     pub category: Option<String>,
 }
 
+impl Default for WindowMetric {
+    fn default() -> Self {
+        WindowMetric {
+            time: 0,
+            title: "".to_string(),
+            class: vec![],
+            exec_path: None,
+            category: None,
+        }
+    }
+}
+
 #[derive(Deserialize, Debug, Clone)]
 pub struct BrowserMetric {
     pub title: String,
