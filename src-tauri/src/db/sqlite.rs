@@ -1,5 +1,4 @@
 use lazy_static::lazy_static;
-use log::error;
 use rusqlite::{params, Connection};
 use std::sync::{Mutex, MutexGuard};
 
@@ -59,7 +58,7 @@ pub fn insert_browser_activity(time: u64, activity: &BrowserActivity) {
     .unwrap();
 
     // End the last log entry and start a new one
-    // let mut get_latest_log = tx
+    // let mut get_latest_log = &tx
     //     .prepare("SELECT activity_id FROM log ORDER BY id DESC LIMIT 1")
     //     .unwrap();
     // let latest_activity_iter = get_latest_log.query_map(params![], |row| {
@@ -125,9 +124,10 @@ pub fn insert_window_activity(time: u64, activity: &WindowActivity) {
         ],
     )
     .unwrap();
+    // let borrow_tx = &tx;
 
     // // End the last log entry and start a new one
-    // let mut get_latest_log = tx
+    // let mut get_latest_log = borrow_tx
     //     .prepare("SELECT activity_id FROM log ORDER BY id DESC LIMIT 1")
     //     .unwrap();
     // let latest_activity_iter = get_latest_log.query_map(params![], |row| {
@@ -147,7 +147,6 @@ pub fn insert_window_activity(time: u64, activity: &WindowActivity) {
     //     break;
     // }
 
-    // let borrow_tx = &tx;
     // if latest_activity_id != activity.id {
     //     borrow_tx
     //         .execute(

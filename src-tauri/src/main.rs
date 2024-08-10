@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use dotenvy::dotenv;
+use tpulse::google;
 use std::fs;
 use tauri::Manager;
 use tpulse::app::create_app;
@@ -10,6 +11,9 @@ use tpulse::{db, metric::start_collector};
 fn main() {
     dotenv().ok();
     env_logger::init();
+
+    google::authorize();
+    google::handle_auth_callback();
     let app = create_app();
 
     let db_path = app.path().app_config_dir().unwrap().join("tpulse.sqlite3");

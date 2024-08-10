@@ -10,36 +10,16 @@ pub struct OAuthConfig {
 }
 
 lazy_static! {
-    static ref OAUTH_CONFIG: OAuthConfig = OAuthConfig::new(
-        "68238066373-iaiepboevrqvu1q6hp7gcirvro06rgvg.apps.googleusercontent.com".to_string(),
-        "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".to_string(),
-        "http://localhost:5917".to_string(),
-        "https://accounts.google.com/o/oauth2/auth".to_string(),
-        "https://accounts.google.com/o/oauth2/token".to_string(),
-        vec!["email".to_string()]
-    );
+    static ref OAUTH_CONFIG: OAuthConfig = OAuthConfig {
+        client_id: "1082099244394-i78b3kar46unfrh2702mi3n4dngpcugj.apps.googleusercontent.com"
+            .to_string(),
+        client_secret: "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".to_string(),
+        redirect_uri: "http://localhost:25794".to_string(),
+        auth_url: "https://accounts.google.com/o/oauth2/auth".to_string(),
+        token_url: "https://accounts.google.com/o/oauth2/token".to_string(),
+        scopes: vec!["email".to_string()],
+    };
 }
-
 pub fn get_oauth_config() -> &'static OAuthConfig {
     &OAUTH_CONFIG
-}
-
-impl OAuthConfig {
-    fn new(
-        client_id: String,
-        client_secret: String,
-        redirect_uri: String,
-        auth_url: String,
-        token_url: String,
-        scopes: Vec<String>,
-    ) -> Self {
-        OAuthConfig {
-            client_id,
-            client_secret,
-            redirect_uri,
-            auth_url,
-            token_url,
-            scopes,
-        }
-    }
 }

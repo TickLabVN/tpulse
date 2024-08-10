@@ -1,7 +1,6 @@
 use crate::metric::{categorizer::util::load_categorized_dataset, schema::BrowserMetric};
 use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
 use lazy_static::lazy_static;
-use oauth2::url;
 use std::collections::HashMap;
 use url::Url;
 
