@@ -13,7 +13,6 @@ fn main() {
     env_logger::init();
 
     google::authorize();
-    google::handle_auth_callback();
     let app = create_app();
 
     let db_path = app.path().app_config_dir().unwrap().join("tpulse.sqlite3");
