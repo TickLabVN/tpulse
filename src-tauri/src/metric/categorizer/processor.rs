@@ -3,7 +3,6 @@ use crate::{
     db::{self, BrowserActivity, WindowActivity},
     metric::schema::{Activity, BrowserMetric, WindowMetric},
 };
-use log::info;
 use url::Url;
 
 pub type ProcessFn<T> = fn(&mut T);
@@ -31,9 +30,9 @@ impl MetricProcessor {
 
     pub fn categorize(&self, metric: &mut Activity) {
         match metric {
-            Activity::AFK(m) => {
+            Activity::AFK(_) => {
                 // TODO: Handle AFK metric
-                info!("AFK metric: {:?}", m);
+                // info!("AFK metric: {:?}", m);
                 return;
             }
             Activity::Window(metric) => {
@@ -41,7 +40,6 @@ impl MetricProcessor {
                     cfn(metric);
                 }
 
-                info!("Window metric: {:?}", metric);
                 db::insert_window_activity(
                     metric.time,
                     &WindowActivity {
@@ -72,7 +70,6 @@ impl MetricProcessor {
                         category: m.category.clone(),
                     },
                 );
-                info!("Browser metric: {:?}", m);
             }
         };
     }

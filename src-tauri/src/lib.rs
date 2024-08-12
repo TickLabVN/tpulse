@@ -1,8 +1,5 @@
 pub mod app;
-pub mod app_config;
 pub mod config;
 pub mod db;
-pub mod google_calendar;
-pub mod google_oauth;
+pub mod google;
 pub mod metric;
-pub mod utils;
