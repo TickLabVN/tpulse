@@ -13,7 +13,7 @@ use {
 };
 
 #[cfg(target_os = "windows")]
-pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
+pub fn get_current_window_information() -> Option<WindowMetric> {
     let unix_ts = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap();
@@ -29,13 +29,13 @@ pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
         let phlde: HANDLE = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid).unwrap();
         let (path, name) = get_process_path_and_name(phlde);
 
-        Some(Ok(WindowMetric {
+        Some(WindowMetric {
             time,
             title: window_title,
             class: vec![name],
             exec_path: Some(path),
             category: None,
-        }))
+        })
     }
 }
 

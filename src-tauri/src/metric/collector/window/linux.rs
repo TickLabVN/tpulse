@@ -1,3 +1,6 @@
+use crate::metric::schema::WindowMetric;
+use std::time::SystemTime;
+
 #[cfg(target_os = "linux")]
 use {
     anyhow::{anyhow, Ok, Result},
@@ -7,15 +10,14 @@ use {
 };
 
 #[cfg(target_os = "linux")]
-pub fn get_current_window_information() -> Option<Result<WindowMetric>> {
+pub fn get_current_window_information() -> Option<WindowMetric> {
     let window_raw_id = get_window_id().unwrap();
     if window_raw_id == 0 {
         // No open window found
         return None;
     }
-
-    let window_info = get_window_information_by_id(window_raw_id);
-    Some(window_info)
+    
+    get_window_information_by_id(window_raw_id)
 }
 
 #[cfg(target_os = "linux")]
@@ -43,7 +45,7 @@ fn get_window_id() -> Result<i64> {
 }
 
 #[cfg(target_os = "linux")]
-fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
+fn get_window_information_by_id(window_id: i64) -> Option<WindowMetric> {
     let bin = "xprop";
     let window_raw_infor = Command::new(bin)
         .env("LC_ALL", "C.utf8")
@@ -59,7 +61,8 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
 
     if !window_raw_infor.status.success() {
         let stderr = String::from_utf8_lossy(&window_raw_infor.stderr);
-        return Err(anyhow!("Get window information error: {}", stderr));
+        log::error!("Get window information error: {}", stderr);
+        return None;
     }
 
     let stdout = String::from_utf8_lossy(&window_raw_infor.stdout);
@@ -108,5 +111,5 @@ fn get_window_information_by_id(window_id: i64) -> Result<WindowMetric> {
         category: None,
     };
 
-    Ok(window)
+    Some(window)
 }
