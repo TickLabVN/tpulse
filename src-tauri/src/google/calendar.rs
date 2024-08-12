@@ -1,239 +1,131 @@
-// use anyhow::Result;
-// use log::{error, info};
-// use reqwest::blocking::Client;
-// use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
-// use serde::{Deserialize, Serialize};
-// use std::collections::HashMap;
-// use std::fmt;
+use crate::{config, db};
+use reqwest::blocking::{Client, Response};
+use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
+use rusqlite::params;
+use serde::Deserialize;
+use time::{format_description::well_known::Rfc3339, OffsetDateTime};
 
-// use super::GoogleOAuth;
+use super::refresh_token;
 
-// #[derive(Debug, Deserialize)]
-// #[serde(rename_all = "camelCase")]
-// pub struct CalendarInfo {
-//     pub id: String,
-//     pub summary: String,
-//     pub background_color: String,
-// }
+#[derive(Deserialize, Debug)]
+struct CalendarTime {
+    #[serde(rename = "dateTime")]
+    date_time: String,
+}
 
-// #[derive(Debug, Deserialize)]
-// struct CalendarInfoResponse {
-//     items: Vec<CalendarInfo>,
-// }
+impl CalendarTime {
+    fn to_unix_secs(&self) -> i64 {
+        let datetime = OffsetDateTime::parse(&self.date_time, &Rfc3339).unwrap();
+        datetime.unix_timestamp()
+    }
+}
 
-// #[derive(Debug, Deserialize, Serialize)]
-// pub struct EventDateTime {
-//     pub date: Option<String>,
-//     pub date_time: Option<String>,
-//     pub time_zone: Option<String>,
-// }
+#[derive(Deserialize, Debug)]
+struct CalendarEventItem {
+    summary: String,
+    description: String,
+    start: CalendarTime,
+    end: CalendarTime,
+    id: String,
+}
 
-// impl fmt::Display for EventDateTime {
-//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//         match (&self.date, &self.date_time) {
-//             (Some(date), _) => write!(f, "{}", date),
-//             (_, Some(date_time)) => write!(f, "{}", date_time),
-//             _ => write!(f, "No date or datetime specified"),
-//         }
-//     }
-// }
+#[derive(Deserialize, Debug)]
+struct UnauthenticatedError {
+    status: String,
+}
 
-// #[derive(Debug, Deserialize, Serialize)]
-// pub struct EventInfo {
-//     pub id: String,
-//     pub summary: String,
-//     pub start: EventDateTime,
-//     pub end: EventDateTime,
-//     pub color_id: Option<String>,
-//     pub color: Option<String>,
-//     pub location: Option<String>,
-// }
+#[derive(Deserialize, Debug)]
+#[serde(untagged)]
+enum GoogleCalendarResp {
+    Error { error: UnauthenticatedError },
+    Data { items: Vec<CalendarEventItem> },
+}
 
-// #[derive(Deserialize)]
-// struct EventInfoResponse {
-//     items: Vec<EventInfo>,
-// }
+#[tauri::command]
+pub fn sync_google_calendar(from_date: &str, to_date: &str) -> bool {
+    let response = fetch_events(from_date, to_date);
+    if response.is_none() {
+        return false;
+    }
+    let response = response.unwrap();
+    let error_code = match response.json().unwrap() {
+        GoogleCalendarResp::Error { error } => {
+            if error.status == "UNAUTHENTICATED" {
+                1
+            } else {
+                log::error!("Error: {:?}", error);
+                2
+            }
+        }
+        GoogleCalendarResp::Data { items } => {
+            save_events(&items);
+            0
+        }
+    };
 
-// /// Represents a Google Calendar client with authentication tokens.
-// ///
-// /// This struct manages the authentication tokens required for accessing
-// /// Google Calendar APIs.
-// ///
-// /// # Examples
-// ///
-// /// ```
-// /// use tpulse::google_calendar::GoogleCalendar;
-// ///
-// /// let mut google_calendar = GoogleCalendar::default();
-// ///
-// /// // Call the get_calendar_list method
-// /// match google_calendar.get_calendar_list() {
-// ///     Ok(calendar_list) => {
-// ///         for calendar in calendar_list {
-// ///             println!("{:?}", calendar);
-// ///             match google_calendar
-// ///                 .get_events_for_day_selected_calendar(&calendar.id, "2024-03-16")
-// ///             {
-// ///                 Ok(event_list) => {
-// ///                     println!("Events for calendar '{}':", calendar.summary);
-// ///                     for event in event_list {
-// ///                         println!("{:?}", event);
-// ///                     }
-// ///                 }
-// ///                 Err(err) => {
-// ///                     eprintln!("Error retrieving events: {}", err);
-// ///                 }
-// ///             }
-// ///         }
-// ///     }
-// ///     Err(err) => {
-// ///         eprintln!("Error: {}", err);
-// ///     }
-// /// }
-// /// ```
-// ///
-// /// # Defaults
-// ///
-// /// - `refresh_token`: An empty string by default.
-// /// - `port`: The default port number is set to 0.
-// /// - `access_token`: The access token is initialized as an empty string.
-// #[derive(Default)]
-// pub struct GoogleCalendar {}
+    if error_code == 0 {
+        // Fetch items successfully
+        true
+    } else if error_code == 1 {
+        // UNAUTHENTICATED, need to refresh token
+        refresh_token();
+        sync_google_calendar(from_date, to_date)
+    } else {
+        // Other error code
+        false
+    }
+}
 
-// impl GoogleCalendar {
-//     // Function to get the calendar list using the access token
-//     pub fn get_calendar_list(&mut self) -> Result<Vec<CalendarInfo>> {
-//         let mut google_oauth = GoogleOAuth::default();
-//         let api_url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?fields=items(id%2Csummary%2CbackgroundColor)";
-//         let access_token = google_oauth.get_access_token()?;
+fn save_events(items: &Vec<CalendarEventItem>) {
+    let mut conn = db::get_connection();
+    let tx = conn.transaction().expect("Failed to start transaction");
 
-//         let mut headers = HeaderMap::new();
-//         headers.insert(
-//             AUTHORIZATION,
-//             HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
-//         );
+    for item in items {
 
-//         let client = Client::new();
-//         let response = client.get(api_url).headers(headers).send()?;
+        let start_time = item.start.to_unix_secs();
+        let end_time = item.end.to_unix_secs();
+        tx.execute(
+            "INSERT INTO plan (name, description, start_time, end_time, external_id , source)
+                VALUES (?1, ?2, ?3, ?4, ?5, 'google')
+                ON CONFLICT(source, external_id) 
+                DO UPDATE SET name = ?1, description = ?2, start_time = ?3, end_time = ?4",
+            params![
+                &item.summary,
+                &item.description,
+                start_time,
+                end_time,
+                &item.id
+            ],
+        )
+        .unwrap();
+    }
 
-//         if response.status().is_success() {
-//             let calendar_list: CalendarInfoResponse = response.json()?;
-//             Ok(calendar_list.items)
-//         } else {
-//             Err(anyhow::anyhow!("Error calling Google Calendar API"))
-//         }
-//     }
+    tx.commit().expect("Failed to commit transaction");
+}
 
-//     // Function to get events for a specific day for the provided calendar ID
-//     pub fn get_events_for_day_selected_calendar(
-//         &mut self,
-//         calendar_id: &str,
-//         date: &str,
-//     ) -> Result<Vec<EventInfo>> {
-//         let mut google_oauth = GoogleOAuth::default();
-//         let sanitized_calendar_id = replace_hash_with_percent_23(calendar_id);
+fn fetch_events(from_date: &str, to_date: &str) -> Option<Response> {
+    let setting = config::get_setting();
 
-//         let api_url = format!(
-//             "https://www.googleapis.com/calendar/v3/calendars/{}/events?timeMin={}T00:00:00Z&timeMax={}T23:59:59Z&fields=items(id,summary,start(date,dateTime,timeZone),end(date,dateTime,timeZone),colorId,location)",
-//             sanitized_calendar_id, date, date
-//         );
+    let google_setting = &setting.google;
+    if google_setting.is_none() {
+        return None;
+    }
 
-//         let access_token = google_oauth.get_access_token()?;
+    let google_setting = google_setting.clone().unwrap();
+    let access_token = google_setting.access_token;
 
-//         let mut headers = HeaderMap::new();
-//         headers.insert(
-//             AUTHORIZATION,
-//             HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
-//         );
+    let url = format!(
+        "https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin={}&timeMax={}",
+        from_date, to_date
+    );
 
-//         let client = Client::new();
-//         let response = client.get(api_url).headers(headers).send()?;
+    let client = Client::new();
+    let mut headers = HeaderMap::new();
+    headers.append(
+        AUTHORIZATION,
+        HeaderValue::from_str(&format!("Bearer {}", access_token)).unwrap(),
+    );
 
-//         if response.status().is_success() {
-//             let mut event_list: EventInfoResponse = response.json()?;
-
-//             // Iterate over each event in the event_list
-//             for event in &mut event_list.items {
-//                 if let Some(color_id) = event.color_id.clone() {
-//                     // Get the color code for the color_id
-//                     if let Some(color_code) = get_color_code(&color_id) {
-//                         event.color = Some(color_code.to_string());
-//                     } else {
-//                         error!("Color code not found for color_id: {}", color_id);
-//                     }
-//                 }
-//             }
-//             Ok(event_list.items)
-//         } else {
-//             Err(anyhow::anyhow!("Error calling Google Calendar API"))
-//         }
-//     }
-// }
-
-// // Function to replace hash with percent_23 in a string
-// fn replace_hash_with_percent_23(input_string: &str) -> String {
-//     input_string.replace("#", "%23")
-// }
-
-// // return the representing the corresponding color code from Google Event Color Id
-// fn get_color_code(color_id: &str) -> Option<&str> {
-//     let color_palette: HashMap<&str, &str> = [
-//         ("1", "#a4bdfc"),  // Blue
-//         ("2", "#7ae7bf"),  // Green
-//         ("3", "#dbadff"),  // Purple
-//         ("4", "#ff887c"),  // Red
-//         ("5", "#fbd75b"),  // Yellow
-//         ("6", "#ffb878"),  // Orange
-//         ("7", "#46d6db"),  // Turquoise
-//         ("8", "#e1e1e1"),  // Gray
-//         ("9", "#5484ed"),  // Bold Blue
-//         ("10", "#51b749"), // Bold Green
-//         ("11", "#dc2127"), // Bold Red
-//         ("12", "#dbadff"), // Bold Purple
-//                            // Add more colors if needed
-//     ]
-//     .iter()
-//     .cloned()
-//     .collect();
-
-//     color_palette.get(color_id).copied()
-// }
-
-// #[tauri::command]
-// pub fn handle_google_calendar(date: String) -> Result<String, String> {
-//     let mut google_calendar = GoogleCalendar::default();
-//     let mut calendar_infos: Vec<EventInfo> = Vec::new();
-
-//     match google_calendar.get_calendar_list() {
-//         Ok(calendar_list) => {
-//             for calendar in calendar_list {
-//                 let events = match google_calendar
-//                     .get_events_for_day_selected_calendar(&calendar.id, &date)
-//                 {
-//                     Ok(events) => events,
-//                     Err(err) => {
-//                         error!("Error getting events: {}", err);
-//                         continue; // Continue to the next calendar if there's an error
-//                     }
-//                 };
-//                 calendar_infos.extend(events);
-//                 use std::io::{self, Write};
-
-//                 info!("{:?}", calendar_infos);
-
-//                 print!("Press Enter to continue...");
-//                 io::stdout().flush().unwrap();
-//             }
-//             // Serialize the vector of EventInfo into a JSON string
-//             match serde_json::to_string(&calendar_infos) {
-//                 Ok(json_string) => Ok(json_string),
-//                 Err(err) => Err(format!("Error serializing JSON: {}", err)),
-//             }
-//         }
-//         Err(err) => {
-//             // Create an error message string
-//             let error_msg = format!("Error getting calendar list: {}", err);
-//             Err(error_msg)
-//         }
-//     }
-// }
+    let resp = client.get(&url).headers(headers).send().unwrap();
+    Some(resp)
+}

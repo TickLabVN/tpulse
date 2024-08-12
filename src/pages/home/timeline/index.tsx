@@ -1,4 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
+import { useMutation } from '@tanstack/react-query';
+import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
 import { useRef, useState } from 'react';
 import { TimeTable } from './table';
@@ -6,12 +8,34 @@ import { TimeTable } from './table';
 export function Timeline() {
   const [currentTime, setCurrentTime] = useState<number>(moment().startOf('day').unix());
   const dateInputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate: syncWithGoogleCalendar } = useMutation({
+    mutationKey: ['sync_google_calendar'],
+    mutationFn: () => {
+      const startOfDay = moment().startOf('day');
+      const endOfDay = moment().endOf('day');
+      return invoke('sync_google_calendar', {
+        fromDate: startOfDay.toISOString(),
+        toDate: endOfDay.toISOString()
+      });
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+    onMutate: () => {
+      console.log('Syncing with Google Calendar');
+    }
+  });
+
   return (
     <>
       <div className='flex items-end justify-between'>
         <div className='font-semibold text-navy text-[28px] leading-8'>Time Tracking</div>
         <div className='flex gap-3'>
-          <div className='border-[2px] border-light-gray px-6 py-3 rounded-[10px] text-navy text-[16px] leading-5 font-[500] bg-white cursor-pointer'>
+          <div
+            onClick={() => syncWithGoogleCalendar()}
+            className='border-[2px] border-light-gray px-6 py-3 rounded-[10px] text-navy text-[16px] leading-5 font-[500] bg-white cursor-pointer'
+          >
             Sync with Google Calendar
           </div>
           <div

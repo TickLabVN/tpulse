@@ -5,13 +5,17 @@ pub fn apply_migrations() {
     conn.execute_batch(
         "
         PRAGMA foreign_keys = ON;
-        CREATE TABLE IF NOT EXISTS tasks (
+        CREATE TABLE IF NOT EXISTS plan (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            created_at INTEGER NOT NULL,
-            start INTEGER,
-            end INTEGER,
             name TEXT NOT NULL,
-            status TEXT NOT NULL CHECK(status IN ('todo', 'in_progress', 'done')) DEFAULT 'todo'
+            description TEXT,
+            start_time INTEGER NOT NULL,
+            end_time INTEGER NOT NULL,
+            
+            source TEXT,
+            external_id TEXT,
+
+            UNIQUE(source, external_id)
         );
 
         CREATE TABLE IF NOT EXISTS window_activity (

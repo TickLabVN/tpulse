@@ -1,5 +1,6 @@
 use crate::config::{self, GoogleSetting};
 use log::info;
+use reqwest::header::CONTENT_TYPE;
 use std::{
     io::{BufRead, BufReader, Write},
     net::{TcpListener, TcpStream},
@@ -7,11 +8,36 @@ use std::{
 
 const AUTH_URL: &str = "http://localhost:8080";
 
-pub fn authorize() {
+#[tauri::command]
+pub fn connect_google_account() {
     let auth_url = format!("{}/auth/google", AUTH_URL);
     webbrowser::open(auth_url.as_str()).unwrap();
 
     handle_auth_callback();
+}
+
+pub fn refresh_token() {
+    let tokens: GoogleSetting = {
+        let setting = config::get_setting();
+        let refresh_token = setting.google.as_ref().unwrap().refresh_token.clone();
+
+        let url = format!("{}/auth/google/token/refresh", AUTH_URL);
+        let client = reqwest::blocking::Client::new();
+
+        let body = format!("{{\"refreshToken\":\"{}\"}}", refresh_token);
+        let response = client
+            .post(url)
+            .header(CONTENT_TYPE, "application/json")
+            .body(body)
+            .send()
+            .unwrap();
+
+        response.json().unwrap()
+    };
+
+    let mut setting = config::get_mutable_setting();
+    setting.google = Some(tokens);
+    config::save_setting(&setting);
 }
 
 // Listen for the auth callback on the specified port
@@ -71,25 +97,7 @@ fn fetch_google_tokens(uuid: &str) {
     let response = reqwest::blocking::get(&url).unwrap();
     let tokens: GoogleSetting = response.json().unwrap();
 
-    let mut setting = config::get_setting();
-    setting.google = Some(tokens);
-    config::save_setting(&setting);
-}
-
-pub fn refresh_token() {
-    let setting = config::get_setting();
-    let refresh_token = setting.google.as_ref().unwrap().refresh_token.clone();
-
-    let url = format!("{}/auth/google/token/refresh", AUTH_URL);
-    let client = reqwest::blocking::Client::new();
-    let response = client
-        .post(url)
-        .body(format!("{{\"refreshToken\":\"{}\"}}", refresh_token))
-        .send()
-        .unwrap();
-    let tokens: GoogleSetting = response.json().unwrap();
-
-    let mut setting = config::get_setting();
+    let mut setting = config::get_mutable_setting();
     setting.google = Some(tokens);
     config::save_setting(&setting);
 }

@@ -11,6 +11,14 @@
         "sql:default",
         "sql:allow-select",
         "log:allow-log",
-        "log:default"
+        "log:default",
+        "core:path:default",
+        "core:event:default",
+        "core:window:default",
+        "core:app:default",
+        "core:image:default",
+        "core:resources:default",
+        "core:menu:default",
+        "core:tray:default"
     ]
 }

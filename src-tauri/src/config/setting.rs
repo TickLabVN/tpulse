@@ -1,6 +1,10 @@
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
-use std::{fs::File, io::Write, sync::{Mutex, MutexGuard}};
+use std::{
+    fs::File,
+    io::Write,
+    sync::{RwLock, RwLockReadGuard, RwLockWriteGuard},
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GoogleSetting {
@@ -23,13 +27,13 @@ pub struct Setting {
 }
 
 lazy_static! {
-    pub static ref SETTING: Mutex<Setting> = {
+    pub static ref SETTING: RwLock<Setting> = {
         let file = File::open("setting.json");
         match file {
             Ok(f) => {
                 let reader = std::io::BufReader::new(f);
                 let setting: Setting = serde_json::from_reader(reader).unwrap();
-                Mutex::new(setting)
+                RwLock::new(setting)
             }
             Err(_) => {
                 let s = Setting {
@@ -37,14 +41,18 @@ lazy_static! {
                     time_out: 10000,
                     google: None,
                 };
-                Mutex::new(s)
+                RwLock::new(s)
             }
         }
     };
 }
 
-pub fn get_setting() -> MutexGuard<'static, Setting> {
-    SETTING.lock().unwrap()
+pub fn get_setting() -> RwLockReadGuard<'static, Setting> {
+    SETTING.read().unwrap()
+}
+
+pub fn get_mutable_setting() -> RwLockWriteGuard<'static, Setting> {
+    SETTING.write().unwrap()
 }
 
 pub fn save_setting(setting: &Setting) {

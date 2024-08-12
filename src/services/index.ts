@@ -4,5 +4,4 @@
 
 export * from './activityLog';
 export * from './db';
-export * from './syncTask';
 export * from './task';
