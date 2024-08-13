@@ -10,7 +10,6 @@ use tpulse::{db, metric::start_collector};
 fn main() {
     dotenv().ok();
     env_logger::init();
-
     let app = create_app();
 
     let db_path = app.path().app_config_dir().unwrap().join("tpulse.sqlite3");

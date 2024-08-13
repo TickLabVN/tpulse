@@ -14,7 +14,7 @@ export function Timeline() {
     mutationFn: () => {
       const startOfDay = moment().startOf('day');
       const endOfDay = moment().endOf('day');
-      return invoke('sync_google_calendar', {
+      return invoke<boolean>('sync_google_calendar', {
         fromDate: startOfDay.toISOString(),
         toDate: endOfDay.toISOString()
       });

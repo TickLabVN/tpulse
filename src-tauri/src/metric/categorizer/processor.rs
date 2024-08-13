@@ -40,6 +40,7 @@ impl MetricProcessor {
                     cfn(metric);
                 }
 
+                log::info!("Window metric: {:?}", metric);
                 db::insert_window_activity(
                     metric.time,
                     &WindowActivity {

@@ -1,6 +1,5 @@
 import { log } from '@/utils/log';
 import moment from 'moment';
-
 import { getDb } from './db';
 
 export type Task = {

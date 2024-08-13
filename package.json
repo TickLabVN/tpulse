@@ -26,7 +26,6 @@
     "@tanstack/react-query": "^5.45.1",
     "@tanstack/react-router": "^1.39.8",
     "@tauri-apps/api": "^2.0.0-rc.0",
-    "@tauri-apps/plugin-log": "^2.0.0-rc.0",
     "@tauri-apps/plugin-sql": "^2.0.0-rc.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
