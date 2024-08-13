@@ -1,6 +1,5 @@
 import { log } from '@/utils/log';
-
-import { getDb } from './db';
+import { db } from './db';
 
 export type ActivityLog = {
   name: string;
@@ -10,12 +9,11 @@ export type ActivityLog = {
   task_id: number | null;
 };
 
-async function getLogs(start: number, end: number): Promise<ActivityLog[]> {
-  const db = await getDb();
+async function getActivities(from: number, to: number): Promise<ActivityLog[]> {
   try {
     const activities = await db.select<ActivityLog[]>(
       'SELECT * FROM "activity_log" WHERE "start_time" >= $1 AND "end_time" <= $2',
-      [start, end]
+      [from, to]
     );
     return activities;
   } catch (error) {
@@ -25,5 +23,5 @@ async function getLogs(start: number, end: number): Promise<ActivityLog[]> {
 }
 
 export const activityLogSvc = {
-  getLogs
+  getActivities
 };

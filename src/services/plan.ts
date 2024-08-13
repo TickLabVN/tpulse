@@ -1,45 +1,28 @@
 import { log } from '@/utils/log';
-import moment from 'moment';
-import { getDb } from './db';
+import { db } from './db';
 
-export type Task = {
+export type Event = {
   id: number;
   name: string;
-  status: 'todo' | 'in_progress' | 'done';
-  start: number | null;
-  end: number | null;
-  created_at: number;
-  project_id: number | null;
-  color: string;
+  description?: string;
+  start_time: number;
+  end_time: number;
+  source?: string;
+  external_id?: string;
 };
 
-async function getInCurrentDay(): Promise<Task[]> {
-  const db = await getDb();
-  const startOfDay = moment().startOf('day').unix();
+async function getPlans(from: number, to: number): Promise<Event[]> {
   try {
-    const tasks = await db.select<Task[]>('SELECT * FROM "tasks" WHERE "start" >= $1', [startOfDay]);
-    return tasks;
-  } catch (error) {
-    log.error(error);
-    return [];
-  }
-}
-
-async function getInRange(start: number, end: number): Promise<Task[]> {
-  const db = await getDb();
-  try {
-    const tasks = await db.select<Task[]>('SELECT * FROM "tasks" WHERE "start" >= $1 AND "end" <= $2', [
-      start,
-      end
+    return await db.select<Event[]>('SELECT * FROM "plan" WHERE "start_time" >= $1 AND "start_time" <= $2', [
+      from,
+      to
     ]);
-    return tasks;
   } catch (error) {
     log.error(error);
     return [];
   }
 }
 
-export const taskSvc = {
-  getInCurrentDay,
-  getInRange
+export const planSvc = {
+  getPlans
 };
