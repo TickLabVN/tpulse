@@ -8,7 +8,7 @@ pub fn create_app() -> App {
     Builder::default()
         .plugin(
             tauri_plugin_sql::Builder::default()
-                .add_migrations("sqlite:tpulse.sqlite3", vec![])
+                .add_migrations("sqlite:tpulse.db", vec![])
                 .build(),
         )
         .invoke_handler(generate_handler![

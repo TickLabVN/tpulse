@@ -1,23 +1,18 @@
-import { NUM_SECS_IN_DAY } from '@/constants';
+import { NUM_SECS_IN_DAY, NUM_SECS_IN_HOUR } from '@/constants';
 import { activityLogSvc } from '@/services';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { useMemo } from 'react';
-import type { ListChildComponentProps } from 'react-window';
 import { ActivitySpan } from './timeSpan';
 
-export const TableRow = ({
-  index,
-  style,
-  data: { timeUnit }
-}: ListChildComponentProps<{ timeUnit: number }>) => {
+export function TableRow({ index }: { index: number }) {
   const { milestone, isLastRow, rowStyle, startTime, endTime } = useMemo(() => {
     const startOfDay = moment().startOf('day');
-    const startTime = startOfDay.clone().add(index * timeUnit, 'seconds');
-    const endTime = startOfDay.clone().add((index + 1) * timeUnit, 'seconds');
+    const startTime = startOfDay.clone().add(index * NUM_SECS_IN_HOUR, 'seconds');
+    const endTime = startOfDay.clone().add((index + 1) * NUM_SECS_IN_HOUR, 'seconds');
 
-    const milestone = endTime.format('HH:mm:ss');
-    const isLastRow = index === NUM_SECS_IN_DAY / timeUnit - 1;
+    const milestone = endTime.format('HH:mm');
+    const isLastRow = index === NUM_SECS_IN_DAY / NUM_SECS_IN_HOUR - 1;
 
     let rowStyle = 'px-4 border-light-gray flex-1 h-full';
     if (!isLastRow) rowStyle += ' border-b-[1px]';
@@ -28,7 +23,7 @@ export const TableRow = ({
       startTime: startTime.unix(),
       endTime: endTime.unix() - 1
     };
-  }, [index, timeUnit]);
+  }, [index]);
 
   const { data: activities } = useQuery({
     queryKey: ['activities', startTime, endTime],
@@ -37,7 +32,7 @@ export const TableRow = ({
   });
 
   return (
-    <div style={style} className='flex justify-between items-end'>
+    <div className='flex justify-between items-end h-14'>
       <div className='font-bold align-bottom w-20'>
         {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
@@ -52,4 +47,4 @@ export const TableRow = ({
       </div>
     </div>
   );
-};
+}

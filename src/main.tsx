@@ -5,7 +5,6 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
-import 'react-circular-progressbar/dist/styles.css';
 import './index.css';
 
 const router = createRouter({
