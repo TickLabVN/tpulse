@@ -44,9 +44,7 @@ pub fn apply_migrations() {
             start_time INTEGER,
             end_time INTEGER,
             activity_id TEXT NOT NULL,
-            task_id INTEGER,
             
-            FOREIGN KEY(task_id) REFERENCES tasks(id),
             FOREIGN KEY(activity_id) REFERENCES activity(id)
         );
 
