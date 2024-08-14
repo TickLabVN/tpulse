@@ -23,7 +23,7 @@ impl CalendarTime {
 #[derive(Deserialize, Debug)]
 struct CalendarEventItem {
     summary: String,
-    description: String,
+    description: Option<String>,
     start: CalendarTime,
     end: CalendarTime,
     id: String,
@@ -48,7 +48,9 @@ pub fn sync_google_calendar(from_date: &str, to_date: &str) -> bool {
         return false;
     }
     let response = response.unwrap();
-    let error_code = match response.json().unwrap() {
+    let resp_body = response.text().unwrap();
+    log::info!("{}", resp_body);
+    let error_code = match serde_json::from_str::<GoogleCalendarResp>(&resp_body).unwrap() {
         GoogleCalendarResp::Error { error } => {
             if error.status == "UNAUTHENTICATED" {
                 1

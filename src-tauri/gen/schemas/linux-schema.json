@@ -2111,27 +2111,6 @@
           ]
         },
         {
-          "description": "log:default -> Allows the log command",
-          "type": "string",
-          "enum": [
-            "log:default"
-          ]
-        },
-        {
-          "description": "log:allow-log -> Enables the log command without any pre-configured scope.",
-          "type": "string",
-          "enum": [
-            "log:allow-log"
-          ]
-        },
-        {
-          "description": "log:deny-log -> Denies the log command without any pre-configured scope.",
-          "type": "string",
-          "enum": [
-            "log:deny-log"
-          ]
-        },
-        {
           "description": "sql:default -> # Tauri SQL Default Permissions\n\nThis permission set configures what kind of\ndatabase operations are available from the sql plugin.\n\n### Granted Permissions\n\nAll reading related operations are enabled.\nAlso allows to load or close a connection.\n\n",
           "type": "string",
           "enum": [

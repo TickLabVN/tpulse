@@ -1,31 +1,29 @@
+import { log } from '@/utils';
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
-import { useMutation } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { TimeTable } from './table';
 
 export function Timeline() {
   const [currentTime, setCurrentTime] = useState<number>(moment().startOf('day').unix());
   const dateInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutate: syncWithGoogleCalendar } = useMutation({
-    mutationKey: ['sync_google_calendar'],
-    mutationFn: () => {
-      const startOfDay = moment().startOf('day');
-      const endOfDay = moment().endOf('day');
-      return invoke('sync_google_calendar', {
-        fromDate: startOfDay.toISOString(),
-        toDate: endOfDay.toISOString()
-      });
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-    onMutate: () => {
-      console.log('Syncing with Google Calendar');
+  const fetchGoogleEvents = useCallback(async () => {
+    const params = {
+      fromDate: moment().startOf('day').toISOString(),
+      toDate: moment().endOf('day').toISOString()
+    };
+    try {
+      const success = await invoke<boolean>('sync_google_calendar', params);
+      if (!success) {
+        await invoke('connect_google_account');
+        invoke<boolean>('sync_google_calendar', params);
+      }
+    } catch (error) {
+      log.error(error);
     }
-  });
+  }, []);
 
   return (
     <>
@@ -33,7 +31,7 @@ export function Timeline() {
         <div className='font-semibold text-navy text-[28px] leading-8'>Time Tracking</div>
         <div className='flex gap-3'>
           <div
-            onClick={() => syncWithGoogleCalendar()}
+            onClick={() => fetchGoogleEvents()}
             className='border-[2px] border-light-gray px-6 py-3 rounded-[10px] text-navy text-[16px] leading-5 font-[500] bg-white cursor-pointer'
           >
             Sync with Google Calendar

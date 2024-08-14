@@ -20,6 +20,7 @@ export default {
       navy: '#012F2F',
       green: '#2A9665',
       gray: '#779A90',
+      google: '#039BE5',
       'dark-gray': '#404040',
       'light-gray': '#D0D7DE',
       'accent-light': '#BDEBFB',

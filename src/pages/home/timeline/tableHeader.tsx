@@ -12,7 +12,7 @@ export function TimeTableHeader() {
   const currentTz = getCurrentTz();
 
   return (
-    <div className='flex w-full justify-between items-center border-b-[1px] border-light-gray shadow-sm sticky top-0'>
+    <div className='flex w-full justify-between items-center border-b-[1px] border-light-gray shadow-sm sticky top-0 rounded-sm bg-white z-10'>
       <div className='text-center text-sm leading-4 font-bold w-20'>
         <div>EST</div>
         <div>{currentTz}</div>

@@ -1,5 +1,6 @@
 import { Badge } from '@/components';
-import type { ActivityLog, Task } from '@/services';
+import { TIMETABLE_ROW_HEIGHT, TIMETABLE_UNIT } from '@/constants';
+import type { ActivityLog, Event } from '@/services';
 import { prettyTime } from '@/utils';
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -31,25 +32,37 @@ export function ActivitySpan({ data }: EventProps<ActivityLog>) {
   );
 }
 
-export function TaskSpan({ data }: EventProps<Task>) {
-  const { timeRange, duration } = useMemo(() => {
-    if (!data.start || !data.end) return { timeRange: '', duration: '' };
+export function PlanSpan({ data: event }: EventProps<Event>) {
+  const { timeRange, duration, height } = useMemo(() => {
+    const start = moment.unix(event.start_time);
+    const end = moment.unix(event.end_time);
 
-    const start = moment(data.start);
-    const end = moment(data.end);
-    const timeRange = `${start.hour()}:${start.minute()}:${start.second()} - ${end.hour()}:${end.minute()}:${end.second()}`;
-    const duration = prettyTime((data.end - data.start) / 1000);
+    const timeRange = `${start.format('hh:mm A')} - ${end.format('hh:mm A')}`;
+    const duration = prettyTime(event.end_time - event.start_time);
 
-    return { timeRange, duration };
-  }, [data]);
+    const height = Math.floor(((event.end_time - event.start_time) / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT);
+
+    console.log('height', height);
+    return { timeRange, duration, height };
+  }, [event]);
 
   return (
-    <div>
+    <div
+      style={{ height: `${height}px` }}
+      className='border-[1px] border-l-4 border-l-google border-[#D0D7DE] rounded-md w-full px-4 py-2 bg-white'
+    >
       <div className='flex items-center justify-between'>
-        <div>{data.name}</div>
-        <div>{duration}</div>
+        <div className='text-lg text-background font-semibold'>{event.name}</div>
+        <div>
+          {event.source && (
+            <Badge className='bg-google text-white rounded-[5px]'>
+              {event.source[0].toUpperCase() + event.source.slice(1)}
+            </Badge>
+          )}
+          <Badge className='bg-green text-white rounded-[5px]'>{duration}</Badge>
+        </div>
       </div>
-      <div>{timeRange}</div>
+      <p className='text-sm font-medium'>{timeRange}</p>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 use lazy_static::lazy_static;
-use rusqlite::{params, Connection};
+use rusqlite::{params, Connection, Transaction};
 use std::sync::{Mutex, MutexGuard};
 
 static mut DB_PATH: Option<String> = None;
@@ -38,7 +38,7 @@ pub struct BrowserActivity {
 
 pub fn insert_browser_activity(time: u64, activity: &BrowserActivity) {
     let mut conn = get_connection();
-    let tx = conn.transaction().expect("Failed to start transaction");
+    let mut tx = conn.transaction().expect("Failed to start transaction");
 
     tx.execute(
         "INSERT INTO activity (id, type, category)
@@ -57,51 +57,35 @@ pub fn insert_browser_activity(time: u64, activity: &BrowserActivity) {
     )
     .unwrap();
 
-    // End the last log entry and start a new one
-    // let mut get_latest_log = &tx
-    //     .prepare("SELECT activity_id FROM log ORDER BY id DESC LIMIT 1")
-    //     .unwrap();
-    // let latest_activity_iter = get_latest_log.query_map(params![], |row| {
-    //     let activity_id: Result<String, rusqlite::Error> = row.get(0);
-    //     let id = match activity_id {
-    //         Ok(activity_id) => activity_id,
-    //         Err(e) => {
-    //             error!("Failed to get latest activity id: {:?}", e);
-    //             "".to_string()
-    //         }
-    //     };
-    //     Ok(id)
-    // });
-    // let mut latest_activity_id = "".to_string();
-    // for id in latest_activity_iter.unwrap() {
-    //     latest_activity_id = id.unwrap();
-    //     break;
-    // }
-
-    // let borrow_tx = &tx;
-    // if latest_activity_id != activity.id {
-    //     borrow_tx
-    //         .execute(
-    //             "UPDATE log set end_time = ?1 WHERE id = (SELECT MAX(id) FROM log)
-    //                  AND activity_id = ?2",
-    //             params![time, &latest_activity_id],
-    //         )
-    //         .unwrap();
-    //     borrow_tx
-    //         .execute(
-    //             "INSERT INTO log (task_id, activity_id, start_time, end_time)
-    //                  VALUES (NULL, ?1, ?2, NULL)",
-    //             params![&activity.id, time],
-    //         )
-    //         .unwrap();
-    // }
+    let latest_activity_id = get_latest_activity_id(&mut tx);
+    if latest_activity_id != activity.id {
+        tx.execute(
+            "UPDATE log set end_time = ?1 WHERE id = (SELECT MAX(id) FROM log)
+                 AND activity_id = ?2",
+            params![time, &latest_activity_id],
+        )
+        .unwrap();
+        tx.execute(
+            "INSERT INTO log (activity_id, start_time, end_time)
+                 VALUES (?1, ?2, NULL)",
+            params![&activity.id, time],
+        )
+        .unwrap();
+    } else {
+        tx.execute(
+            "UPDATE log set end_time = ?1 WHERE id = (SELECT MAX(id) FROM log)
+                 AND activity_id = ?2",
+            params![time, &activity.id],
+        )
+        .unwrap();
+    }
 
     tx.commit().expect("Failed to commit transaction");
 }
 
 pub fn insert_window_activity(time: u64, activity: &WindowActivity) {
     let mut conn = get_connection();
-    let tx = conn.transaction().expect("Failed to start transaction");
+    let mut tx = conn.transaction().expect("Failed to start transaction");
 
     tx.execute(
         "INSERT INTO activity (id, type, category)
@@ -124,45 +108,52 @@ pub fn insert_window_activity(time: u64, activity: &WindowActivity) {
         ],
     )
     .unwrap();
-    // let borrow_tx = &tx;
-
-    // // End the last log entry and start a new one
-    // let mut get_latest_log = borrow_tx
-    //     .prepare("SELECT activity_id FROM log ORDER BY id DESC LIMIT 1")
-    //     .unwrap();
-    // let latest_activity_iter = get_latest_log.query_map(params![], |row| {
-    //     let activity_id: Result<String, rusqlite::Error> = row.get(0);
-    //     let id = match activity_id {
-    //         Ok(activity_id) => activity_id,
-    //         Err(e) => {
-    //             error!("Failed to get latest activity id: {:?}", e);
-    //             "".to_string()
-    //         }
-    //     };
-    //     Ok(id)
-    // });
-    // let mut latest_activity_id = "".to_string();
-    // for id in latest_activity_iter.unwrap() {
-    //     latest_activity_id = id.unwrap();
-    //     break;
-    // }
-
-    // if latest_activity_id != activity.id {
-    //     borrow_tx
-    //         .execute(
-    //             "UPDATE log set end_time = ?1 WHERE id = (SELECT MAX(id) FROM log)
-    //             AND activity_id = ?2",
-    //             params![time, &latest_activity_id],
-    //         )
-    //         .unwrap();
-    //     borrow_tx
-    //         .execute(
-    //             "INSERT INTO log (task_id, activity_id, start_time, end_time)
-    //             VALUES (NULL, ?1, ?2, NULL)",
-    //             params![&activity.id, time],
-    //         )
-    //         .unwrap();
-    // }
+    
+    let latest_activity_id = get_latest_activity_id(&mut tx);
+    if latest_activity_id != activity.id {
+        tx.execute(
+            "UPDATE log set end_time = ?1 WHERE id = (SELECT MAX(id) FROM log)
+                 AND activity_id = ?2",
+            params![time, &latest_activity_id],
+        )
+        .unwrap();
+        tx.execute(
+            "INSERT INTO log (activity_id, start_time, end_time)
+                 VALUES (?1, ?2, NULL)",
+            params![&activity.id, time],
+        )
+        .unwrap();
+    } else {
+        tx.execute(
+            "UPDATE log set end_time = ?1 WHERE id = (SELECT MAX(id) FROM log)
+                 AND activity_id = ?2",
+            params![time, &activity.id],
+        )
+        .unwrap();
+    }
 
     tx.commit().expect("Failed to commit transaction");
+}
+
+fn get_latest_activity_id(tx: &mut Transaction) -> String {
+    let mut get_latest_log = tx
+        .prepare("SELECT activity_id FROM log ORDER BY id DESC LIMIT 1")
+        .unwrap();
+    let latest_activity_iter = get_latest_log.query_map(params![], |row| {
+        let activity_id: Result<String, rusqlite::Error> = row.get(0);
+        let id = match activity_id {
+            Ok(activity_id) => activity_id,
+            Err(e) => {
+                log::error!("Failed to get latest activity id: {:?}", e);
+                "".to_string()
+            }
+        };
+        Ok(id)
+    });
+    let mut latest_activity_id = "".to_string();
+    for id in latest_activity_iter.unwrap() {
+        latest_activity_id = id.unwrap();
+        break;
+    }
+    latest_activity_id
 }

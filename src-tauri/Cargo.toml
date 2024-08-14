@@ -23,7 +23,6 @@ anyhow = "1.0.77"
 regex = "1.10.2"
 dirs = "5.0.1"
 rusqlite = { version = "0.30", features = ["bundled"] }
-tauri-plugin-log = "2.0.0-beta"
 tauri-plugin-sql = { version = "2.0.0-beta", features = ["sqlite"] }
 lazy_static = "1.4.0"
 libc = "0.2.152"

@@ -10,17 +10,16 @@ use tpulse::{db, metric::start_collector};
 fn main() {
     dotenv().ok();
     env_logger::init();
-
     let app = create_app();
 
-    let db_path = app.path().app_config_dir().unwrap().join("tpulse.sqlite3");
+    let db_path = app.path().app_config_dir().unwrap().join("tpulse.db");
     fs::create_dir_all(db_path.parent().unwrap()).unwrap();
     let db_path = db_path.to_str().unwrap();
     db::set_path(db_path);
     db::apply_migrations();
 
     let workers = start_collector();
-    app.run(|_, _| {});
+    // app.run(|_, _| {});
     for w in workers {
         w.join().unwrap();
     }

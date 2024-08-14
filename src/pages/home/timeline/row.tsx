@@ -1,23 +1,18 @@
-import { NUM_SECS_IN_DAY } from '@/constants';
-import { activityLogSvc } from '@/services';
+import { NUM_SECS_IN_DAY, TIMETABLE_ROW_HEIGHT, TIMETABLE_UNIT } from '@/constants';
+import { planSvc } from '@/services';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { useMemo } from 'react';
-import type { ListChildComponentProps } from 'react-window';
-import { ActivitySpan } from './timeSpan';
+import { PlanSpan } from './timeSpan';
 
-export const TableRow = ({
-  index,
-  style,
-  data: { timeUnit }
-}: ListChildComponentProps<{ timeUnit: number }>) => {
+export function TableRow({ index }: { index: number }) {
   const { milestone, isLastRow, rowStyle, startTime, endTime } = useMemo(() => {
     const startOfDay = moment().startOf('day');
-    const startTime = startOfDay.clone().add(index * timeUnit, 'seconds');
-    const endTime = startOfDay.clone().add((index + 1) * timeUnit, 'seconds');
+    const startTime = startOfDay.clone().add(index * TIMETABLE_UNIT, 'seconds');
+    const endTime = startOfDay.clone().add((index + 1) * TIMETABLE_UNIT, 'seconds');
 
-    const milestone = endTime.format('HH:mm:ss');
-    const isLastRow = index === NUM_SECS_IN_DAY / timeUnit - 1;
+    const milestone = endTime.format('HH:mm');
+    const isLastRow = index === NUM_SECS_IN_DAY / TIMETABLE_UNIT - 1;
 
     let rowStyle = 'px-4 border-light-gray flex-1 h-full';
     if (!isLastRow) rowStyle += ' border-b-[1px]';
@@ -28,28 +23,27 @@ export const TableRow = ({
       startTime: startTime.unix(),
       endTime: endTime.unix() - 1
     };
-  }, [index, timeUnit]);
+  }, [index]);
 
-  const { data: activities } = useQuery({
-    queryKey: ['activities', startTime, endTime],
-    queryFn: () => activityLogSvc.getLogs(startTime, endTime),
-    staleTime: 10_000
+  const { data: plans } = useQuery({
+    queryKey: ['plans', startTime, endTime],
+    queryFn: () => planSvc.getPlans(startTime, endTime)
   });
 
   return (
-    <div style={style} className='flex justify-between items-end'>
+    <div className={`flex justify-between items-end h-[${TIMETABLE_ROW_HEIGHT}px]`}>
       <div className='font-bold align-bottom w-20'>
         {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
-      <div className={`${rowStyle} border-x-[1px]`}>
-        {activities?.map((data) => (
-          <ActivitySpan key={data.start_time} data={data} />
+      <div className={`${rowStyle} border-x-[1px]`}>Activities</div>
+      <div className={`${rowStyle} border-e-[1px]`}>
+        {plans?.map((p) => (
+          <PlanSpan key={p.id} data={p} />
         ))}
       </div>
-      <div className={`${rowStyle} border-e-[1px]`}>Row {index}</div>
       <div className='font-bold align-bottom w-20'>
         {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
     </div>
   );
-};
+}
