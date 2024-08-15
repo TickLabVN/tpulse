@@ -83,7 +83,6 @@ fn save_events(items: &Vec<CalendarEventItem>) {
     let tx = conn.transaction().expect("Failed to start transaction");
 
     for item in items {
-
         let start_time = item.start.to_unix_secs();
         let end_time = item.end.to_unix_secs();
         tx.execute(

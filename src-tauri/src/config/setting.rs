@@ -37,8 +37,8 @@ lazy_static! {
             }
             Err(_) => {
                 let s = Setting {
-                    poll_time: 1000,
-                    time_out: 10000,
+                    poll_time: 5,
+                    time_out: 300,
                     google: None,
                 };
                 RwLock::new(s)

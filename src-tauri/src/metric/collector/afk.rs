@@ -29,11 +29,11 @@ pub fn watch_afk(tx: mpsc::Sender<Activity>) {
     let device_state = DeviceState::new();
     let mut mouse_pos = device_state.get_mouse().coords;
     let mut total_timeout = 0;
-    let mut afk = false;
+    let mut is_afk = false;
     loop {
         let setting = get_setting();
 
-        sleep(Duration::from_millis(setting.poll_time));
+        sleep(Duration::from_secs(setting.poll_time));
         let mut detect_interact = false;
 
         let current_mouse_pos = device_state.get_mouse().coords;
@@ -47,31 +47,25 @@ pub fn watch_afk(tx: mpsc::Sender<Activity>) {
             }
         }
 
+        let unix_ts = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap();
+
         if detect_interact {
             total_timeout = 0;
-            if afk {
-                afk = false;
-                // send metric online
-                let unix_ts = SystemTime::now()
-                    .duration_since(SystemTime::UNIX_EPOCH)
-                    .unwrap();
-
-                tx.send(Activity::AFK(AFKMetric {
-                    start_time: unix_ts.as_secs() as u64,
-                    status: AFKStatus::ONLINE,
-                }))
-                .unwrap();
-            }
+            tx.send(Activity::AFK(AFKMetric {
+                time: unix_ts.as_secs() as u64,
+                status: AFKStatus::ONLINE,
+            }))
+            .unwrap();
+            is_afk = false;
         } else {
             total_timeout += setting.poll_time;
-            if total_timeout >= setting.time_out && !afk {
-                afk = true;
+            if total_timeout >= setting.time_out && !is_afk {
+                is_afk = true;
                 // send metric offline
-                let unix_ts = SystemTime::now()
-                    .duration_since(SystemTime::UNIX_EPOCH)
-                    .unwrap();
                 tx.send(Activity::AFK(AFKMetric {
-                    start_time: unix_ts.as_secs() as u64,
+                    time: unix_ts.as_secs() as u64,
                     status: AFKStatus::OFFLINE,
                 }))
                 .unwrap();

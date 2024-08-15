@@ -14,7 +14,7 @@ pub fn start_collector() -> Vec<JoinHandle<()>> {
     let window_tx = tx.clone();
     let browser_tx = tx.clone();
 
-    let processor = create_processor();
+    let mut processor = create_processor();
 
     let workers = vec![
         thread::spawn(move || watch_browser(browser_tx)),

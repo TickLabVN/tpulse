@@ -1,5 +1,7 @@
 #[cfg(target_os = "windows")]
 use {
+    crate::metric::schema::WindowMetric,
+    std::time::SystemTime,
     windows::core::PWSTR,
     windows::Win32::Foundation::{HANDLE, HWND, MAX_PATH},
     windows::Win32::System::Threading::{
@@ -9,8 +11,6 @@ use {
     windows::Win32::UI::WindowsAndMessaging::{
         GetForegroundWindow, GetWindowTextLengthW, GetWindowTextW, GetWindowThreadProcessId,
     },
-    crate::metric::schema::WindowMetric,
-    std::time::SystemTime,
 };
 
 #[cfg(target_os = "windows")]
