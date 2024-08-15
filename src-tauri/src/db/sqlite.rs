@@ -186,7 +186,7 @@ fn get_latest_activity_log(tx: &mut Transaction) -> Option<(u64, Option<u64>, St
             }
             Ok(())
         })
-        .unwrap();
+        .unwrap().next();
 
     if log_id > 0 {
         Some((log_id, log_end_time, log_activity_id))

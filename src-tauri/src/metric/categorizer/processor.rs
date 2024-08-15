@@ -40,7 +40,6 @@ impl MetricProcessor {
     pub fn categorize(&mut self, metric: &mut Activity) {
         match metric {
             Activity::AFK(metric) => {
-                log::info!("AFK metric: {:?}", metric);
                 self.is_afk = metric.status == AFKStatus::OFFLINE;
             }
             Activity::Window(metric) => {
@@ -50,8 +49,6 @@ impl MetricProcessor {
                 for cfn in &self.window_categorize_fn {
                     cfn(metric);
                 }
-
-                log::info!("Window metric: {:?}", metric);
                 db::insert_window_activity(
                     metric.time,
                     &WindowActivity {
