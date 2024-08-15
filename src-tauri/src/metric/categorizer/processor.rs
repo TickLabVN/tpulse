@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use super::{browser::categorize_browser_tab, window::categorize_window};
 use crate::{
     db::{self, BrowserActivity, WindowActivity},
@@ -11,6 +13,7 @@ pub struct MetricProcessor {
     window_categorize_fn: Vec<ProcessFn<WindowMetric>>,
     browser_categorize_fn: Vec<ProcessFn<BrowserMetric>>,
     is_afk: bool,
+    start_time: u64,
 }
 
 impl MetricProcessor {
@@ -19,6 +22,10 @@ impl MetricProcessor {
             window_categorize_fn: Vec::new(),
             browser_categorize_fn: Vec::new(),
             is_afk: false,
+            start_time: SystemTime::now()
+                .duration_since(SystemTime::UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
         }
     }
 
@@ -57,6 +64,10 @@ impl MetricProcessor {
                 );
             }
             Activity::Browser(m) => {
+                // Drop the data before the start time of the app
+                if m.time < self.start_time {
+                    return;
+                }
                 if self.is_afk {
                     return;
                 }
