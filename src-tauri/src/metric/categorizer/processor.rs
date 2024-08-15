@@ -1,7 +1,7 @@
 use super::{browser::categorize_browser_tab, window::categorize_window};
 use crate::{
     db::{self, BrowserActivity, WindowActivity},
-    metric::schema::{Activity, BrowserMetric, WindowMetric},
+    metric::schema::{AFKStatus, Activity, BrowserMetric, WindowMetric},
 };
 use url::Url;
 
@@ -10,6 +10,7 @@ pub type ProcessFn<T> = fn(&mut T);
 pub struct MetricProcessor {
     window_categorize_fn: Vec<ProcessFn<WindowMetric>>,
     browser_categorize_fn: Vec<ProcessFn<BrowserMetric>>,
+    is_afk: bool,
 }
 
 impl MetricProcessor {
@@ -17,6 +18,7 @@ impl MetricProcessor {
         MetricProcessor {
             window_categorize_fn: Vec::new(),
             browser_categorize_fn: Vec::new(),
+            is_afk: false,
         }
     }
 
@@ -28,14 +30,16 @@ impl MetricProcessor {
         self.browser_categorize_fn.push(processor);
     }
 
-    pub fn categorize(&self, metric: &mut Activity) {
+    pub fn categorize(&mut self, metric: &mut Activity) {
         match metric {
-            Activity::AFK(_) => {
-                // TODO: Handle AFK metric
-                // info!("AFK metric: {:?}", m);
-                return;
+            Activity::AFK(metric) => {
+                log::info!("AFK metric: {:?}", metric);
+                self.is_afk = metric.status == AFKStatus::OFFLINE;
             }
             Activity::Window(metric) => {
+                if self.is_afk {
+                    return;
+                }
                 for cfn in &self.window_categorize_fn {
                     cfn(metric);
                 }
@@ -53,6 +57,9 @@ impl MetricProcessor {
                 );
             }
             Activity::Browser(m) => {
+                if self.is_afk {
+                    return;
+                }
                 for cfn in &self.browser_categorize_fn {
                     cfn(m);
                 }

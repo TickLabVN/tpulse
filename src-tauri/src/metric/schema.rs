@@ -9,7 +9,7 @@ pub enum AFKStatus {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AFKMetric {
     pub status: AFKStatus,
-    pub start_time: u64,
+    pub time: u64,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -20,6 +20,28 @@ pub struct WindowMetric {
     pub exec_path: Option<String>,
     pub category: Option<String>,
 }
+
+// const BROWSERS: [&str; 2] = ["firefox", "google-chrome"];
+
+// impl WindowMetric {
+//     pub fn is_browser_app (&self) -> bool {
+//         if let Some(exec_path) = &self.exec_path {
+//             for browser in BROWSERS.iter() {
+//                 if exec_path.contains(browser) {
+//                     return true;
+//                 }
+//             }
+//         }
+//         for class in self.class.iter() {
+//             for browser in BROWSERS.iter() {
+//                 if class.contains(browser) {
+//                     return true;
+//                 }
+//             }
+//         }
+//         false
+//     }
+// }
 
 impl Default for WindowMetric {
     fn default() -> Self {

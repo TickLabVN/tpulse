@@ -16,7 +16,7 @@ pub fn get_current_window_information() -> Option<WindowMetric> {
         // No open window found
         return None;
     }
-    
+
     get_window_information_by_id(window_raw_id)
 }
 
