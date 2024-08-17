@@ -1,4 +1,4 @@
-use crate::google::{
+use crate::service::google::{
     __cmd__connect_google_account, __cmd__sync_google_calendar, connect_google_account,
     sync_google_calendar,
 };

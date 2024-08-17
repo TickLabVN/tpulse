@@ -49,13 +49,12 @@ pub fn sync_google_calendar(from_date: &str, to_date: &str) -> bool {
     }
     let response = response.unwrap();
     let resp_body = response.text().unwrap();
-    log::info!("{}", resp_body);
     let error_code = match serde_json::from_str::<GoogleCalendarResp>(&resp_body).unwrap() {
         GoogleCalendarResp::Error { error } => {
             if error.status == "UNAUTHENTICATED" {
                 1
             } else {
-                log::error!("Error: {:?}", error);
+                log::error!("[Fetch google calendar event] {:?}", error);
                 2
             }
         }
@@ -73,7 +72,7 @@ pub fn sync_google_calendar(from_date: &str, to_date: &str) -> bool {
         refresh_token();
         sync_google_calendar(from_date, to_date)
     } else {
-        // Other error code
+        // Other error code. Need to login google first
         false
     }
 }
@@ -116,7 +115,7 @@ fn fetch_events(from_date: &str, to_date: &str) -> Option<Response> {
     let access_token = google_setting.access_token;
 
     let url = format!(
-        "https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin={}&timeMax={}",
+        "https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin={}&timeMax={}&showDeleted=true&singleEvents=true",
         from_date, to_date
     );
 
