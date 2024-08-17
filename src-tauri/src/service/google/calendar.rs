@@ -25,6 +25,7 @@ struct CalendarEventItem {
     summary: String,
     description: Option<String>,
     start: CalendarTime,
+    status: String,
     end: CalendarTime,
     id: String,
 }
@@ -84,20 +85,28 @@ fn save_events(items: &Vec<CalendarEventItem>) {
     for item in items {
         let start_time = item.start.to_unix_secs();
         let end_time = item.end.to_unix_secs();
-        tx.execute(
-            "INSERT INTO plan (name, description, start_time, end_time, external_id , source)
-                VALUES (?1, ?2, ?3, ?4, ?5, 'google')
-                ON CONFLICT(source, external_id) 
-                DO UPDATE SET name = ?1, description = ?2, start_time = ?3, end_time = ?4",
-            params![
-                &item.summary,
-                &item.description,
-                start_time,
-                end_time,
-                &item.id
-            ],
-        )
-        .unwrap();
+        if item.status == "cancelled" {
+            tx.execute(
+                "DELETE FROM plan WHERE source = 'google' AND external_id = ?1",
+                params![&item.id],
+            )
+            .unwrap();
+        } else {
+            tx.execute(
+                "INSERT INTO plan (name, description, start_time, end_time, external_id , source)
+                    VALUES (?1, ?2, ?3, ?4, ?5, 'google')
+                    ON CONFLICT(source, external_id) 
+                    DO UPDATE SET name = ?1, description = ?2, start_time = ?3, end_time = ?4",
+                params![
+                    &item.summary,
+                    &item.description,
+                    start_time,
+                    end_time,
+                    &item.id
+                ],
+            )
+            .unwrap();
+        }
     }
 
     tx.commit().expect("Failed to commit transaction");
