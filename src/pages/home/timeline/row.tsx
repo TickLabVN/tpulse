@@ -1,7 +1,7 @@
 import { TIMETABLE_ROW_HEIGHT } from '@/constants';
 import type { CalendarEvent } from '@/services';
 import { useMemo } from 'react';
-import { PlanSpan } from './timeSpan';
+import { CalendarSpan } from './timeSpan';
 
 type TableRowProps = {
   milestone?: string;
@@ -11,7 +11,7 @@ type TableRowProps = {
 
 export function TableRow({ calendarEvents, milestone }: TableRowProps) {
   const rowStyle = useMemo(() => {
-    let rowStyle = 'px-4 border-light-gray flex-1 h-full';
+    let rowStyle = 'border-light-gray flex-1 h-full relative';
     if (milestone) rowStyle += ' border-b-[1px]';
     return rowStyle;
   }, [milestone]);
@@ -27,10 +27,10 @@ export function TableRow({ calendarEvents, milestone }: TableRowProps) {
       <div className='font-bold align-bottom w-20'>
         {milestone && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
-      <div className={`${rowStyle} border-x-[1px]`}>Activities</div>
-      <div className={`${rowStyle} border-e-[1px]`}>
+      <div className={`${rowStyle} border-x-[1px]`} />
+      <div className={`${rowStyle} border-e-[1px] z-0`}>
         {calendarEvents.map((e) => (
-          <PlanSpan key={e.id} data={e} />
+          <CalendarSpan key={e.id} data={e} />
         ))}
       </div>
       <div className='font-bold align-bottom w-20'>

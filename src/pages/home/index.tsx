@@ -3,7 +3,7 @@ import { ChevronDownIcon, FileDirectoryIcon } from '@primer/octicons-react';
 import { Timeline } from './timeline';
 
 // TODO: Replace this with user's name
-const userName = 'Nguyen Phuc Vinh';
+const userName = 'TickLab';
 
 export function HomePage() {
   return (

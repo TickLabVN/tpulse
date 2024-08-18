@@ -32,33 +32,49 @@ export function ActivitySpan({ data }: EventProps<ActivityLog>) {
   );
 }
 
-export function PlanSpan({ data: event }: EventProps<CalendarEvent>) {
-  const { timeRange, duration, height, top } = useMemo(() => {
+export function CalendarSpan({ data: event }: EventProps<CalendarEvent>) {
+  const { timeRange, duration, height, top, spanStyle, titleStyle } = useMemo(() => {
     const start = moment.unix(event.start_time);
     const end = moment.unix(event.end_time);
 
     const startOfDay = moment().startOf('day').unix();
 
-    const timeRange = `${start.format('hh:mm A')} - ${end.format('hh:mm A')}`;
+    const timeRange = `${start.format('hh:mm')} - ${end.format('hh:mm')}`;
     const duration = prettyTime(event.end_time - event.start_time);
 
     const height = Math.floor(((event.end_time - event.start_time) / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT);
     const top =
       (Math.floor((event.start_time - startOfDay) % TIMETABLE_UNIT) / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT;
 
-    return { timeRange, duration, height, top };
+    console.log({ height, top });
+
+    let spanStyle = '';
+    let titleStyle = '';
+    if (height <= TIMETABLE_ROW_HEIGHT / 4) {
+      spanStyle = 'px-1 py-0';
+      titleStyle = 'text-sm';
+    } else if (height <= TIMETABLE_ROW_HEIGHT / 2) {
+      spanStyle = 'px-1 py-0';
+      titleStyle = 'text-md';
+    } else {
+      spanStyle = 'px-4 py-2';
+      titleStyle = 'text-lg';
+    }
+    return { timeRange, duration, height, top, spanStyle, titleStyle };
   }, [event]);
 
   return (
     <div
       style={{
         height: `${height}px`,
-        top: `${top}px`
+        top: `${top}px`,
+        left: '16px',
+        right: '16px'
       }}
-      className='border-[1px] relative border-l-4 border-l-google border-[#D0D7DE] rounded-md w-full px-4 py-2 bg-white'
+      className={`${spanStyle} absolute border-[1px] border-l-4 border-l-google border-[#D0D7DE] rounded-md bg-white`}
     >
       <div className='flex items-center justify-between'>
-        <div className='text-lg text-background font-semibold'>{event.name}</div>
+        <div className={`${titleStyle} text-background font-semibold`}>{event.name}</div>
         <div>
           {event.source && (
             <Badge className='bg-google text-white rounded-[5px]'>

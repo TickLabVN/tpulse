@@ -45,7 +45,7 @@ export function TimeTable() {
   }, [calendarEvents]);
 
   return (
-    <div className='rounded-2xl bg-white p-0 border-light-gray border mt-4 max-h-[75vh] overflow-y-scroll no-scrollbar'>
+    <div className='rounded-2xl bg-white p-0 border-light-gray border mt-4 max-h-[75vh] overflow-y-scroll no-scrollbar z-0'>
       <TimeTableHeader />
       <TimeTableBody />
     </div>
