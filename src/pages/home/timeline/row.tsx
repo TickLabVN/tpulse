@@ -31,7 +31,13 @@ export function TableRow({ index }: { index: number }) {
   });
 
   return (
-    <div className={`flex justify-between items-end h-[${TIMETABLE_ROW_HEIGHT}px]`}>
+    <div
+      style={{
+        height: `${TIMETABLE_ROW_HEIGHT}px`,
+        maxHeight: `${TIMETABLE_ROW_HEIGHT}px`
+      }}
+      className='flex justify-between items-end overflow-visible'
+    >
       <div className='font-bold align-bottom w-20'>
         {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
