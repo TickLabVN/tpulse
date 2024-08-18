@@ -19,7 +19,7 @@ fn main() {
     db::apply_migrations();
 
     let workers = start_collector();
-    // app.run(|_, _| {});
+    app.run(|_, _| {});
     for w in workers {
         w.join().unwrap();
     }

@@ -33,23 +33,29 @@ export function ActivitySpan({ data }: EventProps<ActivityLog>) {
 }
 
 export function PlanSpan({ data: event }: EventProps<Event>) {
-  const { timeRange, duration, height } = useMemo(() => {
+  const { timeRange, duration, height, top } = useMemo(() => {
     const start = moment.unix(event.start_time);
     const end = moment.unix(event.end_time);
+
+    const startOfDay = moment().startOf('day').unix();
 
     const timeRange = `${start.format('hh:mm A')} - ${end.format('hh:mm A')}`;
     const duration = prettyTime(event.end_time - event.start_time);
 
     const height = Math.floor(((event.end_time - event.start_time) / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT);
+    const top =
+      (Math.floor((event.start_time - startOfDay) % TIMETABLE_UNIT) / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT;
 
-    console.log('height', height);
-    return { timeRange, duration, height };
+    return { timeRange, duration, height, top };
   }, [event]);
 
   return (
     <div
-      style={{ height: `${height}px` }}
-      className='border-[1px] border-l-4 border-l-google border-[#D0D7DE] rounded-md w-full px-4 py-2 bg-white'
+      style={{
+        height: `${height}px`,
+        top: `${top}px`
+      }}
+      className='border-[1px] relative border-l-4 border-l-google border-[#D0D7DE] rounded-md w-full px-4 py-2 bg-white'
     >
       <div className='flex items-center justify-between'>
         <div className='text-lg text-background font-semibold'>{event.name}</div>

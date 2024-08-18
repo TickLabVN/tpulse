@@ -22,7 +22,7 @@ impl CalendarTime {
 
 #[derive(Deserialize, Debug)]
 struct CalendarEventItem {
-    summary: String,
+    summary: Option<String>,
     description: Option<String>,
     start: CalendarTime,
     status: String,
@@ -85,6 +85,8 @@ fn save_events(items: &Vec<CalendarEventItem>) {
     for item in items {
         let start_time = item.start.to_unix_secs();
         let end_time = item.end.to_unix_secs();
+
+        let summary = item.summary.clone().unwrap_or("Untitled".to_string());
         if item.status == "cancelled" {
             tx.execute(
                 "DELETE FROM plan WHERE source = 'google' AND external_id = ?1",
@@ -98,7 +100,7 @@ fn save_events(items: &Vec<CalendarEventItem>) {
                     ON CONFLICT(source, external_id) 
                     DO UPDATE SET name = ?1, description = ?2, start_time = ?3, end_time = ?4",
                 params![
-                    &item.summary,
+                    &summary,
                     &item.description,
                     start_time,
                     end_time,
