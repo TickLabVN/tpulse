@@ -1,5 +1,6 @@
 import { log } from '@/utils';
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
 import { useCallback, useRef, useState } from 'react';
@@ -8,6 +9,8 @@ import { TimeTable } from './table';
 export function Timeline() {
   const [currentTime, setCurrentTime] = useState<number>(moment().startOf('day').unix());
   const dateInputRef = useRef<HTMLInputElement>(null);
+
+  const queryClient = useQueryClient();
 
   const fetchGoogleEvents = useCallback(async () => {
     const params = {
@@ -20,10 +23,15 @@ export function Timeline() {
         await invoke('connect_google_account');
         invoke<boolean>('sync_google_calendar', params);
       }
+
+      await queryClient.invalidateQueries({
+        queryKey: ['calendarEvents'],
+        refetchType: 'all'
+      });
     } catch (error) {
       log.error(error);
     }
-  }, []);
+  }, [queryClient]);
 
   return (
     <>

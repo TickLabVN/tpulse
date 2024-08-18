@@ -1,6 +1,6 @@
 import { Badge } from '@/components';
 import { TIMETABLE_ROW_HEIGHT, TIMETABLE_UNIT } from '@/constants';
-import type { ActivityLog, Event } from '@/services';
+import type { ActivityLog, CalendarEvent } from '@/services';
 import { prettyTime } from '@/utils';
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -32,7 +32,7 @@ export function ActivitySpan({ data }: EventProps<ActivityLog>) {
   );
 }
 
-export function PlanSpan({ data: event }: EventProps<Event>) {
+export function PlanSpan({ data: event }: EventProps<CalendarEvent>) {
   const { timeRange, duration, height, top } = useMemo(() => {
     const start = moment.unix(event.start_time);
     const end = moment.unix(event.end_time);

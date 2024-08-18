@@ -4,4 +4,4 @@
 
 export * from './activityLog';
 export * from './db';
-export * from './plan';
+export * from './calendar';

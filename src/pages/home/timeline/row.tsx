@@ -1,34 +1,20 @@
-import { NUM_SECS_IN_DAY, TIMETABLE_ROW_HEIGHT, TIMETABLE_UNIT } from '@/constants';
-import { planSvc } from '@/services';
-import { useQuery } from '@tanstack/react-query';
-import moment from 'moment';
+import { TIMETABLE_ROW_HEIGHT } from '@/constants';
+import type { CalendarEvent } from '@/services';
 import { useMemo } from 'react';
 import { PlanSpan } from './timeSpan';
 
-export function TableRow({ index }: { index: number }) {
-  const { milestone, isLastRow, rowStyle, startTime, endTime } = useMemo(() => {
-    const startOfDay = moment().startOf('day');
-    const startTime = startOfDay.clone().add(index * TIMETABLE_UNIT, 'seconds');
-    const endTime = startOfDay.clone().add((index + 1) * TIMETABLE_UNIT, 'seconds');
+type TableRowProps = {
+  milestone?: string;
+  calendarEvents: CalendarEvent[];
+  afkEvents: unknown[];
+};
 
-    const milestone = endTime.format('HH:mm');
-    const isLastRow = index === NUM_SECS_IN_DAY / TIMETABLE_UNIT - 1;
-
+export function TableRow({ calendarEvents, milestone }: TableRowProps) {
+  const rowStyle = useMemo(() => {
     let rowStyle = 'px-4 border-light-gray flex-1 h-full';
-    if (!isLastRow) rowStyle += ' border-b-[1px]';
-    return {
-      milestone,
-      isLastRow,
-      rowStyle,
-      startTime: startTime.unix(),
-      endTime: endTime.unix() - 1
-    };
-  }, [index]);
-
-  const { data: plans } = useQuery({
-    queryKey: ['plans', startTime, endTime],
-    queryFn: () => planSvc.getPlans(startTime, endTime)
-  });
+    if (milestone) rowStyle += ' border-b-[1px]';
+    return rowStyle;
+  }, [milestone]);
 
   return (
     <div
@@ -39,16 +25,16 @@ export function TableRow({ index }: { index: number }) {
       className='flex justify-between items-end overflow-visible'
     >
       <div className='font-bold align-bottom w-20'>
-        {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
+        {milestone && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
       <div className={`${rowStyle} border-x-[1px]`}>Activities</div>
       <div className={`${rowStyle} border-e-[1px]`}>
-        {plans?.map((p) => (
-          <PlanSpan key={p.id} data={p} />
+        {calendarEvents.map((e) => (
+          <PlanSpan key={e.id} data={e} />
         ))}
       </div>
       <div className='font-bold align-bottom w-20'>
-        {!isLastRow && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
+        {milestone && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
     </div>
   );
