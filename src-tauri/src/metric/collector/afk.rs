@@ -1,5 +1,6 @@
 use crate::config::get_setting;
-use crate::metric::schema::{AFKMetric, AFKStatus, Activity};
+use crate::db::AFKStatus;
+use crate::metric::schema::{AFKMetric, Activity};
 use device_query::{DeviceQuery, DeviceState};
 use log::info;
 use std::sync::mpsc;

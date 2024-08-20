@@ -1,10 +1,5 @@
+use crate::db::AFKStatus;
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq)]
-pub enum AFKStatus {
-    ONLINE = 1,
-    OFFLINE = 0,
-}
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AFKMetric {
@@ -20,28 +15,6 @@ pub struct WindowMetric {
     pub exec_path: Option<String>,
     pub category: Option<String>,
 }
-
-// const BROWSERS: [&str; 2] = ["firefox", "google-chrome"];
-
-// impl WindowMetric {
-//     pub fn is_browser_app (&self) -> bool {
-//         if let Some(exec_path) = &self.exec_path {
-//             for browser in BROWSERS.iter() {
-//                 if exec_path.contains(browser) {
-//                     return true;
-//                 }
-//             }
-//         }
-//         for class in self.class.iter() {
-//             for browser in BROWSERS.iter() {
-//                 if class.contains(browser) {
-//                     return true;
-//                 }
-//             }
-//         }
-//         false
-//     }
-// }
 
 impl Default for WindowMetric {
     fn default() -> Self {

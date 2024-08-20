@@ -11,11 +11,18 @@ pub fn apply_migrations() {
             description TEXT,
             start_time INTEGER NOT NULL,
             end_time INTEGER NOT NULL,
-            
+
             source TEXT,
             external_id TEXT,
 
             UNIQUE(source, external_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS work_session (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            start_time INTEGER NOT NULL,
+            end_time INTEGER,
+            status TEXT NOT NULL CHECK(status IN ('open', 'close'))
         );
 
         CREATE TABLE IF NOT EXISTS window_activity (
