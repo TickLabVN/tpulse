@@ -73,6 +73,12 @@ pub fn update_work_session(time: u64, status: AFKStatus) {
             )
             .unwrap();
         }
+
+        conn.execute(
+            "INSERT INTO work_session (start_time, end_time, status)
+             VALUES (?1, NULL, 'open')",
+            params![time],
+        ).unwrap();
     }
 }
 
