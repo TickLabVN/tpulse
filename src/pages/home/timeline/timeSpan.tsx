@@ -71,7 +71,7 @@ export function CalendarSpan({ data: event }: EventProps<CalendarEvent>) {
         left: '16px',
         right: '16px'
       }}
-      className={`${spanStyle} absolute border-[1px] border-l-4 border-l-google border-[#D0D7DE] rounded-md bg-white`}
+      className={`${spanStyle} absolute border-[1px] border-l-4 border-l-google border-[#D0D7DE] rounded-md bg-white z-10`}
     >
       <div className='flex items-center justify-between'>
         <div className={`${titleStyle} text-background font-semibold`}>{event.name}</div>

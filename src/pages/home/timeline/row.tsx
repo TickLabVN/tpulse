@@ -22,13 +22,13 @@ export function TableRow({ calendarEvents, milestone }: TableRowProps) {
         height: `${TIMETABLE_ROW_HEIGHT}px`,
         maxHeight: `${TIMETABLE_ROW_HEIGHT}px`
       }}
-      className='flex justify-between items-end overflow-visible'
+      className='flex justify-between items-end overflow-visible z-[1]'
     >
       <div className='font-bold align-bottom w-20'>
         {milestone && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
       <div className={`${rowStyle} border-x-[1px]`} />
-      <div className={`${rowStyle} border-e-[1px] z-0`}>
+      <div className={`${rowStyle} border-e-[1px]`}>
         {calendarEvents.map((e) => (
           <CalendarSpan key={e.id} data={e} />
         ))}
