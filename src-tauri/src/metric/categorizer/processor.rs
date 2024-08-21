@@ -2,8 +2,8 @@ use std::time::SystemTime;
 
 use super::{browser::categorize_browser_tab, window::categorize_window};
 use crate::{
-    db::{self, BrowserActivity, WindowActivity},
-    metric::schema::{AFKStatus, Activity, BrowserMetric, WindowMetric},
+    db::{self, BrowserActivity, WindowActivity, AFKStatus},
+    metric::schema::{Activity, BrowserMetric, WindowMetric},
 };
 use url::Url;
 
@@ -41,6 +41,9 @@ impl MetricProcessor {
         match metric {
             Activity::AFK(metric) => {
                 self.is_afk = metric.status == AFKStatus::OFFLINE;
+                db::update_work_session(metric.time, metric.status);
+
+                log::info!("AFK status: {:?}", metric);
             }
             Activity::Window(metric) => {
                 if self.is_afk {

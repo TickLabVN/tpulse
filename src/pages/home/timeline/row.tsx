@@ -1,15 +1,15 @@
 import { TIMETABLE_ROW_HEIGHT } from '@/constants';
-import type { CalendarEvent } from '@/services';
+import type { CalendarEvent, WorkSession } from '@/services';
 import { useMemo } from 'react';
-import { CalendarSpan } from './timeSpan';
+import { CalendarSpan, WorkSessionSpan } from './timeSpan';
 
 type TableRowProps = {
   milestone?: string;
   calendarEvents: CalendarEvent[];
-  afkEvents: unknown[];
+  workSessions: WorkSession[];
 };
 
-export function TableRow({ calendarEvents, milestone }: TableRowProps) {
+export function TableRow({ calendarEvents, milestone, workSessions }: TableRowProps) {
   const rowStyle = useMemo(() => {
     let rowStyle = 'border-light-gray flex-1 h-full relative';
     if (milestone) rowStyle += ' border-b-[1px]';
@@ -27,7 +27,11 @@ export function TableRow({ calendarEvents, milestone }: TableRowProps) {
       <div className='font-bold align-bottom w-20'>
         {milestone && <div className='text-sm translate-y-1/2 text-center text-gray'>{milestone}</div>}
       </div>
-      <div className={`${rowStyle} border-x-[1px]`} />
+      <div className={`${rowStyle} border-x-[1px]`}>
+        {workSessions.map((ws) => (
+          <WorkSessionSpan key={ws.id} data={ws} />
+        ))}
+      </div>
       <div className={`${rowStyle} border-e-[1px]`}>
         {calendarEvents.map((e) => (
           <CalendarSpan key={e.id} data={e} />
