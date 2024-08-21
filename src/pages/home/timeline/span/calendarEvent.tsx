@@ -1,7 +1,8 @@
 import { Badge } from '@/components';
 import { TIMETABLE_ROW_HEIGHT, TIMETABLE_UNIT } from '@/constants';
-import type { CalendarEvent } from '@/services';
+import { type CalendarEvent, activityLogSvc } from '@/services';
 import { prettyTime } from '@/utils';
+import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { useMemo } from 'react';
 
@@ -21,7 +22,7 @@ function FlexBadge({
   );
 }
 
-export function CalendarSpan({ data: event }: EventProps<CalendarEvent>) {
+export function CalendarEventSpan({ data: event }: EventProps<CalendarEvent>) {
   const { duration, height, top } = useMemo(() => {
     const startOfDay = moment().startOf('day').unix();
     const duration = prettyTime(event.end_time - event.start_time);
@@ -52,6 +53,12 @@ export function CalendarSpan({ data: event }: EventProps<CalendarEvent>) {
     return { spanStyle, titleStyle, isSm };
   }, [height]);
 
+  const { data: workCategories } = useQuery({
+    queryKey: ['workCategories', event.start_time, event.end_time],
+    queryFn: () => activityLogSvc.categorizeActivities(event.start_time, event.end_time),
+    initialData: []
+  });
+
   return (
     <div
       style={{
@@ -75,6 +82,16 @@ export function CalendarSpan({ data: event }: EventProps<CalendarEvent>) {
           </FlexBadge>
         </div>
       </div>
+
+      {!isSm && (
+        <div>
+          {workCategories.map((wc) => (
+            <FlexBadge key={wc.category} isSm={isSm} className='bg-accent-blue text-white font-semibold'>
+              {wc.category} {Math.round(wc.percentage)}%
+            </FlexBadge>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
