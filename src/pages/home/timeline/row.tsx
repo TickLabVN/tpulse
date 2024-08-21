@@ -33,7 +33,7 @@ export function TableRow({ calendarEvents, milestone, workSessions }: TableRowPr
           <WorkSessionSpan key={ws.id} data={ws} />
         ))}
       </div>
-      <div className={`${rowStyle} border-e-[1px]`}>&nbsp;</div>
+      {/* <div className={`${rowStyle} border-e-[1px]`}>&nbsp;</div> */}
       <div className={`${rowStyle} border-e-[1px]`}>
         {calendarEvents.map((e) => (
           <CalendarEventSpan key={e.id} data={e} />
