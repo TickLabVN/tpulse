@@ -4,4 +4,4 @@
 
 export * from './activityLog';
 export * from './db';
-export * from './calendar';
+export * from './calendarEvent';

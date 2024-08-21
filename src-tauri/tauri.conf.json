@@ -52,7 +52,8 @@
         "height": 1080,
         "resizable": true,
         "title": "TPulse",
-        "width": 1920
+        "width": 1920,
+        "minWidth": 1400
       }
     ],
     "security": {
