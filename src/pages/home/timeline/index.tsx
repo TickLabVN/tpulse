@@ -9,7 +9,6 @@ import { TimeTable } from './table';
 export function Timeline() {
   const [currentTime, setCurrentTime] = useState<number>(moment().startOf('day').unix());
   const dateInputRef = useRef<HTMLInputElement>(null);
-
   const queryClient = useQueryClient();
 
   const fetchGoogleEvents = useCallback(async () => {

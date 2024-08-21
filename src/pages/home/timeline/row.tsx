@@ -1,7 +1,8 @@
 import { TIMETABLE_ROW_HEIGHT } from '@/constants';
 import type { CalendarEvent, WorkSession } from '@/services';
 import { useMemo } from 'react';
-import { CalendarSpan, WorkSessionSpan } from './timeSpan';
+import { CalendarSpan } from './span/calendarEvent';
+import { WorkSessionSpan } from './span/workSession';
 
 type TableRowProps = {
   milestone?: string;

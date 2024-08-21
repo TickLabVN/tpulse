@@ -42,8 +42,6 @@ impl MetricProcessor {
             Activity::AFK(metric) => {
                 self.is_afk = metric.status == AFKStatus::OFFLINE;
                 db::update_work_session(metric.time, metric.status);
-
-                log::info!("AFK status: {:?}", metric);
             }
             Activity::Window(metric) => {
                 if self.is_afk {
