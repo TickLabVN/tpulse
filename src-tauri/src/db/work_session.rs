@@ -17,6 +17,7 @@ struct WorkSession {
     status: String,
 }
 
+// TODO: Explain the logic of this function
 pub fn update_work_session(time: u64, status: AFKStatus) {
     let conn = get_connection();
 

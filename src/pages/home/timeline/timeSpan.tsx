@@ -1,6 +1,6 @@
 import { Badge } from '@/components';
 import { TIMETABLE_ROW_HEIGHT, TIMETABLE_UNIT } from '@/constants';
-import type { ActivityLog, CalendarEvent } from '@/services';
+import type { CalendarEvent, WorkSession } from '@/services';
 import { prettyTime } from '@/utils';
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -9,25 +9,29 @@ type EventProps<T> = {
   data: T;
 };
 
-export function ActivitySpan({ data }: EventProps<ActivityLog>) {
-  const { timeRange, duration } = useMemo(() => {
-    const start = moment.unix(data.start_time).format('HH:mm:ss');
-    const end = moment.unix(data.end_time).format('HH:mm:ss');
-    const timeRange = `${start} - ${end}`;
-    const duration = prettyTime(data.end_time - data.start_time);
+export function WorkSessionSpan({ data }: EventProps<WorkSession>) {
+  const { height, top, time } = useMemo(() => {
+    const startTime = data.start_time;
+    const endTime = data.end_time ?? moment().unix();
 
-    return { timeRange, duration };
+    const startOfDay = moment().startOf('day').unix();
+    const height = Math.floor(((endTime - startTime) / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT);
+    let top = (startTime - startOfDay) % TIMETABLE_UNIT;
+    top = Math.round((top / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT);
+
+    const time = prettyTime(endTime - startTime);
+    return { height, top, time };
   }, [data]);
 
   return (
-    <div className='border-[1px] border-l-4 border-l-[#6E7781] border-[#D0D7DE] rounded-lg px-2 w-full'>
-      <div className='flex items-center justify-between'>
-        <div className='text-xs text-[#6E7781]'>{timeRange}</div>
-        <Badge className='bg-green text-white rounded-[5px]'>{duration}</Badge>
-      </div>
-      <p className='text-xs font-semibold leading-4 text-[#6E7781]'>
-        {data.name.length > 40 ? `${data.name.slice(0, 40)}...` : data.name}
-      </p>
+    <div
+      className='absolute rounded-sm left-4 right-4 bg-primary text-right text-white font-semibold text-sm z-[2] px-1'
+      style={{
+        minHeight: `${height}px`,
+        top: `${top}px`
+      }}
+    >
+      {time}
     </div>
   );
 }
@@ -45,8 +49,6 @@ export function CalendarSpan({ data: event }: EventProps<CalendarEvent>) {
     const height = Math.floor(((event.end_time - event.start_time) / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT);
     const top =
       (Math.floor((event.start_time - startOfDay) % TIMETABLE_UNIT) / TIMETABLE_UNIT) * TIMETABLE_ROW_HEIGHT;
-
-    console.log({ height, top });
 
     let spanStyle = '';
     let titleStyle = '';
@@ -71,7 +73,7 @@ export function CalendarSpan({ data: event }: EventProps<CalendarEvent>) {
         left: '16px',
         right: '16px'
       }}
-      className={`${spanStyle} absolute border-[1px] border-l-4 border-l-google border-[#D0D7DE] rounded-md bg-white z-10`}
+      className={`${spanStyle} absolute border-[1px] border-l-4 border-l-google border-[#D0D7DE] rounded-md bg-white z-[2]`}
     >
       <div className='flex items-center justify-between'>
         <div className={`${titleStyle} text-background font-semibold`}>{event.name}</div>

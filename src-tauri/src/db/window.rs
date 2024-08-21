@@ -9,6 +9,7 @@ pub struct WindowActivity {
     pub category: Option<String>,
 }
 
+// TODO: Explain the logic of this function
 pub fn insert_window_activity(time: u64, new_activity: &WindowActivity) {
     let mut conn = get_connection();
     let mut tx = conn.transaction().expect("Failed to start transaction");
