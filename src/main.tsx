@@ -1,31 +1,32 @@
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { routeTree } from './routeTree.gen';
 import './index.css';
 
-const router = createRouter({
-  routeTree,
-  defaultPreload: 'intent'
-});
-const queryClient = new QueryClient();
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 
+// Import the generated route tree
+import { routeTree } from './routeTree.gen';
+
+// Create a new router instance
+const router = createRouter({ routeTree });
+
+// Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
   }
 }
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <LocalizationProvider dateAdapter={AdapterMoment}>
+const queryClient = new QueryClient();
+
+const root = document.getElementById('root');
+if (root) {
+  ReactDOM.createRoot(root).render(
+    <StrictMode>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
-    </LocalizationProvider>
-  </StrictMode>
-);
+    </StrictMode>
+  );
+}

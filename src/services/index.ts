@@ -3,5 +3,5 @@
  */
 
 export * from './activityLog';
-export * from './db';
 export * from './calendarEvent';
+export * from './db';
