@@ -17,7 +17,8 @@
     ]
   },
   "organizeImports": {
-    "enabled": true
+    "enabled": true,
+    "ignore": ["src/routeTree.gen.ts"]
   },
   "linter": {
     "enabled": true,

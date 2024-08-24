@@ -7,7 +7,6 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <main className='w-full h-full'>
-      Hello wtf?
       <Outlet />
     </main>
   );
