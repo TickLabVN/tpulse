@@ -57,13 +57,16 @@ export function TimeRow({ startTime, mode }: TimeRowProps) {
     >
       <div className='align-bottom min-w-14'>
         {milestone && (
-          <div className='text-xs translate-y-1/2 ps-3 pe-2 text-center z-[2] bg-white'>{milestone}</div>
+          <div className='text-xs translate-y-1/2 ps-3 pe-2 text-center z-[2] bg-white text-gray-500'>
+            {milestone}
+          </div>
         )}
       </div>
       <div className='border-s-[1px] h-full relative flex-1'>
         {mode === 'work_session' && workSessions.map((ws) => <WorkSessionSpan key={ws.id} data={ws} />)}
         {mode === 'project' && <div>Projects</div>}
-        {mode === 'calendar_event' && calendarEvents.map((ce) => <CalendarEventSpan key={ce.id} data={ce} />)}
+        {mode === 'calendar_event' &&
+          calendarEvents.map((ce) => <CalendarEventSpan key={ce.id} event={ce} />)}
       </div>
     </div>
   );

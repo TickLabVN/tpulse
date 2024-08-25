@@ -52,8 +52,8 @@ export function HomePage() {
 
   const fetchGoogleEvents = useCallback(async () => {
     const params = {
-      fromDate: moment().startOf('day').toISOString(),
-      toDate: moment().endOf('day').toISOString()
+      fromDate: selectedDate.startOf('day').toISOString(),
+      toDate: selectedDate.endOf('day').toISOString()
     };
     try {
       const success = await invoke<boolean>('sync_google_calendar', params);
@@ -69,36 +69,37 @@ export function HomePage() {
     } catch (error) {
       log.error(error);
     }
-  }, [queryClient]);
+  }, [queryClient, selectedDate]);
 
   return (
-    <div className='w-full'>
-      <div className='flex gap-2 px-8 pt-5'>
-        <DatePicker
-          className='flex-1'
-          value={selectedDate.toDate()}
-          onSelectDate={(date) => setSelectedDate(moment(date))}
-          formatDate={onFormatDate}
-          parseDateFromString={onParseDateFromString}
-          showGoToToday={true}
-        />
-        <Button icon={<ChevronLeft16Regular />} onClick={goPrevious} />
-        <Button icon={<ChevronRight16Regular />} onClick={goNext} />
+    <div className='w-full overflow-y-scroll max-h-screen no-scrollbar'>
+      <div className='w-full sticky top-0 z-20 bg-white shadow-mdd pb-6'>
+        <div className='flex gap-2 px-8 pt-5'>
+          <DatePicker
+            className='flex-1'
+            value={selectedDate.toDate()}
+            onSelectDate={(date) => setSelectedDate(moment(date))}
+            formatDate={onFormatDate}
+            parseDateFromString={onParseDateFromString}
+            showGoToToday={true}
+          />
+          <Button icon={<ChevronLeft16Regular />} onClick={goPrevious} />
+          <Button icon={<ChevronRight16Regular />} onClick={goNext} />
+        </div>
+
+        <TabList className='w-full flex px-5 mt-2' defaultSelectedValue={mode} onTabSelect={onTabSelect}>
+          <Tab value='work_session' className='flex-1'>
+            Sessions
+          </Tab>
+          <Tab value='project' className='flex-1'>
+            Projects
+          </Tab>
+          <Tab value='calendar_event' className='flex-1'>
+            Events
+          </Tab>
+        </TabList>
       </div>
-
-      <TabList className='w-full flex px-5 mt-2' defaultSelectedValue={mode} onTabSelect={onTabSelect}>
-        <Tab value='work_session' className='flex-1'>
-          Sessions
-        </Tab>
-        <Tab value='project' className='flex-1'>
-          Projects
-        </Tab>
-        <Tab value='calendar_event' className='flex-1'>
-          Events
-        </Tab>
-      </TabList>
-
-      <div className='rounded-md mt-6'>
+      <div className='rounded-md'>
         {rowArr.map((_, i) => {
           const startTime = moment.unix(beginOfDay + i * TIMETABLE_UNIT);
           return (
@@ -112,7 +113,7 @@ export function HomePage() {
         <Menu>
           <MenuTrigger disableButtonEnhancement>
             <MenuButton
-              className='fixed bottom-4 right-4 !min-w-12 !h-12'
+              className='fixed bottom-4 right-4 !min-w-12 !h-12 z-10'
               icon={<CalendarSync24Regular />}
               shape='circular'
               appearance='primary'

@@ -26,6 +26,9 @@
       "recommended": true,
       "a11y": {
         "useKeyWithClickEvents": "off"
+      },
+      "nursery": {
+        "noConsole": "warn"
       }
     },
     "ignore": ["dist", "coverage", "node_modules", "src-tauri", "src/routeTree.gen.ts"]
