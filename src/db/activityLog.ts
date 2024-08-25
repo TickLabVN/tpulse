@@ -9,7 +9,7 @@ export type ActivityLog = {
   category?: string;
 };
 
-async function categorizeActivities(
+export async function categorizeActivities(
   from: number,
   to: number
 ): Promise<{ category: string; percentage: number }[]> {
@@ -32,13 +32,18 @@ async function categorizeActivities(
       percentage[category] = (percentage[category] / activities.length) * 100;
     }
 
-    return Object.entries(percentage).map(([category, percentage]) => ({ category, percentage }));
+    const result = Object.entries(percentage).map(([category, percentage]) => ({ category, percentage }));
+    result.sort((a, b) => b.percentage - a.percentage);
+    result.splice(4);
+
+    if (result.length >= 4) {
+      const otherPercentage = 100 - result.reduce((acc, { percentage }) => acc + percentage, 0);
+      result.push({ category: 'Other', percentage: otherPercentage });
+    }
+
+    return result;
   } catch (error) {
     log.error(error);
     return [];
   }
 }
-
-export const activityLogSvc = {
-  categorizeActivities
-};

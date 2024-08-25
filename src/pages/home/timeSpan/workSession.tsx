@@ -1,5 +1,5 @@
 import { TIMETABLE_ROW_HEIGHT, TIMETABLE_UNIT } from '@/constants';
-import type { WorkSession } from '@/services';
+import type { WorkSession } from '@/db';
 import { prettyTime } from '@/utils';
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -24,7 +24,7 @@ export function WorkSessionSpan({ data }: EventProps<WorkSession>) {
 
   return (
     <div
-      className='absolute rounded-sm left-4 right-4 bg-primary text-right text-white font-semibold text-sm z-[2] px-1'
+      className='absolute rounded-sm left-4 right-4 bg-blue-400 text-right text-white font-semibold text-sm z-[2] px-1'
       style={{
         minHeight: `${height}px`,
         top: `${top}px`

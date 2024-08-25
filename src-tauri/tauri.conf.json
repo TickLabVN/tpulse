@@ -53,7 +53,8 @@
         "resizable": true,
         "title": "TPulse",
         "width": 1920,
-        "minWidth": 1400
+        "minWidth": 400,
+        "minHeight": 600
       }
     ],
     "security": {

@@ -1,11 +1,4 @@
 {
-  "directory": [
-    "src/hooks",
-    "src/interfaces",
-    "src/utils",
-    "src/components",
-    "src/services",
-    "src/constants"
-  ],
+  "directory": ["src/hooks", "src/utils", "src/db", "src/constants"],
   "delete": true
 }

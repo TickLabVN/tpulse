@@ -1,1 +1,1 @@
-type IComponent<T = object> = React.FC<React.PropsWithChildren<T>>;
+type DashboardTab = 'work_session' | 'project' | 'calendar_event';
