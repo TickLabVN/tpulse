@@ -18,7 +18,7 @@ export type WorkSession = {
   status: 'open' | 'closed';
 };
 
-export async function getEvents(from: number, to: number): Promise<CalendarEvent[]> {
+export async function getCalendarEvents(from: number, to: number): Promise<CalendarEvent[]> {
   try {
     return await db.select<CalendarEvent[]>(
       'SELECT * FROM "plan" WHERE "start_time" >= $1 AND "start_time" <= $2',
