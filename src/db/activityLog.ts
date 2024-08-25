@@ -9,7 +9,7 @@ export type ActivityLog = {
   category?: string;
 };
 
-async function categorizeActivities(
+export async function categorizeActivities(
   from: number,
   to: number
 ): Promise<{ category: string; percentage: number }[]> {
@@ -38,7 +38,3 @@ async function categorizeActivities(
     return [];
   }
 }
-
-export const activityLogSvc = {
-  categorizeActivities
-};

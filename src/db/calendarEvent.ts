@@ -18,7 +18,7 @@ export type WorkSession = {
   status: 'open' | 'closed';
 };
 
-async function getEvents(from: number, to: number): Promise<CalendarEvent[]> {
+export async function getEvents(from: number, to: number): Promise<CalendarEvent[]> {
   try {
     return await db.select<CalendarEvent[]>(
       'SELECT * FROM "plan" WHERE "start_time" >= $1 AND "start_time" <= $2',
@@ -30,7 +30,7 @@ async function getEvents(from: number, to: number): Promise<CalendarEvent[]> {
   }
 }
 
-async function getWorkSessions(from: number, to: number): Promise<WorkSession[]> {
+export async function getWorkSessions(from: number, to: number): Promise<WorkSession[]> {
   try {
     return await db.select<WorkSession[]>(
       'SELECT * FROM "work_session" WHERE "start_time" >= $1 AND "start_time" <= $2',
@@ -41,8 +41,3 @@ async function getWorkSessions(from: number, to: number): Promise<WorkSession[]>
     return [];
   }
 }
-
-export const calendarSvc = {
-  getEvents,
-  getWorkSessions
-};

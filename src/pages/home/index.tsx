@@ -3,11 +3,14 @@ import { Button, Tab, TabList } from '@fluentui/react-components';
 import { DatePicker } from '@fluentui/react-datepicker-compat';
 import { ChevronLeft16Regular, ChevronRight16Regular } from '@fluentui/react-icons';
 import moment from 'moment';
+import { useMemo } from 'react';
 import { TimeRow } from './timeRow';
 
 const rowArr = Array.from({ length: NUM_SECS_IN_DAY / TIMETABLE_UNIT });
 
 export function HomePage() {
+  const beginOfDay = useMemo(() => moment().startOf('day').unix(), []);
+
   return (
     <div className='w-full'>
       <div className='flex gap-2 px-8 pt-5'>
@@ -28,15 +31,12 @@ export function HomePage() {
         </Tab>
       </TabList>
 
-      <div className='rounded-md'>
+      <div className='rounded-md mt-6'>
         {rowArr.map((_, i) => {
-          const beginOfDay = moment().startOf('day').unix();
-          const rowStartTime = beginOfDay + i * TIMETABLE_UNIT;
-          const rowEndTime = rowStartTime + TIMETABLE_UNIT;
-          const milestone = i < rowArr.length - 1 ? moment.unix(rowEndTime).format('HH:mm') : undefined;
+          const startTime = moment.unix(beginOfDay + i * TIMETABLE_UNIT);
           return (
             // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <TimeRow key={i} milestone={milestone} />
+            <TimeRow key={i} startTime={startTime} />
           );
         })}
       </div>

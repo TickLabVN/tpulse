@@ -1,4 +1,4 @@
 {
-  "directory": ["src/hooks", "src/utils", "src/services", "src/constants"],
+  "directory": ["src/hooks", "src/utils", "src/db", "src/constants"],
   "delete": true
 }
