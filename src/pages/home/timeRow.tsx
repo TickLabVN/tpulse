@@ -2,8 +2,9 @@ import { TIMETABLE_ROW_HEIGHT } from '@/constants/timetable';
 import { getCalendarEvents, getWorkSessions } from '@/db';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CalendarEventSpan } from './timeSpan/calendarEvent';
+import { CurrentTimeline } from './timeSpan/currentTimeline';
 import { WorkSessionSpan } from './timeSpan/workSession';
 
 type TimeRowProps = {
@@ -21,8 +22,20 @@ export function TimeRow({ startTime, mode }: TimeRowProps) {
     };
   }, [startTime]);
 
+  const [currentTime, setCurrentTime] = useState(moment());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(moment());
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   const borderStyle = useMemo(() => (milestone ? 'border-t-[1px]' : 'border-y-[1px]'), [milestone]);
-  const needRefetch = useMemo(() => moment().isBetween(startTime, endTime), [startTime, endTime]);
+  const needRefetch = useMemo(
+    () => currentTime.isBetween(startTime, endTime),
+    [startTime, endTime, currentTime]
+  );
 
   const { data: workSessions } = useQuery({
     queryKey: ['work_session', startTime.unix(), endTime.unix()],
@@ -67,6 +80,7 @@ export function TimeRow({ startTime, mode }: TimeRowProps) {
         {mode === 'project' && <div>Projects</div>}
         {mode === 'calendar_event' &&
           calendarEvents.map((ce) => <CalendarEventSpan key={ce.id} event={ce} />)}
+        {needRefetch && <CurrentTimeline currentTime={currentTime} />}
       </div>
     </div>
   );

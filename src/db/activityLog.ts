@@ -16,7 +16,7 @@ export async function categorizeActivities(
   const percentage: Record<string, number> = {};
   try {
     const activities = await db.select<ActivityLog[]>(
-      'SELECT * FROM "activity_log" WHERE "start_time" >= $1 AND "start_time" <= $2',
+      'SELECT * FROM "activity_log" WHERE "start_time" >= $1 AND "start_time" < $2',
       [from, to]
     );
     for (const activity of activities) {

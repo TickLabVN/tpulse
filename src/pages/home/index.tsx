@@ -92,7 +92,8 @@ export function HomePage() {
             Sessions
           </Tab>
           <Tab value='project' className='flex-1'>
-            Projects
+            {/* TODO: display projects instead */}
+            Activities
           </Tab>
           <Tab value='calendar_event' className='flex-1'>
             Events

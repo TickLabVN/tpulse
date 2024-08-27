@@ -33,7 +33,7 @@ export async function getCalendarEvents(from: number, to: number): Promise<Calen
 export async function getWorkSessions(from: number, to: number): Promise<WorkSession[]> {
   try {
     return await db.select<WorkSession[]>(
-      'SELECT * FROM "work_session" WHERE "start_time" >= $1 AND "start_time" <= $2',
+      'SELECT * FROM "work_session" WHERE "start_time" >= $1 AND "start_time" < $2',
       [from, to]
     );
   } catch (error) {
